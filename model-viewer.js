@@ -28,8 +28,9 @@ if (viewer && stage && plate && canvas) {
 
   const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   const initialRotation = {
-    x: -Math.PI / 2,
-    z: -0.38 - Math.PI / 2,
+    x: Math.PI / 2,
+    y: 0,
+    z: 0,
   };
   const parts = [];
 
@@ -166,7 +167,7 @@ if (viewer && stage && plate && canvas) {
     camera.near = Math.max(0.01, modelRadius * 0.01);
     camera.far = Math.max(2000, modelRadius * 20);
     camera.position
-      .set(modelRadius * 1.55, modelRadius * -1.9, modelRadius * 1.2)
+      .set(-1, -1, 1)
       .normalize()
       .multiplyScalar(modelRadius * 5);
     camera.up.set(0, 0, 1);
@@ -325,7 +326,11 @@ if (viewer && stage && plate && canvas) {
       part.userData.delay = (index % 9) * 0.012;
     });
 
-    modelPivot.rotation.set(initialRotation.x, 0, initialRotation.z);
+    modelPivot.rotation.set(
+      initialRotation.x,
+      initialRotation.y,
+      initialRotation.z,
+    );
     modelPivot.updateMatrixWorld(true);
 
     updateTheme();
