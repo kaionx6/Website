@@ -18,7 +18,7 @@
     <title>Kelvin Gao — Portfolio</title>
     <link rel="canonical" href="https://kelvingao.com/" />
     <link rel="icon" href="assets/kg-logo-blue.png" type="image/png" />
-    <link rel="stylesheet" href="styles.css?v=blueprint-3" />
+    <link rel="stylesheet" href="styles.css?v=blueprint-4" />
     <script>
       document.documentElement.classList.add("js");
       try {
@@ -37,6 +37,10 @@
         .project-tabs { display: none !important; }
         .project-panel[hidden] { display: grid !important; }
         .project-panel + .project-panel { border-top: 1px solid var(--line); }
+        .model-loader, .model-controls, .model-progress { display: none !important; }
+        .model-error[hidden] { display: grid !important; }
+        .hero-blueprint-stage { min-height: auto !important; }
+        .hero-blueprint, .hero-copy { position: relative !important; top: auto !important; }
       </style>
     </noscript>
   </head>
@@ -112,31 +116,80 @@
           </div>
         </div>
 
-        <div class="hero-blueprint reveal reveal--delay" aria-hidden="true">
-          <div class="blueprint-caption">
-            <span>FIG. 01</span>
-            <span>IDENTITY / PRIMARY MARK</span>
-            <span>SCALE 1:1</span>
-          </div>
-          <div class="logo-plate">
-            <span class="dimension dimension--horizontal">W / 704</span>
-            <span class="dimension dimension--vertical">H / 812</span>
-            <span class="crosshair crosshair--one"></span>
-            <span class="crosshair crosshair--two"></span>
-            <span class="logo-render logo-render--hero">
-              <img src="assets/kg-logo-blue.png" alt="" width="220" height="254" />
-            </span>
-          </div>
-          <div class="project-counter">
-            <span class="project-counter__label">PROJECT INDEX</span>
-            <strong>04</strong>
-            <span class="project-counter__foot">ALLOCATED SLOTS</span>
-          </div>
-          <div class="blueprint-coordinates">
-            <span>53.3498° N</span>
-            <span>REF / KG-00</span>
-            <span>006.2603° W</span>
-          </div>
+        <div class="hero-blueprint-stage reveal reveal--delay" data-model-stage>
+          <figure
+            class="hero-blueprint"
+            data-model-viewer
+            aria-labelledby="assembly-caption"
+            aria-describedby="assembly-description"
+          >
+            <figcaption class="blueprint-caption" id="assembly-caption">
+              <span>FIG. 01</span>
+              <span>SPIDER ROBOT / ASSEMBLY</span>
+              <span>SCROLL / EXPLODE</span>
+            </figcaption>
+
+            <div class="model-plate" data-model-plate>
+              <span class="dimension dimension--horizontal">109 RENDERED PARTS</span>
+              <span class="dimension dimension--vertical">29 UNIQUE SOLIDS</span>
+              <span class="crosshair crosshair--one" aria-hidden="true"></span>
+              <span class="crosshair crosshair--two" aria-hidden="true"></span>
+
+              <canvas class="model-canvas" data-model-canvas aria-hidden="true"></canvas>
+
+              <div class="model-placeholder" data-model-placeholder aria-hidden="true">
+                <span class="logo-render logo-render--model">
+                  <img src="assets/kg-logo-blue.png" alt="" width="118" height="136" />
+                </span>
+                <span>MODEL / INITIALISING</span>
+              </div>
+
+              <div class="model-loader" data-model-loader role="status" aria-live="polite">
+                <div class="model-loader__copy">
+                  <span data-model-status>LOADING ASSEMBLY</span>
+                  <span data-model-load-value aria-hidden="true">00%</span>
+                </div>
+                <span class="model-loader__track" aria-hidden="true">
+                  <i data-model-load-bar></i>
+                </span>
+              </div>
+
+              <div class="model-error" data-model-error role="alert" hidden>
+                <strong>3D VIEW UNAVAILABLE</strong>
+                <span data-model-error-copy>The assembly could not be loaded.</span>
+                <a href="assets/models/spider-robot.step" download>DOWNLOAD STEP</a>
+              </div>
+
+              <p class="model-description" id="assembly-description">
+                Interactive 3D spider robot assembly. Scroll through this drawing to
+                separate its parts. Drag on desktop, or use the controls, to rotate it.
+              </p>
+
+              <div class="model-controls" role="group" aria-label="Assembly view controls">
+                <button type="button" data-model-rotate="-1" aria-label="Rotate model left" disabled>&#8592;</button>
+                <button type="button" data-model-reset disabled>RESET</button>
+                <button type="button" data-model-rotate="1" aria-label="Rotate model right" disabled>&#8594;</button>
+                <button type="button" data-model-explode aria-pressed="false" disabled>EXPLODE</button>
+              </div>
+
+              <div class="model-progress" aria-hidden="true">
+                <span>ASSEMBLY SEPARATION</span>
+                <span class="model-progress__track"><i data-model-progress-bar></i></span>
+                <output data-model-progress-value>00%</output>
+              </div>
+            </div>
+
+            <div class="project-counter" aria-label="Four allocated project slots">
+              <span class="project-counter__label">PROJECT INDEX</span>
+              <strong>04</strong>
+              <span class="project-counter__foot">ALLOCATED SLOTS</span>
+            </div>
+            <div class="blueprint-coordinates" aria-hidden="true">
+              <span>AP242 / STEP</span>
+              <span>REF / KG-SR01</span>
+              <span>109 MESHES</span>
+            </div>
+          </figure>
         </div>
 
         <a class="scroll-cue" href="#projects" aria-label="Scroll to projects">
@@ -524,6 +577,7 @@
       <p>© <span data-year></span> Kelvin Gao</p>
     </footer>
 
-    <script src="script.js?v=blueprint-3"></script>
+    <script src="script.js?v=blueprint-4"></script>
+    <script type="module" src="model-viewer.js?v=spider-4"></script>
   </body>
 </html>
