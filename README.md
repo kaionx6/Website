@@ -1,14 +1,16 @@
 # kelvingao.com
 
-A dependency-free personal portfolio with a blue/black default theme, a
-switchable white/blue theme, and four accessible placeholder project tabs.
+A dependency-free personal portfolio built as a flat blueprint drawing system,
+with a blue/black default theme, switchable white/blue theme, and four
+accessible placeholder project tabs.
 
 ## Files
 
 - `index.html` — page content and the four project panels
 - `styles.css` — layout, themes, responsive styles, and preview illustrations
-- `script.js` — theme persistence, project tabs, navigation, and reveal effects
-- `favicon.svg` — KG favicon
+- `script.js` — theme persistence, project tabs, and navigation state
+- `assets/kg-logo-blue.png` — transparent site-blue KG logo and browser favicon
+- `assets/kg-logo-source.png` — untouched supplied source logo
 - `CNAME` — GitHub Pages custom domain (`kelvingao.com`)
 
 ## Customize it
@@ -20,7 +22,8 @@ switchable white/blue theme, and four accessible placeholder project tabs.
    `aria-labelledby` pattern.
 
 The color palettes live at the top of `styles.css` under `:root` and
-`html[data-theme="light"]`.
+`html[data-theme="light"]`. The transparent blue logo is derived from the
+untouched source with its original geometry preserved exactly.
 
 ## Publish
 

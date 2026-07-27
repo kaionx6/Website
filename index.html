@@ -14,10 +14,10 @@
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://kelvingao.com/" />
-    <meta name="theme-color" content="#050811" />
+    <meta name="theme-color" content="#06101c" />
     <title>Kelvin Gao — Portfolio</title>
     <link rel="canonical" href="https://kelvingao.com/" />
-    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="assets/kg-logo-blue.png" type="image/png" />
     <link rel="stylesheet" href="styles.css" />
     <script>
       document.documentElement.classList.add("js");
@@ -43,14 +43,16 @@
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
 
-    <div class="page-glow page-glow--one" aria-hidden="true"></div>
-    <div class="page-glow page-glow--two" aria-hidden="true"></div>
-
     <header class="site-header" data-header>
       <div class="header-inner container">
         <a class="brand" href="#top" aria-label="Kelvin Gao, home">
-          <span class="brand-mark">KG</span>
-          <span class="brand-name">Kelvin Gao</span>
+          <span class="logo-render logo-render--brand" aria-hidden="true">
+            <img src="assets/kg-logo-blue.png" alt="" />
+          </span>
+          <span class="brand-copy">
+            <strong>Kelvin Gao</strong>
+            <small>Portfolio / Index</small>
+          </span>
         </a>
 
         <button
@@ -110,35 +112,31 @@
           </div>
         </div>
 
-        <div class="hero-visual reveal reveal--delay" aria-hidden="true">
-          <div class="orbit orbit--outer"></div>
-          <div class="orbit orbit--inner"></div>
-          <div class="hero-card hero-card--main">
-            <div class="hero-card__topline">
-              <span>kelvingao.com</span>
-              <span class="live-pulse"></span>
-            </div>
-            <div class="monogram">K<span>/</span>G</div>
-            <div class="hero-card__footer">
-              <span>Design</span>
-              <span class="separator">×</span>
-              <span>Development</span>
-            </div>
+        <div class="hero-blueprint reveal reveal--delay" aria-hidden="true">
+          <div class="blueprint-caption">
+            <span>FIG. 01</span>
+            <span>IDENTITY / PRIMARY MARK</span>
+            <span>SCALE 1:1</span>
           </div>
-          <div class="floating-card floating-card--projects">
-            <span class="floating-label">PROJECTS</span>
-            <strong>04</strong>
-          </div>
-          <div class="floating-card floating-card--status">
-            <span class="status-icon">
-              <svg viewBox="0 0 20 20">
-                <path d="m5 10 3 3 7-7" />
-              </svg>
+          <div class="logo-plate">
+            <span class="dimension dimension--horizontal">W / 704</span>
+            <span class="dimension dimension--vertical">H / 812</span>
+            <span class="crosshair crosshair--one"></span>
+            <span class="crosshair crosshair--two"></span>
+            <span class="logo-render logo-render--hero">
+              <img src="assets/kg-logo-blue.png" alt="" />
             </span>
-            <span>Always<br /><strong>exploring</strong></span>
           </div>
-          <div class="visual-coordinate visual-coordinate--top">53.3498° N</div>
-          <div class="visual-coordinate visual-coordinate--bottom">006.2603° W</div>
+          <div class="project-counter">
+            <span class="project-counter__label">PROJECT INDEX</span>
+            <strong>04</strong>
+            <span class="project-counter__foot">ALLOCATED SLOTS</span>
+          </div>
+          <div class="blueprint-coordinates">
+            <span>53.3498° N</span>
+            <span>REF / KG-00</span>
+            <span>006.2603° W</span>
+          </div>
         </div>
 
         <a class="scroll-cue" href="#projects" aria-label="Scroll to projects">
@@ -160,7 +158,12 @@
         </div>
 
         <div class="project-workspace reveal">
-          <div class="project-tabs" role="tablist" aria-label="Projects">
+          <div
+            class="project-tabs"
+            role="tablist"
+            aria-label="Projects"
+            aria-orientation="vertical"
+          >
             <button
               class="project-tab is-active"
               id="project-tab-1"
@@ -500,15 +503,22 @@
               <path d="M4 10h12M11 5l5 5-5 5" />
             </svg>
           </a>
-          <span class="contact-mark" aria-hidden="true">KG</span>
+          <span class="logo-render logo-render--contact" aria-hidden="true">
+            <img src="assets/kg-logo-blue.png" alt="" />
+          </span>
         </div>
       </section>
     </main>
 
     <footer class="site-footer container">
       <a class="brand brand--footer" href="#top" aria-label="Back to top">
-        <span class="brand-mark">KG</span>
-        <span class="brand-name">Kelvin Gao</span>
+        <span class="logo-render logo-render--brand" aria-hidden="true">
+          <img src="assets/kg-logo-blue.png" alt="" />
+        </span>
+        <span class="brand-copy">
+          <strong>Kelvin Gao</strong>
+          <small>Portfolio / Index</small>
+        </span>
       </a>
       <p>Designed to keep evolving.</p>
       <p>© <span data-year></span> Kelvin Gao</p>
