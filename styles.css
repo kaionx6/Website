@@ -418,6 +418,7 @@ html[data-theme="light"] .theme-toggle__knob {
 
 .hero-actions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0;
   margin-top: 38px;
@@ -456,9 +457,11 @@ html[data-theme="light"] .button--primary:hover {
   color: #fff;
 }
 
-.text-link {
+.text-link,
+.hero-social-link {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   min-height: 50px;
   padding: 12px 18px;
@@ -470,9 +473,19 @@ html[data-theme="light"] .button--primary:hover {
   text-transform: uppercase;
 }
 
-.text-link:hover {
+.text-link:hover,
+.hero-social-link:hover {
   background: var(--blue-fill);
   color: var(--blue);
+}
+
+.hero-social-links {
+  display: inline-flex;
+  align-items: stretch;
+}
+
+.hero-social-link {
+  border-left: 0;
 }
 
 .hero-blueprint {
@@ -2553,13 +2566,28 @@ html[data-theme="light"] .button--light:hover {
   }
 
   .button--primary,
-  .text-link {
+  .text-link,
+  .hero-social-links {
     width: 100%;
   }
 
   .text-link {
     border-top: 0;
     border-left: 1px solid var(--line);
+  }
+
+  .hero-social-links {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .hero-social-link {
+    border-top: 0;
+    border-left: 1px solid var(--line);
+  }
+
+  .hero-social-link + .hero-social-link {
+    border-left: 0;
   }
 
   .hero-blueprint {

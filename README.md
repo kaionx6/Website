@@ -21,7 +21,7 @@ tabs, and a hover-scroll exploded CAD sequence inside Project 1.
 ## Customize it
 
 1. Replace the placeholder copy and projects in `index.html`.
-2. Update `hello@kelvingao.com` if that is not the inbox you want to use.
+2. Update `kelvin.gao@ucdconnect.ie` if that is not the inbox you want to use.
 3. Replace each “coming soon” span with a real `<a>` when a case study is ready.
 4. Add or remove tab/panel pairs using the existing `aria-controls` and
    `aria-labelledby` pattern.
