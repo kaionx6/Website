@@ -27,7 +27,10 @@ if (viewer && stage && plate && canvas) {
   };
 
   const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const initialRotation = { x: 0, z: -0.38 - Math.PI / 2 };
+  const initialRotation = {
+    x: -Math.PI / 2,
+    z: -0.38 - Math.PI / 2,
+  };
   const parts = [];
 
   const PHOTO_FADE = 0.28;
