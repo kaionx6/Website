@@ -168,7 +168,7 @@ svg {
 }
 
 .logo-render--brand {
-  width: 32px;
+  width: 26px;
 }
 
 /* Header */
@@ -564,7 +564,7 @@ html[data-theme="light"] .button--primary:hover {
 
 .logo-render--hero {
   z-index: 1;
-  width: min(60%, 285px);
+  width: min(46%, 220px);
 }
 
 .dimension {
@@ -1621,7 +1621,7 @@ html[data-theme="light"] .button--light:hover {
   position: absolute;
   top: 50%;
   right: 7%;
-  width: min(28vw, 290px);
+  width: min(22vw, 220px);
   opacity: 0.14;
   transform: translateY(-50%);
 }
@@ -1861,7 +1861,7 @@ html[data-theme="light"] .button--light:hover {
 
   .logo-render--contact {
     right: -5%;
-    width: 250px;
+    width: 190px;
   }
 
   .site-footer {
@@ -1918,7 +1918,7 @@ html[data-theme="light"] .button--light:hover {
   }
 
   .logo-render--hero {
-    width: min(62%, 220px);
+    width: min(48%, 160px);
   }
 
   .dimension--vertical {
@@ -2025,7 +2025,7 @@ html[data-theme="light"] .button--light:hover {
 
   .logo-render--contact {
     right: -16%;
-    width: 220px;
+    width: 170px;
   }
 
   .site-footer {
