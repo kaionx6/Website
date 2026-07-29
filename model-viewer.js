@@ -244,6 +244,7 @@ if (viewer && stage && plate && canvas) {
 
   function setSequenceTarget(value) {
     sequenceTarget = clamp(value, 0, MAX_SEQUENCE);
+    viewer.classList.toggle("has-sequence-progress", sequenceTarget > EPSILON);
     updateControlState();
     scheduleRender();
   }

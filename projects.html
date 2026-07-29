@@ -18,7 +18,7 @@
     <title>Projects — Kelvin Gao</title>
     <link rel="canonical" href="https://kelvingao.com/projects.html" />
     <link rel="icon" href="assets/kg-logo-blue.png" type="image/png" />
-    <link rel="stylesheet" href="styles.css?v=blueprint-12" />
+    <link rel="stylesheet" href="styles.css?v=blueprint-13" />
     <script>
       document.documentElement.classList.add("js");
       try {
@@ -93,8 +93,8 @@
             <h1 id="projects-title">The project shelf.</h1>
           </div>
           <p class="section-description">
-            Placeholder projects for now. Each tab is ready for a case study,
-            build, experiment, or anything else worth sharing.
+            Project 01 is interactive: hover over its model window and scroll to
+            explode the assembly, then continue into the photo sequence.
           </p>
         </div>
 
@@ -118,7 +118,7 @@
               <span class="project-tab__number">01</span>
               <span class="project-tab__copy">
                 <strong>Project One</strong>
-                <span>Featured build</span>
+                <span>3D scroll assembly</span>
               </span>
               <span class="project-tab__arrow" aria-hidden="true">↗</span>
             </button>
@@ -215,7 +215,7 @@
                 >
                   <figcaption class="project-model-window__bar" id="assembly-window-title">
                     <span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-                    <span>SPIDER ROBOT / ASSEMBLY</span>
+                    <span>SPIDER ROBOT / SCROLL TO EXPLODE</span>
                     <span>109 PARTS</span>
                   </figcaption>
 
@@ -224,7 +224,7 @@
                     data-model-plate
                     tabindex="0"
                     role="region"
-                    aria-label="Interactive spider robot project sequence"
+                    aria-label="Hover here and scroll to explode the spider robot and reveal photos"
                     aria-describedby="assembly-window-description"
                     aria-keyshortcuts="ArrowUp ArrowDown PageUp PageDown Home End"
                   >
@@ -272,7 +272,10 @@
                       </div>
                     </div>
 
-                    <span class="sequence-hover-note" aria-hidden="true">HOVER + SCROLL</span>
+                    <span class="sequence-hover-note" aria-hidden="true">
+                      <strong>HOVER HERE + SCROLL</strong>
+                      <small>EXPLODE MODEL ↕ REVEAL PHOTOS</small>
+                    </span>
                   </div>
 
                   <div class="project-model-window__footer">
@@ -282,8 +285,8 @@
                       <output data-sequence-value>00%</output>
                     </div>
                     <div class="sequence-help" aria-hidden="true">
-                      <span>SCROLL / ADVANCE</span>
-                      <span>↑ ↓ / KEYBOARD</span>
+                      <span>HOVER + SCROLL / EXPLODE</span>
+                      <span>KEEP SCROLLING / PHOTOS</span>
                     </div>
                     <div class="sequence-controls" role="group" aria-label="Project sequence controls">
                       <button type="button" data-sequence-prev aria-label="Previous sequence stage" disabled>←</button>
@@ -466,7 +469,7 @@
       <p>© <span data-year></span> Kelvin Gao</p>
     </footer>
 
-    <script src="script.js?v=blueprint-8"></script>
-    <script type="module" src="model-viewer.js?v=spider-8"></script>
+    <script src="script.js?v=blueprint-9"></script>
+    <script type="module" src="model-viewer.js?v=spider-9"></script>
   </body>
 </html>

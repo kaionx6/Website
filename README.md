@@ -47,6 +47,11 @@ The color palettes live at the top of `styles.css` under `:root` and
 `html[data-theme="light"]`. The transparent blue logo is derived from the
 untouched source with its original geometry preserved exactly.
 
+The hero coordinate strip points to the historic University of Glasgow Old
+College site on High Street (`55.8591 N, 004.2404 W`), Kelvin's university
+workplace when he proposed the absolute temperature scale in 1848. It is a
+historic-site reference rather than a claim about the exact room he worked in.
+
 The live panel loads the pre-tessellated GLB, avoiding the much slower raw STEP
 conversion in each visitor's browser. The model remains split into 109 rendered
 parts, so the explosion is still assembly-level rather than a single-object

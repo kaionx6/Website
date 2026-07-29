@@ -44,6 +44,23 @@
     applyTheme(nextTheme, true);
   });
 
+  const kelvinLogo = document.querySelector("[data-kelvin-easter-egg]");
+
+  if (kelvinLogo) {
+    const easterEggDestination =
+      "https://en.wikipedia.org/wiki/Lord_Kelvin";
+    const requiredLogoClicks = 25;
+    let logoClickCount = 0;
+
+    kelvinLogo.addEventListener("click", () => {
+      logoClickCount += 1;
+
+      if (logoClickCount === requiredLogoClicks) {
+        window.location.assign(easterEggDestination);
+      }
+    });
+  }
+
   window.addEventListener("storage", (event) => {
     if (event.key === "kelvin-theme" && event.newValue) {
       applyTheme(event.newValue);

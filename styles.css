@@ -550,7 +550,7 @@ html[data-theme="light"] .button--primary:hover {
   min-height: 45px;
   border-bottom: 1px solid var(--line);
   color: var(--faint);
-  font: 650 8px/1.2 var(--mono);
+  font: 650 9px/1.2 var(--mono);
   letter-spacing: 0.1em;
 }
 
@@ -810,7 +810,7 @@ html[data-theme="light"] .button--primary:hover {
   position: absolute;
   z-index: 2;
   color: var(--faint);
-  font: 650 8px/1 var(--mono);
+  font: 700 9px/1 var(--mono);
   letter-spacing: 0.08em;
 }
 
@@ -950,7 +950,7 @@ html[data-theme="light"] .button--primary:hover {
   height: 42px;
   border-top: 1px solid var(--line);
   color: var(--faint);
-  font: 600 8px/1 var(--mono);
+  font: 650 9px/1 var(--mono);
   letter-spacing: 0.08em;
 }
 
@@ -1343,7 +1343,7 @@ html[data-theme="light"] .button--primary:hover {
   padding-inline: 10px;
   border-bottom: 1px solid var(--preview-line);
   color: var(--faint);
-  font: 650 7px/1 var(--mono);
+  font: 700 8px/1 var(--mono);
   letter-spacing: 0.08em;
 }
 
@@ -1371,6 +1371,7 @@ html[data-theme="light"] .button--primary:hover {
   position: relative;
   aspect-ratio: 4 / 3;
   overflow: hidden;
+  cursor: ns-resize;
   background-color: var(--preview-bg);
   background-image:
     linear-gradient(var(--grid-major) 1px, transparent 1px),
@@ -1434,21 +1435,49 @@ html[data-theme="light"] .button--primary:hover {
   z-index: 5;
   top: 12px;
   right: 12px;
-  padding: 6px 8px;
-  border: 1px solid var(--line);
-  background: var(--surface);
-  color: var(--faint);
-  font: 700 7px/1 var(--mono);
-  letter-spacing: 0.08em;
-  opacity: 0.72;
+  display: grid;
+  gap: 5px;
+  width: min(248px, calc(100% - 24px));
+  padding: 10px 12px;
+  border: 1px solid var(--blue);
+  background: var(--blue-deep);
+  color: #fff;
+  opacity: 1;
   pointer-events: none;
+  transition: opacity 100ms linear, visibility 100ms linear;
+}
+
+.sequence-hover-note strong {
+  font: 780 10px/1 var(--mono);
+  letter-spacing: 0.09em;
+}
+
+.sequence-hover-note small {
+  color: inherit;
+  font: 650 7px/1.2 var(--mono);
+  letter-spacing: 0.07em;
+  opacity: 0.8;
 }
 
 .project-model-viewport:hover .sequence-hover-note,
 .project-model-viewport:focus-visible .sequence-hover-note {
-  border-color: var(--line-strong);
-  color: var(--blue);
-  opacity: 1;
+  background: var(--blue);
+  color: #06101c;
+}
+
+.project-model-viewport:hover:not(:focus-visible) {
+  outline: 1px solid var(--blue);
+  outline-offset: -2px;
+}
+
+html[data-theme="light"] .project-model-viewport:hover .sequence-hover-note,
+html[data-theme="light"] .project-model-viewport:focus-visible .sequence-hover-note {
+  color: #fff;
+}
+
+[data-model-viewer].has-sequence-progress .sequence-hover-note {
+  visibility: hidden;
+  opacity: 0;
 }
 
 .sequence-photo-deck,
@@ -1668,7 +1697,7 @@ html[data-theme="light"] .button--primary:hover {
   align-items: center;
   gap: 9px;
   color: var(--text-soft);
-  font: 650 7px/1 var(--mono);
+  font: 700 8px/1 var(--mono);
   letter-spacing: 0.07em;
 }
 
@@ -1697,8 +1726,12 @@ html[data-theme="light"] .button--primary:hover {
   display: flex;
   justify-content: space-between;
   color: var(--faint);
-  font: 650 6px/1 var(--mono);
+  font: 700 8px/1 var(--mono);
   letter-spacing: 0.08em;
+}
+
+.sequence-help span:first-child {
+  color: var(--blue);
 }
 
 .sequence-controls {
@@ -2739,8 +2772,8 @@ html[data-theme="light"] .button--light:hover {
 
 .page-wheel-meter {
   display: grid;
-  width: min(36vw, 320px);
-  grid-template-columns: auto minmax(64px, 1fr) 32px;
+  width: min(40vw, 380px);
+  grid-template-columns: auto minmax(72px, 1fr) 38px;
   align-items: center;
   gap: 10px;
   margin: 0;
@@ -2749,14 +2782,14 @@ html[data-theme="light"] .button--light:hover {
 
 .page-wheel-meter__label {
   color: var(--text-soft);
-  font: 650 8px/1 var(--mono);
+  font: 780 11px/1 var(--mono);
   letter-spacing: 0.08em;
   white-space: nowrap;
 }
 
 .page-wheel-meter__track {
   display: block;
-  height: 5px;
+  height: 7px;
   overflow: hidden;
   border: 1px solid var(--line);
   background: var(--surface-2);
@@ -2778,7 +2811,7 @@ html[data-theme="light"] .button--light:hover {
 
 .page-wheel-meter__value {
   color: var(--blue);
-  font: 700 8px/1 var(--mono);
+  font: 750 10px/1 var(--mono);
   text-align: right;
 }
 
@@ -3290,6 +3323,15 @@ html[data-theme="light"] .button--light:hover {
   .sequence-hover-note {
     top: 9px;
     right: 9px;
+    width: min(228px, calc(100% - 18px));
+    padding: 8px 9px;
+  }
+
+  .sequence-hover-note strong {
+    font-size: 8px;
+  }
+
+  .sequence-hover-note small {
     font-size: 6px;
   }
 
@@ -3719,6 +3761,10 @@ html[data-theme="light"] .button--light:hover {
   }
 
   .sequence-help {
+    display: none;
+  }
+
+  .sequence-hover-note {
     display: none;
   }
 
