@@ -2,14 +2,16 @@
 
 A build-free personal portfolio made as a flat blueprint drawing system, with a
 blue/black default theme, switchable white/blue theme, four accessible project
-tabs, and a hover-scroll exploded CAD sequence inside Project 1.
+tabs, a hover-scroll exploded CAD sequence, and a playable mini-game library.
 
 ## Files
 
 - `index.html` — page content and the four project panels
 - `styles.css` — layout, themes, responsive styles, and preview illustrations
 - `script.js` — theme persistence, project tabs, and navigation state
+- `flappy-game.js` — dependency-free responsive Flappy Bird canvas demo
 - `model-viewer.js` — GLB rendering and the model-to-photo interaction sequence
+- `assets/kelvin-presentation.png` — supplied About-section presentation photo
 - `assets/kg-logo-blue.png` — transparent site-blue KG logo and browser favicon
 - `assets/kg-logo-source.png` — untouched supplied source logo
 - `assets/models/spider-robot.step` — the supplied AP242 spider robot assembly

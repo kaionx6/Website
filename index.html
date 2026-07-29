@@ -18,7 +18,7 @@
     <title>Kelvin Gao — Portfolio</title>
     <link rel="canonical" href="https://kelvingao.com/" />
     <link rel="icon" href="assets/kg-logo-blue.png" type="image/png" />
-    <link rel="stylesheet" href="styles.css?v=blueprint-6" />
+    <link rel="stylesheet" href="styles.css?v=blueprint-8" />
     <script>
       document.documentElement.classList.add("js");
       try {
@@ -80,6 +80,7 @@
 
       <nav class="main-nav" aria-label="Main navigation">
         <a href="#projects">Projects</a>
+        <a href="#games">Games</a>
         <a href="#about">About</a>
         <a href="#contact">Contact</a>
       </nav>
@@ -119,9 +120,17 @@
                 target="_blank"
                 rel="noopener noreferrer"
               >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M12 .7a11.5 11.5 0 0 0-3.64 22.41c.58.11.79-.25.79-.56v-2.02c-3.22.7-3.9-1.37-3.9-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.71.08-.71 1.17.08 1.78 1.2 1.78 1.2 1.04 1.78 2.72 1.27 3.38.97.1-.75.41-1.27.74-1.56-2.57-.29-5.27-1.28-5.27-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.47.11-3.05 0 0 .97-.31 3.16 1.18a10.9 10.9 0 0 1 5.75 0c2.19-1.49 3.16-1.18 3.16-1.18.63 1.58.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.71 5.38-5.29 5.67.42.36.79 1.07.79 2.16v3.21c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .7Z"
+                  />
+                </svg>
                 GitHub
               </a>
               <a class="hero-social-link" href="mailto:kelvin.gao@ucdconnect.ie">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M3 5.5h18v13H3zM3.5 6l8.5 7 8.5-7" />
+                </svg>
                 Email
               </a>
               <a
@@ -130,6 +139,11 @@
                 target="_blank"
                 rel="noopener noreferrer"
               >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.47-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45Z"
+                  />
+                </svg>
                 LinkedIn
               </a>
             </div>
@@ -534,10 +548,98 @@
         </div>
       </section>
 
+      <section class="games section container" id="games" aria-labelledby="games-title">
+        <div class="section-heading reveal">
+          <div>
+            <p class="section-kicker">02 / Mini-game library</p>
+            <h2 id="games-title">Small games,<br />built for a quick break.</h2>
+          </div>
+          <p class="section-description">
+            A growing shelf of compact browser experiments. Flappy Bird is the
+            first playable demo; more slots are ready for whatever comes next.
+          </p>
+        </div>
+
+        <div class="game-library reveal">
+          <aside class="game-library__index" aria-label="Game library">
+            <p class="game-library__label">LIBRARY / SELECT PROGRAM</p>
+            <a class="game-entry is-active" href="#flappy-demo" aria-current="location">
+              <span class="game-entry__number">01</span>
+              <span class="game-entry__copy">
+                <strong>Flappy Bird</strong>
+                <small>Playable demo</small>
+              </span>
+              <i aria-hidden="true">RUN</i>
+            </a>
+            <div class="game-entry is-locked" aria-disabled="true">
+              <span class="game-entry__number">02</span>
+              <span class="game-entry__copy">
+                <strong>Game slot</strong>
+                <small>Coming soon</small>
+              </span>
+              <i aria-hidden="true">—</i>
+            </div>
+            <div class="game-entry is-locked" aria-disabled="true">
+              <span class="game-entry__number">03</span>
+              <span class="game-entry__copy">
+                <strong>Game slot</strong>
+                <small>Coming soon</small>
+              </span>
+              <i aria-hidden="true">—</i>
+            </div>
+          </aside>
+
+          <article
+            class="game-console"
+            id="flappy-demo"
+            data-flappy-game
+            aria-labelledby="flappy-title"
+          >
+            <div class="game-window">
+              <header class="game-window__bar">
+                <span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                <h3 id="flappy-title">FLAPPY BIRD / QUICK DEMO</h3>
+                <span>BUILD 001</span>
+              </header>
+
+              <div
+                class="flappy-stage"
+                data-flappy-stage
+                tabindex="0"
+                role="region"
+                aria-label="Flappy Bird game"
+                aria-describedby="flappy-help"
+              >
+                <canvas data-flappy-canvas width="420" height="560" aria-hidden="true"></canvas>
+                <div class="flappy-overlay" data-flappy-overlay>
+                  <strong data-flappy-message>READY TO FLY</strong>
+                  <span>AVOID THE GATES</span>
+                </div>
+              </div>
+
+              <footer class="game-window__footer">
+                <span class="game-state" data-flappy-state>STATUS / READY</span>
+                <div class="game-scores">
+                  <output aria-label="Current score">SCORE / <b data-flappy-score>00</b></output>
+                  <output aria-label="Best score">BEST / <b data-flappy-best>00</b></output>
+                </div>
+                <button type="button" data-flappy-action>START</button>
+              </footer>
+            </div>
+
+            <p id="flappy-help" class="visually-hidden">
+              Press Start, then use Space, Arrow Up, W, click, or tap to flap.
+              Avoid the barriers. Press P or the game button to pause.
+            </p>
+            <p class="visually-hidden" data-flappy-announcement aria-live="polite"></p>
+          </article>
+        </div>
+      </section>
+
       <section class="about section container" id="about" aria-labelledby="about-title">
         <div class="about-grid">
           <div class="about-intro reveal">
-            <p class="section-kicker">02 / About</p>
+            <p class="section-kicker">03 / About</p>
             <h2 id="about-title">A space for the person behind the pixels.</h2>
           </div>
           <div class="about-copy reveal reveal--delay">
@@ -552,6 +654,24 @@
             </p>
           </div>
         </div>
+
+        <figure class="about-photo reveal" aria-labelledby="about-photo-caption">
+          <figcaption class="blueprint-caption" id="about-photo-caption">
+            <span>FIG. 02</span>
+            <span>KELVIN GAO / PRESENTATION</span>
+            <span>FIELD RECORD</span>
+          </figcaption>
+          <div class="about-photo__viewport">
+            <img
+              src="assets/kelvin-presentation.png"
+              alt="Kelvin Gao presenting the team’s work at an EirGrid event."
+              width="1448"
+              height="1086"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        </figure>
 
         <div class="capability-grid reveal">
           <article class="capability-card">
@@ -584,7 +704,7 @@
       <section class="contact section container" id="contact" aria-labelledby="contact-title">
         <div class="contact-card reveal">
           <div class="contact-grid" aria-hidden="true"></div>
-          <p class="section-kicker">03 / Contact</p>
+          <p class="section-kicker">04 / Contact</p>
           <h2 id="contact-title">Have an idea?<br /><span>Let’s make it real.</span></h2>
           <p>
             Have a project, collaboration, or question? Send me an email and
@@ -618,6 +738,7 @@
     </footer>
 
     <script src="script.js?v=blueprint-4"></script>
+    <script src="flappy-game.js?v=game-2"></script>
     <script type="module" src="model-viewer.js?v=spider-7"></script>
   </body>
 </html>
