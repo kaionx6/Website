@@ -139,13 +139,10 @@
   const pageIndex = pageSequence.findIndex((page) => page.id === currentPage);
   const wheelLockKey = "kelvin-page-wheel-lock";
   const wheelThreshold = 520;
-  const wheelQuietWindow = 500;
   let wheelDistance = 0;
   let wheelDirection = 0;
-  let lastWheelAt = 0;
   let isChangingPage = false;
   let arrivalLockUntil = 0;
-  let wheelResetTimer = 0;
 
   const pageWheelMeter = document.querySelector(
     ".site-footer > p:nth-child(2)",
@@ -191,20 +188,6 @@
     if (pageWheelValue) {
       pageWheelValue.textContent = `${String(percentage).padStart(2, "0")}%`;
     }
-  };
-
-  const resetWheelProgress = (direction = 1) => {
-    wheelDistance = 0;
-    wheelDirection = 0;
-    updateWheelMeter(direction);
-  };
-
-  const scheduleWheelProgressReset = (direction) => {
-    window.clearTimeout(wheelResetTimer);
-    wheelResetTimer = window.setTimeout(
-      () => resetWheelProgress(direction),
-      wheelQuietWindow,
-    );
   };
 
   updateWheelMeter();
@@ -341,29 +324,28 @@
 
       const direction = Math.sign(deltaY);
       if (canScrollVertically(event.target, direction)) {
-        window.clearTimeout(wheelResetTimer);
-        resetWheelProgress(direction);
         return;
       }
 
       event.preventDefault();
-      const now = performance.now();
-      const elapsed = now - lastWheelAt;
+      const contribution = Math.min(Math.abs(deltaY), 160);
 
-      if (elapsed > wheelQuietWindow || direction !== wheelDirection) {
-        wheelDistance = 0;
-      } else if (elapsed > 80) {
-        wheelDistance *= Math.max(0.55, 1 - elapsed / 1500);
+      if (!wheelDirection) wheelDirection = direction;
+
+      if (direction === wheelDirection) {
+        wheelDistance += contribution;
+      } else {
+        wheelDistance -= contribution;
+        if (wheelDistance <= 0) {
+          wheelDistance = Math.abs(wheelDistance);
+          wheelDirection = direction;
+        }
       }
 
-      wheelDirection = direction;
-      lastWheelAt = now;
-      wheelDistance += Math.min(Math.abs(deltaY), 160);
-      updateWheelMeter(direction);
-      scheduleWheelProgressReset(direction);
+      updateWheelMeter(wheelDirection);
 
       if (wheelDistance >= wheelThreshold) {
-        moveToAdjacentPage(direction);
+        moveToAdjacentPage(wheelDirection);
       }
     },
     { passive: false },
