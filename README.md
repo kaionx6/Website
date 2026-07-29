@@ -14,7 +14,7 @@ after a deliberate vertical wheel gesture.
 - `about.html` — profile copy, compact portrait placeholder, and capabilities
 - `contact.html` — contact page
 - `styles.css` — layout, themes, responsive styles, and preview illustrations
-- `script.js` — theme persistence, project tabs, and thresholded page cycling
+- `script.js` — theme persistence, project tabs, and metered page cycling
 - `game-library.js` — accessible switching between the three game panels
 - `flappy-game.js` — dependency-free responsive Flappy Bird canvas demo
 - `snake-game.js` — dependency-free responsive Snake canvas demo

@@ -145,6 +145,69 @@
   let lastWheelAt = 0;
   let isChangingPage = false;
   let arrivalLockUntil = 0;
+  let wheelResetTimer = 0;
+
+  const pageWheelMeter = document.querySelector(
+    ".site-footer > p:nth-child(2)",
+  );
+  let pageWheelLabel = null;
+  let pageWheelBar = null;
+  let pageWheelValue = null;
+
+  if (pageWheelMeter && pageIndex >= 0) {
+    pageWheelMeter.classList.add("page-wheel-meter");
+    pageWheelMeter.setAttribute("aria-hidden", "true");
+    pageWheelMeter.innerHTML = `
+      <span class="page-wheel-meter__label" data-page-wheel-label></span>
+      <span class="page-wheel-meter__track"><i data-page-wheel-progress></i></span>
+      <output class="page-wheel-meter__value" data-page-wheel-value>00%</output>
+    `;
+    pageWheelLabel = pageWheelMeter.querySelector("[data-page-wheel-label]");
+    pageWheelBar = pageWheelMeter.querySelector("[data-page-wheel-progress]");
+    pageWheelValue = pageWheelMeter.querySelector("[data-page-wheel-value]");
+  }
+
+  const updateWheelMeter = (direction = 1) => {
+    if (!pageWheelMeter || pageIndex < 0) return;
+
+    const normalizedDirection = direction < 0 ? -1 : 1;
+    const destinationIndex =
+      (pageIndex + normalizedDirection + pageSequence.length) %
+      pageSequence.length;
+    const destination = pageSequence[destinationIndex].id.toUpperCase();
+    const progress = Math.min(wheelDistance / wheelThreshold, 1);
+    const percentage = Math.round(progress * 100);
+
+    pageWheelMeter.dataset.direction =
+      normalizedDirection < 0 ? "previous" : "next";
+    if (pageWheelLabel) {
+      pageWheelLabel.textContent = `${
+        normalizedDirection < 0 ? "PREV" : "NEXT"
+      } / ${destination}`;
+    }
+    if (pageWheelBar) {
+      pageWheelBar.style.transform = `scaleX(${progress})`;
+    }
+    if (pageWheelValue) {
+      pageWheelValue.textContent = `${String(percentage).padStart(2, "0")}%`;
+    }
+  };
+
+  const resetWheelProgress = (direction = 1) => {
+    wheelDistance = 0;
+    wheelDirection = 0;
+    updateWheelMeter(direction);
+  };
+
+  const scheduleWheelProgressReset = (direction) => {
+    window.clearTimeout(wheelResetTimer);
+    wheelResetTimer = window.setTimeout(
+      () => resetWheelProgress(direction),
+      wheelQuietWindow,
+    );
+  };
+
+  updateWheelMeter();
 
   try {
     arrivalLockUntil = Number(sessionStorage.getItem(wheelLockKey)) || 0;
@@ -278,8 +341,8 @@
 
       const direction = Math.sign(deltaY);
       if (canScrollVertically(event.target, direction)) {
-        wheelDistance = 0;
-        wheelDirection = 0;
+        window.clearTimeout(wheelResetTimer);
+        resetWheelProgress(direction);
         return;
       }
 
@@ -296,9 +359,10 @@
       wheelDirection = direction;
       lastWheelAt = now;
       wheelDistance += Math.min(Math.abs(deltaY), 160);
+      updateWheelMeter(direction);
+      scheduleWheelProgressReset(direction);
 
       if (wheelDistance >= wheelThreshold) {
-        wheelDistance = 0;
         moveToAdjacentPage(direction);
       }
     },
