@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Kelvin Gao's personal portfolio — selected projects, experiments, and ideas."
+      content="Kelvin Gao's personal portfolio — selected projects, experiments, games, and ideas."
     />
     <meta property="og:title" content="Kelvin Gao — Portfolio" />
     <meta
       property="og:description"
-      content="Selected projects, experiments, and ideas by Kelvin Gao."
+      content="Selected projects, experiments, games, and ideas by Kelvin Gao."
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://kelvingao.com/" />
@@ -18,7 +18,7 @@
     <title>Kelvin Gao — Portfolio</title>
     <link rel="canonical" href="https://kelvingao.com/" />
     <link rel="icon" href="assets/kg-logo-blue.png" type="image/png" />
-    <link rel="stylesheet" href="styles.css?v=blueprint-8" />
+    <link rel="stylesheet" href="styles.css?v=blueprint-9" />
     <script>
       document.documentElement.classList.add("js");
       try {
@@ -33,22 +33,16 @@
     <noscript>
       <style>
         .reveal { opacity: 1 !important; transform: none !important; }
-        .project-workspace { display: block !important; }
-        .project-tabs { display: none !important; }
-        .project-panel[hidden] { display: grid !important; }
-        .project-panel + .project-panel { border-top: 1px solid var(--line); }
-        .model-loader, .sequence-controls, .sequence-meter { display: none !important; }
-        .model-error[hidden] { display: grid !important; }
         .hero-blueprint, .hero-copy { position: relative !important; top: auto !important; }
       </style>
     </noscript>
   </head>
-  <body>
+  <body data-page="home">
     <a class="skip-link" href="#main-content">Skip to content</a>
 
     <header class="site-header" data-header>
       <div class="header-inner container">
-        <a class="brand" href="#top" aria-label="Kelvin Gao, home">
+        <a class="brand" href="index.html" aria-label="Kelvin Gao, home">
           <span class="logo-render logo-render--brand" aria-hidden="true">
             <img src="assets/kg-logo-blue.png" alt="" width="26" height="30" />
           </span>
@@ -79,10 +73,10 @@
       </div>
 
       <nav class="main-nav" aria-label="Main navigation">
-        <a href="#projects">Projects</a>
-        <a href="#games">Games</a>
-        <a href="#about">About</a>
-        <a href="#contact">Contact</a>
+        <a href="projects.html" data-page-link="projects">Projects</a>
+        <a href="games.html" data-page-link="games">Games</a>
+        <a href="about.html" data-page-link="about">About</a>
+        <a href="contact.html" data-page-link="contact">Contact</a>
       </nav>
     </header>
 
@@ -103,13 +97,13 @@
             projects, experiments, and things I’m curious about.
           </p>
           <div class="hero-actions">
-            <a class="button button--primary" href="#projects">
+            <a class="button button--primary" href="projects.html">
               Explore projects
               <svg viewBox="0 0 20 20" aria-hidden="true">
                 <path d="M4 10h12M11 5l5 5-5 5" />
               </svg>
             </a>
-            <a class="text-link" href="#about">
+            <a class="text-link" href="about.html">
               A little about me
               <span aria-hidden="true">↘</span>
             </a>
@@ -177,554 +171,15 @@
           </div>
         </div>
 
-        <a class="scroll-cue" href="#projects" aria-label="Scroll to projects">
-          <span>Scroll to explore</span>
+        <a class="scroll-cue" href="projects.html" aria-label="Open the projects page">
+          <span>View projects</span>
           <span class="scroll-cue__line" aria-hidden="true"></span>
         </a>
-      </section>
-
-      <section class="projects section container" id="projects" aria-labelledby="projects-title">
-        <div class="section-heading reveal">
-          <div>
-            <p class="section-kicker">01 / Selected work</p>
-            <h2 id="projects-title">The project shelf.</h2>
-          </div>
-          <p class="section-description">
-            Placeholder projects for now. Each tab is ready for a case study,
-            build, experiment, or anything else worth sharing.
-          </p>
-        </div>
-
-        <div class="project-workspace reveal">
-          <div
-            class="project-tabs"
-            role="tablist"
-            aria-label="Projects"
-            aria-orientation="vertical"
-          >
-            <button
-              class="project-tab is-active"
-              id="project-tab-1"
-              type="button"
-              role="tab"
-              aria-selected="true"
-              aria-controls="project-panel-1"
-              tabindex="0"
-              data-project-tab
-            >
-              <span class="project-tab__number">01</span>
-              <span class="project-tab__copy">
-                <strong>Project One</strong>
-                <span>Featured build</span>
-              </span>
-              <span class="project-tab__arrow" aria-hidden="true">↗</span>
-            </button>
-            <button
-              class="project-tab"
-              id="project-tab-2"
-              type="button"
-              role="tab"
-              aria-selected="false"
-              aria-controls="project-panel-2"
-              tabindex="-1"
-              data-project-tab
-            >
-              <span class="project-tab__number">02</span>
-              <span class="project-tab__copy">
-                <strong>Project Two</strong>
-                <span>Digital product</span>
-              </span>
-              <span class="project-tab__arrow" aria-hidden="true">↗</span>
-            </button>
-            <button
-              class="project-tab"
-              id="project-tab-3"
-              type="button"
-              role="tab"
-              aria-selected="false"
-              aria-controls="project-panel-3"
-              tabindex="-1"
-              data-project-tab
-            >
-              <span class="project-tab__number">03</span>
-              <span class="project-tab__copy">
-                <strong>Project Three</strong>
-                <span>Creative experiment</span>
-              </span>
-              <span class="project-tab__arrow" aria-hidden="true">↗</span>
-            </button>
-            <button
-              class="project-tab"
-              id="project-tab-4"
-              type="button"
-              role="tab"
-              aria-selected="false"
-              aria-controls="project-panel-4"
-              tabindex="-1"
-              data-project-tab
-            >
-              <span class="project-tab__number">04</span>
-              <span class="project-tab__copy">
-                <strong>Project Four</strong>
-                <span>Side quest</span>
-              </span>
-              <span class="project-tab__arrow" aria-hidden="true">↗</span>
-            </button>
-          </div>
-
-          <div class="project-panels">
-            <article
-              class="project-panel is-active"
-              id="project-panel-1"
-              role="tabpanel"
-              aria-labelledby="project-tab-1"
-              tabindex="0"
-              data-project-panel
-              data-accent="cobalt"
-            >
-              <div class="project-panel__content">
-                <div class="project-meta">
-                  <span class="project-status"><i></i> Placeholder</span>
-                  <span>2026</span>
-                </div>
-                <div>
-                  <p class="project-type">FEATURED PROJECT / 001</p>
-                  <h3>Your flagship project goes here.</h3>
-                  <p class="project-summary">
-                    Use this space for the one-line story: what you made, who it
-                    helped, and why it matters. Keep it clear and memorable.
-                  </p>
-                </div>
-                <div class="project-tags" aria-label="Example technologies">
-                  <span>Design</span><span>Development</span><span>Strategy</span>
-                </div>
-                <span class="project-link project-link--disabled">
-                  Case study coming soon <span aria-hidden="true">↗</span>
-                </span>
-              </div>
-              <div class="project-preview project-preview--assembly">
-                <figure
-                  class="project-model-window"
-                  data-model-stage
-                  data-model-viewer
-                  aria-labelledby="assembly-window-title"
-                  aria-describedby="assembly-window-description"
-                >
-                  <figcaption class="project-model-window__bar" id="assembly-window-title">
-                    <span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-                    <span>SPIDER ROBOT / ASSEMBLY</span>
-                    <span>109 PARTS</span>
-                  </figcaption>
-
-                  <div
-                    class="project-model-viewport"
-                    data-model-plate
-                    tabindex="0"
-                    role="region"
-                    aria-label="Interactive spider robot project sequence"
-                    aria-describedby="assembly-window-description"
-                    aria-keyshortcuts="ArrowUp ArrowDown PageUp PageDown Home End"
-                  >
-                    <canvas class="model-canvas" data-model-canvas aria-hidden="true"></canvas>
-
-                    <div class="model-placeholder" data-model-placeholder aria-hidden="true">
-                      <span class="logo-render logo-render--model">
-                        <img src="assets/kg-logo-blue.png" alt="" width="86" height="99" />
-                      </span>
-                      <span>MODEL / INITIALISING</span>
-                    </div>
-
-                    <div class="model-loader" data-model-loader role="status" aria-live="polite">
-                      <div class="model-loader__copy">
-                        <span data-model-status>LOADING ASSEMBLY</span>
-                        <span data-model-load-value aria-hidden="true">00%</span>
-                      </div>
-                      <span class="model-loader__track" aria-hidden="true">
-                        <i data-model-load-bar></i>
-                      </span>
-                    </div>
-
-                    <div class="model-error" data-model-error role="alert" hidden>
-                      <strong>3D VIEW UNAVAILABLE</strong>
-                      <span data-model-error-copy>The assembly could not be loaded.</span>
-                      <a href="assets/models/spider-robot.step" download>DOWNLOAD STEP</a>
-                    </div>
-
-                    <div class="sequence-photo-deck" aria-hidden="true">
-                      <div class="sequence-photo sequence-photo--one" data-sequence-photo>
-                        <div class="sequence-photo__art"><i></i><i></i><i></i></div>
-                        <div class="sequence-photo__caption"><span>PHOTO 01</span><span>OVERVIEW / PLACEHOLDER</span></div>
-                      </div>
-                      <div class="sequence-photo sequence-photo--two" data-sequence-photo>
-                        <div class="sequence-photo__art"><i></i><i></i><i></i></div>
-                        <div class="sequence-photo__caption"><span>PHOTO 02</span><span>DETAIL / PLACEHOLDER</span></div>
-                      </div>
-                      <div class="sequence-photo sequence-photo--three" data-sequence-photo>
-                        <div class="sequence-photo__art"><i></i><i></i><i></i></div>
-                        <div class="sequence-photo__caption"><span>PHOTO 03</span><span>PROCESS / PLACEHOLDER</span></div>
-                      </div>
-                      <div class="sequence-photo sequence-photo--four" data-sequence-photo>
-                        <div class="sequence-photo__art"><i></i><i></i><i></i></div>
-                        <div class="sequence-photo__caption"><span>PHOTO 04</span><span>FINAL / PLACEHOLDER</span></div>
-                      </div>
-                    </div>
-
-                    <span class="sequence-hover-note" aria-hidden="true">HOVER + SCROLL</span>
-                  </div>
-
-                  <div class="project-model-window__footer">
-                    <div class="sequence-meter" aria-hidden="true">
-                      <span data-sequence-label>ASSEMBLY / 00%</span>
-                      <span class="sequence-meter__track"><i data-sequence-progress></i></span>
-                      <output data-sequence-value>00%</output>
-                    </div>
-                    <div class="sequence-help" aria-hidden="true">
-                      <span>SCROLL / ADVANCE</span>
-                      <span>↑ ↓ / KEYBOARD</span>
-                    </div>
-                    <div class="sequence-controls" role="group" aria-label="Project sequence controls">
-                      <button type="button" data-sequence-prev aria-label="Previous sequence stage" disabled>←</button>
-                      <button type="button" data-sequence-reset disabled>RESET</button>
-                      <button type="button" data-sequence-next aria-label="Next sequence stage" disabled>→</button>
-                    </div>
-                    <p class="sequence-status" data-sequence-status aria-live="polite">
-                      Assembly ready for interaction.
-                    </p>
-                  </div>
-
-                  <p class="model-description" id="assembly-window-description">
-                    Hover over the window and scroll to explode the spider robot, then
-                    continue scrolling through four photo placeholders. The sequence is
-                    reversible. When focused, use the arrow or page keys.
-                  </p>
-                </figure>
-                <span class="preview-index" aria-hidden="true">01</span>
-              </div>
-            </article>
-
-            <article
-              class="project-panel"
-              id="project-panel-2"
-              role="tabpanel"
-              aria-labelledby="project-tab-2"
-              tabindex="0"
-              hidden
-              data-project-panel
-              data-accent="sky"
-            >
-              <div class="project-panel__content">
-                <div class="project-meta">
-                  <span class="project-status"><i></i> Placeholder</span>
-                  <span>2026</span>
-                </div>
-                <div>
-                  <p class="project-type">DIGITAL PRODUCT / 002</p>
-                  <h3>A useful product belongs here.</h3>
-                  <p class="project-summary">
-                    Swap in the challenge, your approach, and the result. This
-                    layout works equally well for an app, platform, or service.
-                  </p>
-                </div>
-                <div class="project-tags" aria-label="Example technologies">
-                  <span>Product</span><span>UI / UX</span><span>Prototype</span>
-                </div>
-                <span class="project-link project-link--disabled">
-                  Case study coming soon <span aria-hidden="true">↗</span>
-                </span>
-              </div>
-              <div class="project-preview project-preview--mobile" aria-hidden="true">
-                <div class="preview-orb"></div>
-                <div class="phone phone--back">
-                  <div class="phone-speaker"></div>
-                  <div class="phone-card phone-card--small"></div>
-                  <div class="phone-lines"><i></i><i></i><i></i></div>
-                </div>
-                <div class="phone phone--front">
-                  <div class="phone-speaker"></div>
-                  <div class="phone-greeting"></div>
-                  <div class="phone-card">
-                    <span class="phone-card__orb"></span>
-                    <b>48.2</b>
-                    <small>OVERVIEW</small>
-                  </div>
-                  <div class="phone-row"><i></i><i></i><i></i></div>
-                </div>
-                <span class="preview-index">02</span>
-              </div>
-            </article>
-
-            <article
-              class="project-panel"
-              id="project-panel-3"
-              role="tabpanel"
-              aria-labelledby="project-tab-3"
-              tabindex="0"
-              hidden
-              data-project-panel
-              data-accent="violet"
-            >
-              <div class="project-panel__content">
-                <div class="project-meta">
-                  <span class="project-status"><i></i> Placeholder</span>
-                  <span>2026</span>
-                </div>
-                <div>
-                  <p class="project-type">EXPERIMENT / 003</p>
-                  <h3>Something curious goes here.</h3>
-                  <p class="project-summary">
-                    Not every project needs a business case. Share a creative
-                    study, a new technique, or something you built just to learn.
-                  </p>
-                </div>
-                <div class="project-tags" aria-label="Example technologies">
-                  <span>Creative code</span><span>Motion</span><span>WebGL</span>
-                </div>
-                <span class="project-link project-link--disabled">
-                  Experiment coming soon <span aria-hidden="true">↗</span>
-                </span>
-              </div>
-              <div class="project-preview project-preview--poster" aria-hidden="true">
-                <div class="preview-orb"></div>
-                <div class="poster">
-                  <span class="poster-label">STUDY 003</span>
-                  <div class="poster-rings"><i></i><i></i><i></i></div>
-                  <strong>FORM<br />/ FIELD</strong>
-                  <span class="poster-foot">AN INTERACTIVE EXPERIMENT</span>
-                </div>
-                <span class="preview-index">03</span>
-              </div>
-            </article>
-
-            <article
-              class="project-panel"
-              id="project-panel-4"
-              role="tabpanel"
-              aria-labelledby="project-tab-4"
-              tabindex="0"
-              hidden
-              data-project-panel
-              data-accent="aqua"
-            >
-              <div class="project-panel__content">
-                <div class="project-meta">
-                  <span class="project-status"><i></i> Placeholder</span>
-                  <span>2026</span>
-                </div>
-                <div>
-                  <p class="project-type">SIDE QUEST / 004</p>
-                  <h3>Your wildcard project goes here.</h3>
-                  <p class="project-summary">
-                    A home for the unexpected: open source, hardware, writing,
-                    photography, or whatever else doesn’t fit neatly in a box.
-                  </p>
-                </div>
-                <div class="project-tags" aria-label="Example technologies">
-                  <span>Exploration</span><span>Open source</span><span>Play</span>
-                </div>
-                <span class="project-link project-link--disabled">
-                  More details coming soon <span aria-hidden="true">↗</span>
-                </span>
-              </div>
-              <div class="project-preview project-preview--terminal" aria-hidden="true">
-                <div class="preview-orb"></div>
-                <div class="terminal-window">
-                  <div class="terminal-top">
-                    <span>kelvin@studio ~ %</span>
-                    <i></i>
-                  </div>
-                  <div class="terminal-body">
-                    <p><b>→</b> loading the next idea...</p>
-                    <p><span>+</span> curiosity</p>
-                    <p><span>+</span> craft</p>
-                    <p><span>+</span> a little blue</p>
-                    <div class="terminal-progress"><i></i></div>
-                    <p class="terminal-ready">ready_</p>
-                  </div>
-                </div>
-                <span class="preview-index">04</span>
-              </div>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="games section container" id="games" aria-labelledby="games-title">
-        <div class="section-heading reveal">
-          <div>
-            <p class="section-kicker">02 / Mini-game library</p>
-            <h2 id="games-title">Small games,<br />built for a quick break.</h2>
-          </div>
-          <p class="section-description">
-            A growing shelf of compact browser experiments. Flappy Bird is the
-            first playable demo; more slots are ready for whatever comes next.
-          </p>
-        </div>
-
-        <div class="game-library reveal">
-          <aside class="game-library__index" aria-label="Game library">
-            <p class="game-library__label">LIBRARY / SELECT PROGRAM</p>
-            <a class="game-entry is-active" href="#flappy-demo" aria-current="location">
-              <span class="game-entry__number">01</span>
-              <span class="game-entry__copy">
-                <strong>Flappy Bird</strong>
-                <small>Playable demo</small>
-              </span>
-              <i aria-hidden="true">RUN</i>
-            </a>
-            <div class="game-entry is-locked" aria-disabled="true">
-              <span class="game-entry__number">02</span>
-              <span class="game-entry__copy">
-                <strong>Game slot</strong>
-                <small>Coming soon</small>
-              </span>
-              <i aria-hidden="true">—</i>
-            </div>
-            <div class="game-entry is-locked" aria-disabled="true">
-              <span class="game-entry__number">03</span>
-              <span class="game-entry__copy">
-                <strong>Game slot</strong>
-                <small>Coming soon</small>
-              </span>
-              <i aria-hidden="true">—</i>
-            </div>
-          </aside>
-
-          <article
-            class="game-console"
-            id="flappy-demo"
-            data-flappy-game
-            aria-labelledby="flappy-title"
-          >
-            <div class="game-window">
-              <header class="game-window__bar">
-                <span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-                <h3 id="flappy-title">FLAPPY BIRD / QUICK DEMO</h3>
-                <span>BUILD 001</span>
-              </header>
-
-              <div
-                class="flappy-stage"
-                data-flappy-stage
-                tabindex="0"
-                role="region"
-                aria-label="Flappy Bird game"
-                aria-describedby="flappy-help"
-              >
-                <canvas data-flappy-canvas width="420" height="560" aria-hidden="true"></canvas>
-                <div class="flappy-overlay" data-flappy-overlay>
-                  <strong data-flappy-message>READY TO FLY</strong>
-                  <span>AVOID THE GATES</span>
-                </div>
-              </div>
-
-              <footer class="game-window__footer">
-                <span class="game-state" data-flappy-state>STATUS / READY</span>
-                <div class="game-scores">
-                  <output aria-label="Current score">SCORE / <b data-flappy-score>00</b></output>
-                  <output aria-label="Best score">BEST / <b data-flappy-best>00</b></output>
-                </div>
-                <button type="button" data-flappy-action>START</button>
-              </footer>
-            </div>
-
-            <p id="flappy-help" class="visually-hidden">
-              Press Start, then use Space, Arrow Up, W, click, or tap to flap.
-              Avoid the barriers. Press P or the game button to pause.
-            </p>
-            <p class="visually-hidden" data-flappy-announcement aria-live="polite"></p>
-          </article>
-        </div>
-      </section>
-
-      <section class="about section container" id="about" aria-labelledby="about-title">
-        <div class="about-grid">
-          <div class="about-intro reveal">
-            <p class="section-kicker">03 / About</p>
-            <h2 id="about-title">A space for the person behind the pixels.</h2>
-          </div>
-          <div class="about-copy reveal reveal--delay">
-            <p class="about-lead">
-              Add your story here — what you do, what you care about, and the
-              kind of problems you like solving.
-            </p>
-            <p>
-              This section is intentionally simple, so your personality can do
-              the work. A couple of honest paragraphs will always beat a wall of
-              buzzwords.
-            </p>
-          </div>
-        </div>
-
-        <figure class="about-photo reveal" aria-labelledby="about-photo-caption">
-          <figcaption class="blueprint-caption" id="about-photo-caption">
-            <span>FIG. 02</span>
-            <span>KELVIN GAO / PRESENTATION</span>
-            <span>FIELD RECORD</span>
-          </figcaption>
-          <div class="about-photo__viewport">
-            <img
-              src="assets/kelvin-presentation.png"
-              alt="Kelvin Gao presenting the team’s work at an EirGrid event."
-              width="1448"
-              height="1086"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-        </figure>
-
-        <div class="capability-grid reveal">
-          <article class="capability-card">
-            <div class="capability-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM4 9h16M8 5v4" /></svg>
-            </div>
-            <span class="capability-number">01</span>
-            <h3>Think</h3>
-            <p>Research, strategy, systems, and making sense of the messy middle.</p>
-          </article>
-          <article class="capability-card">
-            <div class="capability-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3ZM4 7.5l8 4.5 8-4.5M12 12v9" /></svg>
-            </div>
-            <span class="capability-number">02</span>
-            <h3>Make</h3>
-            <p>Interfaces, prototypes, products, and details that feel considered.</p>
-          </article>
-          <article class="capability-card">
-            <div class="capability-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M8 7 3 12l5 5M16 7l5 5-5 5M14 4l-4 16" /></svg>
-            </div>
-            <span class="capability-number">03</span>
-            <h3>Explore</h3>
-            <p>New tools, small experiments, and ideas that start with “what if?”</p>
-          </article>
-        </div>
-      </section>
-
-      <section class="contact section container" id="contact" aria-labelledby="contact-title">
-        <div class="contact-card reveal">
-          <div class="contact-grid" aria-hidden="true"></div>
-          <p class="section-kicker">04 / Contact</p>
-          <h2 id="contact-title">Have an idea?<br /><span>Let’s make it real.</span></h2>
-          <p>
-            Have a project, collaboration, or question? Send me an email and
-            I’ll get back to you.
-          </p>
-          <a class="button button--light" href="mailto:kelvin.gao@ucdconnect.ie">
-            kelvin.gao@ucdconnect.ie
-            <svg viewBox="0 0 20 20" aria-hidden="true">
-              <path d="M4 10h12M11 5l5 5-5 5" />
-            </svg>
-          </a>
-          <span class="logo-render logo-render--contact" aria-hidden="true">
-            <img src="assets/kg-logo-blue.png" alt="" width="220" height="254" />
-          </span>
-        </div>
       </section>
     </main>
 
     <footer class="site-footer container">
-      <a class="brand brand--footer" href="#top" aria-label="Back to top">
+      <a class="brand brand--footer" href="index.html" aria-label="Kelvin Gao, home">
         <span class="logo-render logo-render--brand" aria-hidden="true">
           <img src="assets/kg-logo-blue.png" alt="" width="26" height="30" />
         </span>
@@ -737,8 +192,6 @@
       <p>© <span data-year></span> Kelvin Gao</p>
     </footer>
 
-    <script src="script.js?v=blueprint-4"></script>
-    <script src="flappy-game.js?v=game-2"></script>
-    <script type="module" src="model-viewer.js?v=spider-7"></script>
+    <script src="script.js?v=blueprint-5"></script>
   </body>
 </html>

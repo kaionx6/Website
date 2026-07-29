@@ -52,7 +52,7 @@
 
   const tabs = [...document.querySelectorAll("[data-project-tab]")];
   const panels = [...document.querySelectorAll("[data-project-panel]")];
-  const tabList = document.querySelector('[role="tablist"]');
+  const tabList = document.querySelector('.project-tabs[role="tablist"]');
   const horizontalTabs = window.matchMedia("(max-width: 950px)");
 
   const syncTabOrientation = () => {
@@ -117,32 +117,14 @@
   });
 
   const navLinks = [...document.querySelectorAll(".main-nav a")];
-  const sections = navLinks
-    .map((link) => document.querySelector(link.getAttribute("href")))
-    .filter(Boolean);
+  const currentPage = document.body.dataset.page || "home";
 
-  if ("IntersectionObserver" in window && sections.length) {
-    const sectionObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-
-          navLinks.forEach((link) => {
-            const isCurrent = link.getAttribute("href") === `#${entry.target.id}`;
-            link.classList.toggle("is-active", isCurrent);
-            if (isCurrent) {
-              link.setAttribute("aria-current", "location");
-            } else {
-              link.removeAttribute("aria-current");
-            }
-          });
-        });
-      },
-      { rootMargin: "-32% 0px -58%", threshold: 0 },
-    );
-
-    sections.forEach((section) => sectionObserver.observe(section));
-  }
+  navLinks.forEach((link) => {
+    const isCurrent = link.dataset.pageLink === currentPage;
+    link.classList.toggle("is-active", isCurrent);
+    if (isCurrent) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
+  });
 
   const year = document.querySelector("[data-year]");
   if (year) year.textContent = new Date().getFullYear();

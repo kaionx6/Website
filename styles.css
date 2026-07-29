@@ -993,6 +993,15 @@ html[data-theme="light"] .button--primary:hover {
 
 /* Sections */
 
+.page-main {
+  min-height: calc(100svh - 116px);
+  padding-top: 74px;
+}
+
+.page-main > .section:first-child {
+  border-top: 0;
+}
+
 .section {
   position: relative;
   padding-top: 118px;
@@ -1024,8 +1033,11 @@ html[data-theme="light"] .button--primary:hover {
 }
 
 .section-heading h2,
+.section-heading h1,
 .about-intro h2,
-.contact-card h2 {
+.about-intro h1,
+.contact-card h2,
+.contact-card h1 {
   margin: 0;
   font-size: clamp(2.45rem, 4.8vw, 4.3rem);
   font-weight: 690;
@@ -2119,6 +2131,18 @@ html[data-theme="light"] .button--primary:hover {
 
 /* Mini-game library */
 
+.game-noscript {
+  display: none;
+  margin: 0;
+  padding: 18px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--text-soft);
+  font: 650 10px/1.6 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
 .game-library {
   display: grid;
   grid-template-columns: 250px minmax(0, 1fr);
@@ -2148,13 +2172,19 @@ html[data-theme="light"] .button--primary:hover {
 .game-entry {
   position: relative;
   display: grid;
+  width: 100%;
   grid-template-columns: 27px minmax(0, 1fr) auto;
   align-items: center;
   gap: 11px;
   min-height: 108px;
   padding: 16px 14px;
+  border: 0;
   border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
   color: var(--muted);
+  text-align: left;
+  cursor: pointer;
 }
 
 .game-entry::before {
@@ -2166,7 +2196,7 @@ html[data-theme="light"] .button--primary:hover {
   opacity: 0;
 }
 
-a.game-entry:hover,
+.game-entry:hover,
 .game-entry.is-active {
   background: var(--blue-fill);
 }
@@ -2227,6 +2257,10 @@ a.game-entry:hover,
   background-size: 96px 96px, 96px 96px, 24px 24px, 24px 24px;
 }
 
+.game-console[hidden] {
+  display: none;
+}
+
 .game-window {
   width: min(100%, 460px);
   border: 1px solid var(--preview-line);
@@ -2256,6 +2290,7 @@ a.game-entry:hover,
   border-right: 0;
 }
 
+.game-window__bar h2,
 .game-window__bar h3 {
   min-width: 0;
   margin: 0;
@@ -2270,26 +2305,38 @@ a.game-entry:hover,
   gap: 5px;
 }
 
-.flappy-stage {
+.game-stage {
   position: relative;
   overflow: hidden;
-  aspect-ratio: 3 / 4;
   background: var(--preview-bg);
   cursor: pointer;
   touch-action: manipulation;
 }
 
-.flappy-stage:focus-visible {
+.flappy-stage {
+  aspect-ratio: 3 / 4;
+}
+
+.snake-stage {
+  aspect-ratio: 1;
+}
+
+.invaders-stage {
+  aspect-ratio: 8 / 9;
+}
+
+.game-stage:focus-visible {
   outline: 2px solid var(--blue);
   outline-offset: -3px;
 }
 
-.flappy-stage canvas {
+.game-stage canvas {
   display: block;
   width: 100%;
   height: 100%;
 }
 
+.game-overlay,
 .flappy-overlay {
   position: absolute;
   display: grid;
@@ -2302,10 +2349,13 @@ a.game-entry:hover,
   pointer-events: none;
 }
 
+.game-overlay[hidden],
 .flappy-overlay[hidden] {
   display: none;
 }
 
+.game-overlay strong,
+.game-overlay span,
 .flappy-overlay strong,
 .flappy-overlay span {
   border: 1px solid var(--preview-line);
@@ -2314,6 +2364,7 @@ a.game-entry:hover,
   letter-spacing: 0.08em;
 }
 
+.game-overlay strong,
 .flappy-overlay strong {
   min-width: min(280px, calc(100% - 40px));
   padding: 13px 16px;
@@ -2321,6 +2372,7 @@ a.game-entry:hover,
   font-size: 12px;
 }
 
+.game-overlay span,
 .flappy-overlay span {
   padding: 7px 10px;
   color: var(--muted);
@@ -2407,7 +2459,8 @@ html[data-theme="light"] .game-window__footer button:focus-visible {
   align-items: start;
 }
 
-.about-intro h2 {
+.about-intro h2,
+.about-intro h1 {
   max-width: 690px;
 }
 
@@ -2591,12 +2644,14 @@ html[data-theme="light"] .game-window__footer button:focus-visible {
   z-index: 2;
 }
 
-.contact-card h2 {
+.contact-card h2,
+.contact-card h1 {
   max-width: 760px;
   font-size: clamp(3rem, 6.2vw, 5.45rem);
 }
 
-.contact-card h2 span {
+.contact-card h2 span,
+.contact-card h1 span {
   color: var(--blue);
 }
 
@@ -2814,6 +2869,10 @@ html[data-theme="light"] .button--light:hover {
     height: 116px;
   }
 
+  .page-main {
+    padding-top: 116px;
+  }
+
   .header-inner {
     height: 65px;
     border-bottom: 1px solid var(--line);
@@ -3023,6 +3082,7 @@ html[data-theme="light"] .button--light:hover {
     flex: 1;
   }
 
+  .game-overlay strong,
   .flappy-overlay strong {
     min-width: min(240px, calc(100% - 32px));
     font-size: 10px;
@@ -3213,7 +3273,8 @@ html[data-theme="light"] .button--light:hover {
     padding: 37px 23px;
   }
 
-  .contact-card h2 {
+  .contact-card h2,
+  .contact-card h1 {
     font-size: clamp(2.7rem, 14vw, 4.1rem);
   }
 

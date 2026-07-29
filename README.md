@@ -1,15 +1,23 @@
 # kelvingao.com
 
-A build-free personal portfolio made as a flat blueprint drawing system, with a
-blue/black default theme, switchable white/blue theme, four accessible project
-tabs, a hover-scroll exploded CAD sequence, and a playable mini-game library.
+A build-free, multi-page personal portfolio made as a flat blueprint drawing
+system, with a blue/black default theme, switchable white/blue theme, four
+accessible project tabs, a hover-scroll exploded CAD sequence, and three
+playable mini games.
 
 ## Files
 
-- `index.html` — page content and the four project panels
+- `index.html` — landing page
+- `projects.html` — four project panels and the spider robot viewer
+- `games.html` — tabbed Flappy Bird, Snake, and Space Invaders library
+- `about.html` — profile copy, presentation photo, and capabilities
+- `contact.html` — contact page
 - `styles.css` — layout, themes, responsive styles, and preview illustrations
-- `script.js` — theme persistence, project tabs, and navigation state
+- `script.js` — theme persistence, project tabs, and multi-page navigation state
+- `game-library.js` — accessible switching between the three game panels
 - `flappy-game.js` — dependency-free responsive Flappy Bird canvas demo
+- `snake-game.js` — dependency-free responsive Snake canvas demo
+- `space-invaders-game.js` — dependency-free responsive Space Invaders demo
 - `model-viewer.js` — GLB rendering and the model-to-photo interaction sequence
 - `assets/kelvin-presentation.png` — supplied About-section presentation photo
 - `assets/kg-logo-blue.png` — transparent site-blue KG logo and browser favicon
@@ -22,7 +30,8 @@ tabs, a hover-scroll exploded CAD sequence, and a playable mini-game library.
 
 ## Customize it
 
-1. Replace the placeholder copy and projects in `index.html`.
+1. Replace the placeholder projects in `projects.html` and profile copy in
+   `about.html`.
 2. Update `kelvin.gao@ucdconnect.ie` if that is not the inbox you want to use.
 3. Replace each “coming soon” span with a real `<a>` when a case study is ready.
 4. Add or remove tab/panel pairs using the existing `aria-controls` and

@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Play Kelvin Gao's small collection of browser game experiments."
+    />
+    <meta property="og:title" content="Games — Kelvin Gao" />
+    <meta
+      property="og:description"
+      content="A compact library of playable browser experiments by Kelvin Gao."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://kelvingao.com/games.html" />
+    <meta name="theme-color" content="#06101c" />
+    <title>Games — Kelvin Gao</title>
+    <link rel="canonical" href="https://kelvingao.com/games.html" />
+    <link rel="icon" href="assets/kg-logo-blue.png" type="image/png" />
+    <link rel="stylesheet" href="styles.css?v=blueprint-9" />
+    <script>
+      document.documentElement.classList.add("js");
+      try {
+        const savedTheme = localStorage.getItem("kelvin-theme");
+        if (savedTheme === "light" || savedTheme === "dark") {
+          document.documentElement.dataset.theme = savedTheme;
+        }
+      } catch (_) {
+        // Dark remains the default if storage is unavailable.
+      }
+    </script>
+    <noscript>
+      <style>
+        .reveal { opacity: 1 !important; transform: none !important; }
+        .game-library { display: block !important; }
+        .game-library__index, .game-console { display: none !important; }
+        .game-noscript { display: block !important; }
+      </style>
+    </noscript>
+  </head>
+  <body data-page="games">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="site-header" data-header>
+      <div class="header-inner container">
+        <a class="brand" href="index.html" aria-label="Kelvin Gao, home">
+          <span class="logo-render logo-render--brand" aria-hidden="true">
+            <img src="assets/kg-logo-blue.png" alt="" width="26" height="30" />
+          </span>
+          <span class="brand-copy">
+            <strong>Kelvin Gao</strong>
+            <small>Portfolio / Index</small>
+          </span>
+        </a>
+
+        <button
+          class="theme-toggle"
+          type="button"
+          aria-label="Switch to light theme"
+          data-theme-toggle
+        >
+          <span class="theme-toggle__track" aria-hidden="true">
+            <svg class="theme-icon theme-icon--moon" viewBox="0 0 24 24">
+              <path d="M20.2 15.4A8.6 8.6 0 0 1 8.6 3.8 8.7 8.7 0 1 0 20.2 15.4Z" />
+            </svg>
+            <span class="theme-toggle__knob"></span>
+            <svg class="theme-icon theme-icon--sun" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="3.5" />
+              <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+            </svg>
+          </span>
+          <span class="theme-toggle__label">Dark</span>
+        </button>
+      </div>
+
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="projects.html" data-page-link="projects">Projects</a>
+        <a class="is-active" href="games.html" data-page-link="games" aria-current="page">Games</a>
+        <a href="about.html" data-page-link="about">About</a>
+        <a href="contact.html" data-page-link="contact">Contact</a>
+      </nav>
+    </header>
+
+    <main class="page-main" id="main-content">
+      <section class="games section container" id="games" aria-labelledby="games-title">
+        <div class="section-heading reveal">
+          <div>
+            <p class="section-kicker">01 / Mini-game library</p>
+            <h1 id="games-title">Small games,<br />built for a quick break.</h1>
+          </div>
+          <p class="section-description">
+            Three compact browser experiments rendered in the same blueprint
+            system. Choose a program and start playing—no download required.
+          </p>
+        </div>
+
+        <p class="game-noscript">
+          JavaScript is required to run the mini-game library.
+        </p>
+
+        <div class="game-library reveal">
+          <div
+            class="game-library__index"
+            role="tablist"
+            aria-label="Game library"
+            aria-orientation="vertical"
+            data-game-tabs
+          >
+            <p class="game-library__label" aria-hidden="true">LIBRARY / SELECT PROGRAM</p>
+            <button
+              class="game-entry is-active"
+              id="game-tab-flappy"
+              type="button"
+              role="tab"
+              aria-selected="true"
+              aria-controls="game-panel-flappy"
+              tabindex="0"
+              data-game-tab
+            >
+              <span class="game-entry__number">01</span>
+              <span class="game-entry__copy">
+                <strong>Flappy Bird</strong>
+                <small>Flight test</small>
+              </span>
+              <i aria-hidden="true">FLY</i>
+            </button>
+            <button
+              class="game-entry"
+              id="game-tab-snake"
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="game-panel-snake"
+              tabindex="-1"
+              data-game-tab
+            >
+              <span class="game-entry__number">02</span>
+              <span class="game-entry__copy">
+                <strong>Snake</strong>
+                <small>Grid run</small>
+              </span>
+              <i aria-hidden="true">TURN</i>
+            </button>
+            <button
+              class="game-entry"
+              id="game-tab-invaders"
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="game-panel-invaders"
+              tabindex="-1"
+              data-game-tab
+            >
+              <span class="game-entry__number">03</span>
+              <span class="game-entry__copy">
+                <strong>Space Invaders</strong>
+                <small>Defence test</small>
+              </span>
+              <i aria-hidden="true">FIRE</i>
+            </button>
+          </div>
+
+          <article
+            class="game-console is-active"
+            id="game-panel-flappy"
+            role="tabpanel"
+            aria-labelledby="game-tab-flappy"
+            tabindex="0"
+            data-game-panel
+            data-flappy-game
+          >
+            <div class="game-window">
+              <header class="game-window__bar">
+                <span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                <h2>FLAPPY BIRD / QUICK DEMO</h2>
+                <span>BUILD 001</span>
+              </header>
+              <div
+                class="game-stage flappy-stage"
+                data-flappy-stage
+                tabindex="0"
+                role="region"
+                aria-label="Flappy Bird game"
+                aria-describedby="flappy-help"
+                aria-keyshortcuts="Space ArrowUp W P"
+              >
+                <canvas data-flappy-canvas width="420" height="560" aria-hidden="true"></canvas>
+                <div class="game-overlay" data-flappy-overlay>
+                  <strong data-flappy-message>READY TO FLY</strong>
+                  <span>AVOID THE GATES</span>
+                </div>
+              </div>
+              <footer class="game-window__footer">
+                <span class="game-state" data-flappy-state>STATUS / READY</span>
+                <div class="game-scores">
+                  <output aria-label="Current score">SCORE / <b data-flappy-score>00</b></output>
+                  <output aria-label="Best score">BEST / <b data-flappy-best>00</b></output>
+                </div>
+                <button type="button" data-flappy-action>START</button>
+              </footer>
+            </div>
+            <p id="flappy-help" class="visually-hidden">
+              Press Start, then use Space, Arrow Up, W, click, or tap to flap.
+              Avoid the barriers. Press P or the game button to pause.
+            </p>
+            <p class="visually-hidden" data-flappy-announcement aria-live="polite"></p>
+          </article>
+
+          <article
+            class="game-console"
+            id="game-panel-snake"
+            role="tabpanel"
+            aria-labelledby="game-tab-snake"
+            tabindex="0"
+            hidden
+            data-game-panel
+            data-snake-game
+          >
+            <div class="game-window">
+              <header class="game-window__bar">
+                <span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                <h2>SNAKE / GRID RUN</h2>
+                <span>BUILD 002</span>
+              </header>
+              <div
+                class="game-stage snake-stage"
+                data-snake-stage
+                tabindex="0"
+                role="region"
+                aria-label="Snake game"
+                aria-describedby="snake-help"
+                aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight W A S D P"
+              >
+                <canvas data-snake-canvas width="600" height="600" aria-hidden="true"></canvas>
+                <div class="game-overlay" data-snake-overlay>
+                  <strong data-snake-message>READY TO GROW</strong>
+                  <span>ARROWS / WASD / SWIPE</span>
+                </div>
+              </div>
+              <footer class="game-window__footer">
+                <span class="game-state" data-snake-state>STATUS / READY</span>
+                <div class="game-scores">
+                  <output aria-label="Current score">SCORE / <b data-snake-score>00</b></output>
+                  <output aria-label="Best score">BEST / <b data-snake-best>00</b></output>
+                </div>
+                <button type="button" data-snake-action>START</button>
+              </footer>
+            </div>
+            <p id="snake-help" class="visually-hidden">
+              Press Start, then steer with the arrow keys, WASD, or a swipe.
+              Press P or the game button to pause.
+            </p>
+            <p class="visually-hidden" data-snake-announcement aria-live="polite"></p>
+          </article>
+
+          <article
+            class="game-console"
+            id="game-panel-invaders"
+            role="tabpanel"
+            aria-labelledby="game-tab-invaders"
+            tabindex="0"
+            hidden
+            data-game-panel
+            data-invaders-game
+          >
+            <div class="game-window">
+              <header class="game-window__bar">
+                <span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                <h2>SPACE INVADERS / DEFENCE TEST</h2>
+                <span>BUILD 003</span>
+              </header>
+              <div
+                class="game-stage invaders-stage"
+                data-invaders-stage
+                tabindex="0"
+                role="region"
+                aria-label="Space Invaders game"
+                aria-describedby="invaders-help"
+              >
+                <canvas data-invaders-canvas width="640" height="720" aria-hidden="true"></canvas>
+                <div class="game-overlay" data-invaders-overlay>
+                  <strong data-invaders-message>DEFENCE GRID READY</strong>
+                  <span>MOVE / AIM / FIRE</span>
+                </div>
+              </div>
+              <footer class="game-window__footer">
+                <span class="game-state" data-invaders-state>STATUS / READY</span>
+                <div class="game-scores">
+                  <output aria-label="Current score">SCORE / <b data-invaders-score>00</b></output>
+                  <output aria-label="Best score">BEST / <b data-invaders-best>00</b></output>
+                </div>
+                <button type="button" data-invaders-action>START</button>
+              </footer>
+            </div>
+            <p id="invaders-help" class="visually-hidden">
+              Press Start. Move with A and D or the left and right arrows. Fire
+              with Space, W, Arrow Up, click, or tap. Press P to pause.
+            </p>
+            <p class="visually-hidden" data-invaders-announcement aria-live="polite"></p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer container">
+      <a class="brand brand--footer" href="index.html" aria-label="Kelvin Gao, home">
+        <span class="logo-render logo-render--brand" aria-hidden="true">
+          <img src="assets/kg-logo-blue.png" alt="" width="26" height="30" />
+        </span>
+        <span class="brand-copy">
+          <strong>Kelvin Gao</strong>
+          <small>Portfolio / Index</small>
+        </span>
+      </a>
+      <p>Designed to keep evolving.</p>
+      <p>© <span data-year></span> Kelvin Gao</p>
+    </footer>
+
+    <script src="script.js?v=blueprint-5"></script>
+    <script src="game-library.js?v=game-1"></script>
+    <script src="flappy-game.js?v=game-2"></script>
+    <script src="snake-game.js?v=game-1"></script>
+    <script src="space-invaders-game.js?v=game-1"></script>
+  </body>
+</html>
