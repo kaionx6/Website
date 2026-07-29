@@ -34,12 +34,17 @@ if (viewer && stage && plate && canvas) {
   };
   const parts = [];
 
-  const PHOTO_FADE = 0.28;
-  const PHOTO_STEP = 0.9;
-  const PHOTO_START = 1;
+  const MAX_SEQUENCE = 1;
+  const MODEL_SCROLL_SHARE = 0.6;
+  const PHOTO_FADE = 0.08;
+  const PHOTO_START = MODEL_SCROLL_SHARE;
   const PHOTO_FULL = PHOTO_START + PHOTO_FADE;
-  const MAX_SEQUENCE = PHOTO_FULL + Math.max(0, photos.length - 1) * PHOTO_STEP;
-  const WHEEL_PIXELS_PER_UNIT = 420;
+  const PHOTO_STEP =
+    photos.length > 1
+      ? (MAX_SEQUENCE - PHOTO_FULL) / (photos.length - 1)
+      : 0;
+  const TOTAL_WHEEL_PIXELS = 2400;
+  const MODEL_VIEW_HEIGHT_FACTOR = 1.72;
   const EPSILON = 0.001;
 
   let renderer;
@@ -60,11 +65,14 @@ if (viewer && stage && plate && canvas) {
     Math.min(maximum, Math.max(minimum, value));
   const smoothstep = (value) => value * value * (3 - 2 * value);
 
-  const sequenceStops = [0, 1];
+  const sequenceStops = [0, PHOTO_START];
   if (photos.length) {
     for (let index = 0; index < photos.length; index += 1) {
       sequenceStops.push(PHOTO_FULL + index * PHOTO_STEP);
     }
+  }
+  if (MAX_SEQUENCE - sequenceStops[sequenceStops.length - 1] > EPSILON) {
+    sequenceStops.push(MAX_SEQUENCE);
   }
 
   function setLoadState(value, label) {
@@ -79,7 +87,7 @@ if (viewer && stage && plate && canvas) {
   }
 
   function photoPositionFor(value) {
-    if (!photos.length) return 0;
+    if (photos.length <= 1 || PHOTO_STEP <= 0) return 0;
     return clamp((value - PHOTO_FULL) / PHOTO_STEP, 0, photos.length - 1);
   }
 
@@ -96,7 +104,7 @@ if (viewer && stage && plate && canvas) {
     if (!ui.sequenceLabel) return;
 
     if (value < PHOTO_START) {
-      const explodePercent = Math.round(clamp(value) * 100);
+      const explodePercent = Math.round(clamp(value / PHOTO_START) * 100);
       ui.sequenceLabel.textContent = `ASSEMBLY / ${String(explodePercent).padStart(2, "0")}%`;
     } else if (value < PHOTO_FULL) {
       ui.sequenceLabel.textContent = "MODEL / PHOTO 01";
@@ -159,7 +167,8 @@ if (viewer && stage && plate && canvas) {
     renderer.setSize(width, height, false);
 
     const aspect = width / height;
-    const viewHeight = (modelRadius * 3.05) / Math.min(1, aspect);
+    const viewHeight =
+      (modelRadius * MODEL_VIEW_HEIGHT_FACTOR) / Math.min(1, aspect);
     camera.left = (-viewHeight * aspect) / 2;
     camera.right = (viewHeight * aspect) / 2;
     camera.top = viewHeight / 2;
@@ -189,7 +198,7 @@ if (viewer && stage && plate && canvas) {
   }
 
   function updateSequenceVisuals(value) {
-    const explodeProgress = clamp(value, 0, 1);
+    const explodeProgress = clamp(value / PHOTO_START, 0, 1);
     const handoff = smoothstep(clamp((value - PHOTO_START) / PHOTO_FADE));
     const photoPosition = photoPositionFor(value);
     const lowerPhoto = Math.floor(photoPosition);
@@ -444,7 +453,7 @@ if (viewer && stage && plate && canvas) {
     if ((movingBackward && atStart) || (movingForward && atEnd)) return;
 
     event.preventDefault();
-    setSequenceTarget(sequenceTarget + delta / WHEEL_PIXELS_PER_UNIT);
+    setSequenceTarget(sequenceTarget + delta / TOTAL_WHEEL_PIXELS);
   }
 
   function adjacentStop(direction) {
