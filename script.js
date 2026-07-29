@@ -126,6 +126,185 @@
     else link.removeAttribute("aria-current");
   });
 
+  /* A deliberate vertical wheel gesture moves through the site's pages. The
+     listener runs in the bubble phase so contained interactions, especially
+     the Project 01 model sequence, can consume the wheel event first. */
+  const pageSequence = [
+    { id: "home", href: "index.html" },
+    { id: "projects", href: "projects.html" },
+    { id: "games", href: "games.html" },
+    { id: "about", href: "about.html" },
+    { id: "contact", href: "contact.html" },
+  ];
+  const pageIndex = pageSequence.findIndex((page) => page.id === currentPage);
+  const wheelLockKey = "kelvin-page-wheel-lock";
+  const wheelThreshold = 520;
+  const wheelQuietWindow = 500;
+  let wheelDistance = 0;
+  let wheelDirection = 0;
+  let lastWheelAt = 0;
+  let isChangingPage = false;
+  let arrivalLockUntil = 0;
+
+  try {
+    arrivalLockUntil = Number(sessionStorage.getItem(wheelLockKey)) || 0;
+    if (arrivalLockUntil <= Date.now()) {
+      sessionStorage.removeItem(wheelLockKey);
+      arrivalLockUntil = 0;
+    }
+  } catch (_) {
+    // Cross-page wheel navigation also works when session storage is blocked.
+  }
+
+  const clearArrivalLock = () => {
+    arrivalLockUntil = 0;
+    try {
+      sessionStorage.removeItem(wheelLockKey);
+    } catch (_) {
+      // Nothing else is required if storage is unavailable.
+    }
+  };
+
+  const guardArrivalWheel = (event) => {
+    if (!arrivalLockUntil) return;
+    if (Date.now() >= arrivalLockUntil) {
+      clearArrivalLock();
+      return;
+    }
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    arrivalLockUntil = Math.max(arrivalLockUntil, Date.now() + 180);
+
+    try {
+      sessionStorage.setItem(wheelLockKey, String(arrivalLockUntil));
+    } catch (_) {
+      // The in-memory lock is enough for the current document.
+    }
+  };
+
+  window.addEventListener("wheel", guardArrivalWheel, {
+    capture: true,
+    passive: false,
+  });
+
+  const normalizedWheelAxis = (event, axis) => {
+    let value = axis === "x" ? event.deltaX : event.deltaY;
+    if (event.deltaMode === WheelEvent.DOM_DELTA_LINE) value *= 16;
+    if (event.deltaMode === WheelEvent.DOM_DELTA_PAGE) {
+      value *= window.innerHeight;
+    }
+    return value;
+  };
+
+  const hasScrollRoom = (element, direction) => {
+    const maximum = element.scrollHeight - element.clientHeight;
+    if (maximum <= 1) return false;
+    return direction > 0
+      ? element.scrollTop < maximum - 1
+      : element.scrollTop > 1;
+  };
+
+  const canScrollVertically = (target, direction) => {
+    let element = target instanceof Element ? target : null;
+
+    while (element && element !== document.body && element !== root) {
+      const overflowY = getComputedStyle(element).overflowY;
+      if (
+        /(auto|scroll|overlay)/.test(overflowY) &&
+        hasScrollRoom(element, direction)
+      ) {
+        return true;
+      }
+      element = element.parentElement;
+    }
+
+    const scroller = document.scrollingElement;
+    if (!scroller) return false;
+
+    const rootOverflow = getComputedStyle(root).overflowY;
+    const bodyOverflow = getComputedStyle(document.body).overflowY;
+    const documentIsLocked =
+      /(hidden|clip)/.test(rootOverflow) || /(hidden|clip)/.test(bodyOverflow);
+
+    return !documentIsLocked && hasScrollRoom(scroller, direction);
+  };
+
+  const wheelTargetIsInteractive = (target) => {
+    if (!(target instanceof Element)) return false;
+
+    return Boolean(
+      target.closest(
+        'a, button, input, select, textarea, [role="tab"], [role="slider"], [contenteditable]:not([contenteditable="false"]), .game-stage',
+      ),
+    );
+  };
+
+  const moveToAdjacentPage = (direction) => {
+    if (isChangingPage || pageIndex < 0) return;
+    isChangingPage = true;
+
+    const nextIndex =
+      (pageIndex + direction + pageSequence.length) % pageSequence.length;
+    const lockUntil = Date.now() + 850;
+
+    try {
+      sessionStorage.setItem(wheelLockKey, String(lockUntil));
+    } catch (_) {
+      // The navigation itself does not depend on session storage.
+    }
+
+    window.location.assign(pageSequence[nextIndex].href);
+  };
+
+  window.addEventListener(
+    "wheel",
+    (event) => {
+      if (
+        isChangingPage ||
+        event.defaultPrevented ||
+        event.ctrlKey ||
+        event.metaKey ||
+        event.shiftKey ||
+        pageIndex < 0 ||
+        wheelTargetIsInteractive(event.target)
+      ) {
+        return;
+      }
+
+      const deltaY = normalizedWheelAxis(event, "y");
+      const deltaX = normalizedWheelAxis(event, "x");
+      if (Math.abs(deltaY) < 2 || Math.abs(deltaX) > Math.abs(deltaY)) return;
+
+      const direction = Math.sign(deltaY);
+      if (canScrollVertically(event.target, direction)) {
+        wheelDistance = 0;
+        wheelDirection = 0;
+        return;
+      }
+
+      event.preventDefault();
+      const now = performance.now();
+      const elapsed = now - lastWheelAt;
+
+      if (elapsed > wheelQuietWindow || direction !== wheelDirection) {
+        wheelDistance = 0;
+      } else if (elapsed > 80) {
+        wheelDistance *= Math.max(0.55, 1 - elapsed / 1500);
+      }
+
+      wheelDirection = direction;
+      lastWheelAt = now;
+      wheelDistance += Math.min(Math.abs(deltaY), 160);
+
+      if (wheelDistance >= wheelThreshold) {
+        wheelDistance = 0;
+        moveToAdjacentPage(direction);
+      }
+    },
+    { passive: false },
+  );
+
   const year = document.querySelector("[data-year]");
   if (year) year.textContent = new Date().getFullYear();
 })();

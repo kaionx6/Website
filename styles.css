@@ -2485,16 +2485,33 @@ html[data-theme="light"] .game-window__footer button:focus-visible {
 }
 
 .about-photo {
-  margin: 54px 0 0;
+  width: min(100%, 280px);
+  margin: clamp(18px, 2.5vh, 28px) 0 0 auto;
   overflow: hidden;
   border: 1px solid var(--line);
   background: var(--surface);
 }
 
+.about-photo .blueprint-caption {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  min-height: 30px;
+  font-size: 7px;
+}
+
+.about-photo .blueprint-caption span {
+  min-width: 0;
+  padding-inline: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .about-photo__viewport {
   position: relative;
+  display: grid;
+  height: clamp(118px, 15svh, 150px);
   overflow: hidden;
-  aspect-ratio: 2 / 1;
+  place-items: center;
   background: var(--surface);
 }
 
@@ -2523,12 +2540,30 @@ html[data-theme="light"] .game-window__footer button:focus-visible {
   border-bottom: 1px solid;
 }
 
-.about-photo img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 25%;
+.about-photo__placeholder {
+  color: var(--blue);
+  background-image:
+    linear-gradient(var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-minor) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+.about-photo__glyph {
+  width: min(48%, 112px);
+}
+
+.about-photo__datum {
+  opacity: 0.35;
+  stroke-dasharray: 3 5;
+}
+
+.about-photo__label {
+  position: absolute;
+  right: 9px;
+  bottom: 7px;
+  color: var(--faint);
+  font: 650 7px/1 var(--mono);
+  letter-spacing: 0.1em;
 }
 
 .capability-grid {
@@ -2923,15 +2958,13 @@ html[data-theme="light"] .button--light:hover {
   }
 
   .about-photo {
-    margin-top: 36px;
+    width: min(100%, 260px);
+    margin-top: 20px;
   }
 
   .about-photo__viewport {
-    aspect-ratio: 4 / 3;
-  }
-
-  .about-photo img {
-    object-position: center;
+    height: 132px;
+    aspect-ratio: auto;
   }
 
   .section-heading {
@@ -3290,6 +3323,333 @@ html[data-theme="light"] .button--light:hover {
 
   .site-footer {
     font-size: 8px;
+  }
+}
+
+/* Desktop viewport deck
+   Each document occupies one browser viewport. Wheel navigation between
+   documents is handled in script.js; narrow layouts retain natural scrolling. */
+
+@media (min-width: 951px) and (min-height: 600px) {
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    display: grid;
+    height: 100dvh;
+    grid-template-rows: minmax(0, 1fr) 56px;
+  }
+
+  body > main {
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .site-footer {
+    height: 56px;
+    min-height: 0;
+  }
+
+  .site-footer > p {
+    margin-block: 0;
+  }
+
+  .page-main {
+    height: 100%;
+    min-height: 0;
+    padding-top: 74px;
+  }
+
+  .page-main > .section {
+    height: 100%;
+    min-height: 0;
+    padding-top: 18px;
+    padding-bottom: 18px;
+  }
+
+  .section-heading {
+    gap: 36px;
+    margin-bottom: 12px;
+  }
+
+  .section-kicker {
+    margin-bottom: 8px;
+  }
+
+  .section-heading h1,
+  .section-heading h2,
+  .about-intro h1,
+  .about-intro h2 {
+    font-size: clamp(2rem, 3vw, 2.75rem);
+  }
+
+  .section-description {
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .games .section-heading h1,
+  .games .section-heading h2 {
+    font-size: clamp(1.8rem, 2.7vw, 2.25rem);
+  }
+
+  /* Home */
+
+  .hero {
+    height: 100%;
+    min-height: 0;
+    padding-top: 86px;
+    padding-bottom: 14px;
+  }
+
+  .eyebrow {
+    margin-bottom: 18px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.65rem, 4.5vw, 4.2rem);
+  }
+
+  .hero-intro {
+    margin-top: 18px;
+    line-height: 1.55;
+  }
+
+  .hero-actions {
+    margin-top: 20px;
+  }
+
+  .hero-blueprint {
+    height: min(560px, calc(100dvh - 160px));
+    min-height: 0;
+  }
+
+  .logo-plate {
+    height: calc(100% - 87px);
+  }
+
+  .scroll-cue {
+    top: auto;
+    bottom: 8px;
+  }
+
+  /* Projects */
+
+  .projects,
+  .games {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .project-workspace {
+    height: 100%;
+    min-height: 0;
+    grid-template-columns: 220px minmax(0, 1fr);
+  }
+
+  .project-tabs::before {
+    height: 32px;
+  }
+
+  .project-tab {
+    flex: 1;
+    min-height: 0;
+    padding: 10px 12px;
+  }
+
+  .project-panels {
+    min-height: 0;
+  }
+
+  .project-panel {
+    height: 100%;
+    min-height: 0;
+    grid-template-columns: minmax(235px, 0.72fr) minmax(430px, 1.28fr);
+  }
+
+  .project-panel__content {
+    min-height: 0;
+    padding: 18px;
+  }
+
+  .project-type {
+    margin: 20px 0 8px;
+  }
+
+  .project-panel h3 {
+    font-size: clamp(1.65rem, 2.5vw, 2.45rem);
+  }
+
+  .project-summary {
+    margin: 10px 0 14px;
+    line-height: 1.5;
+  }
+
+  .project-tags {
+    margin-bottom: 12px;
+  }
+
+  .project-link {
+    padding-top: 11px;
+  }
+
+  .project-preview {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .project-preview--assembly {
+    padding: 10px 14px;
+  }
+
+  .project-preview--mobile {
+    padding: 18px;
+  }
+
+  .project-model-window {
+    width: min(94%, 560px, calc(133.333dvh - 506.667px));
+  }
+
+  .poster {
+    width: auto;
+    height: min(88%, 460px);
+  }
+
+  /* Games */
+
+  .game-library {
+    height: 100%;
+    min-height: 0;
+    grid-template-columns: 210px minmax(0, 1fr);
+  }
+
+  .game-library__index {
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+  }
+
+  .game-library__label {
+    height: 32px;
+    flex: 0 0 32px;
+  }
+
+  .game-entry {
+    min-height: 0;
+    flex: 1;
+    padding: 10px 12px;
+  }
+
+  .game-console {
+    min-height: 0;
+    padding: 10px;
+    overflow: hidden;
+  }
+
+  #game-panel-flappy .game-window {
+    width: min(100%, 460px, calc(75dvh - 298px));
+  }
+
+  #game-panel-snake .game-window {
+    width: min(100%, 460px, calc(100dvh - 396px));
+  }
+
+  #game-panel-invaders .game-window {
+    width: min(100%, 460px, calc(88.889dvh - 352px));
+  }
+
+  /* About */
+
+  .about {
+    display: grid;
+    grid-template-columns: minmax(280px, 0.75fr) minmax(0, 1.25fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 14px 28px;
+  }
+
+  .about-grid {
+    grid-column: 1 / -1;
+    gap: 48px;
+  }
+
+  .about-copy {
+    padding-top: 0;
+  }
+
+  .about-copy .about-lead {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .about-copy p {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .about-copy p + p {
+    margin-top: 9px;
+  }
+
+  .about-photo {
+    grid-column: 1;
+    align-self: center;
+    margin: 0;
+  }
+
+  .about-photo__viewport {
+    height: 150px;
+  }
+
+  .capability-grid {
+    grid-column: 2;
+    align-self: center;
+    margin-top: 0;
+  }
+
+  .capability-card {
+    min-height: 190px;
+    padding: 18px;
+  }
+
+  .capability-number {
+    top: 20px;
+    right: 19px;
+  }
+
+  .capability-card h3 {
+    margin-top: 28px;
+    font-size: 17px;
+  }
+
+  .capability-card p {
+    font-size: 11px;
+    line-height: 1.55;
+  }
+
+  /* Contact */
+
+  .contact {
+    padding-top: 18px;
+    padding-bottom: 18px;
+  }
+
+  .contact-card {
+    height: 100%;
+    min-height: 0;
+    padding: clamp(28px, 5vh, 48px);
+  }
+
+  .contact-card h1,
+  .contact-card h2 {
+    font-size: clamp(2.8rem, 5.4vw, 4.6rem);
+  }
+
+  .contact-card > p:not(.section-kicker) {
+    margin: 18px 0 22px;
   }
 }
 

@@ -18,7 +18,7 @@
     <title>About — Kelvin Gao</title>
     <link rel="canonical" href="https://kelvingao.com/about.html" />
     <link rel="icon" href="assets/kg-logo-blue.png" type="image/png" />
-    <link rel="stylesheet" href="styles.css?v=blueprint-10" />
+    <link rel="stylesheet" href="styles.css?v=blueprint-11" />
     <script>
       document.documentElement.classList.add("js");
       try {
@@ -102,18 +102,25 @@
         <figure class="about-photo reveal" aria-labelledby="about-photo-caption">
           <figcaption class="blueprint-caption" id="about-photo-caption">
             <span>FIG. 02</span>
-            <span>KELVIN GAO / PRESENTATION</span>
-            <span>FIELD RECORD</span>
+            <span>KELVIN GAO / PORTRAIT</span>
+            <span>PLACEHOLDER</span>
           </figcaption>
-          <div class="about-photo__viewport">
-            <img
-              src="assets/kelvin-presentation.png"
-              alt="Kelvin Gao presenting the team’s work at an EirGrid event."
-              width="1448"
-              height="1086"
-              loading="lazy"
-              decoding="async"
-            />
+          <div
+            class="about-photo__viewport about-photo__placeholder"
+            role="img"
+            aria-label="Placeholder for a future portrait of Kelvin Gao"
+          >
+            <svg
+              class="about-photo__glyph"
+              viewBox="0 0 160 110"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path class="about-photo__datum" d="M80 10v90M22 100h116" />
+              <circle cx="80" cy="39" r="19" />
+              <path d="M43 100c4-24 18-38 37-38s33 14 37 38" />
+            </svg>
+            <span class="about-photo__label" aria-hidden="true">PORTRAIT / PENDING</span>
           </div>
         </figure>
 
@@ -160,6 +167,6 @@
       <p>© <span data-year></span> Kelvin Gao</p>
     </footer>
 
-    <script src="script.js?v=blueprint-5"></script>
+    <script src="script.js?v=blueprint-6"></script>
   </body>
 </html>

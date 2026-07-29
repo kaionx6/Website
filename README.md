@@ -3,23 +3,24 @@
 A build-free, multi-page personal portfolio made as a flat blueprint drawing
 system, with a blue/black default theme, switchable white/blue theme, four
 accessible project tabs, a hover-scroll exploded CAD sequence, and three
-playable mini games.
+playable mini games. Desktop pages fit one browser viewport and cycle in order
+after a deliberate vertical wheel gesture.
 
 ## Files
 
 - `index.html` — landing page
 - `projects.html` — four project panels and the spider robot viewer
 - `games.html` — tabbed Flappy Bird, Snake, and Space Invaders library
-- `about.html` — profile copy, presentation photo, and capabilities
+- `about.html` — profile copy, compact portrait placeholder, and capabilities
 - `contact.html` — contact page
 - `styles.css` — layout, themes, responsive styles, and preview illustrations
-- `script.js` — theme persistence, project tabs, and multi-page navigation state
+- `script.js` — theme persistence, project tabs, and thresholded page cycling
 - `game-library.js` — accessible switching between the three game panels
 - `flappy-game.js` — dependency-free responsive Flappy Bird canvas demo
 - `snake-game.js` — dependency-free responsive Snake canvas demo
 - `space-invaders-game.js` — dependency-free responsive Space Invaders demo
 - `model-viewer.js` — GLB rendering and the model-to-photo interaction sequence
-- `assets/kelvin-presentation.png` — supplied About-section presentation photo
+- `assets/kelvin-presentation.png` — archived supplied photo (not currently rendered)
 - `assets/kg-logo-blue.png` — transparent site-blue KG logo and browser favicon
 - `assets/kg-logo-source.png` — untouched supplied source logo
 - `assets/models/spider-robot.step` — the supplied AP242 spider robot assembly
@@ -39,6 +40,8 @@ playable mini games.
 5. Replace the four `.sequence-photo__art` placeholders in Project 1 with your
    real images when they are ready; keep each `data-sequence-photo` wrapper so
    the crossfades continue to work.
+6. Replace `.about-photo__placeholder` in `about.html` when you want to add a
+   portrait again.
 
 The color palettes live at the top of `styles.css` under `:root` and
 `html[data-theme="light"]`. The transparent blue logo is derived from the
