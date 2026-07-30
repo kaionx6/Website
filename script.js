@@ -146,13 +146,11 @@
   /* A deliberate vertical wheel gesture moves through the site's pages. The
      listener runs in the bubble phase so contained interactions, especially
      the Project 01 model sequence, can consume the wheel event first. */
-  const pageSequence = [
-    { id: "home", href: "index.html" },
-    { id: "projects", href: "projects.html" },
-    { id: "games", href: "games.html" },
-    { id: "about", href: "about.html" },
-    { id: "contact", href: "contact.html" },
-  ];
+  const pageSequence = navLinks.map((link) => ({
+    id: link.dataset.pageLink,
+    href: link.getAttribute("href"),
+    link,
+  }));
   const pageIndex = pageSequence.findIndex((page) => page.id === currentPage);
   const wheelLockKey = "kelvin-page-wheel-lock";
   const wheelThreshold = 520;
@@ -160,54 +158,44 @@
   let wheelDirection = 0;
   let isChangingPage = false;
   let arrivalLockUntil = 0;
+  let wheelProgressLink = null;
 
-  const pageWheelMeter = document.querySelector(
-    ".site-footer > p:nth-child(2)",
-  );
-  let pageWheelLabel = null;
-  let pageWheelBar = null;
-  let pageWheelValue = null;
+  const clearWheelProgressLink = () => {
+    if (!wheelProgressLink) return;
 
-  if (pageWheelMeter && pageIndex >= 0) {
-    pageWheelMeter.classList.add("page-wheel-meter");
-    pageWheelMeter.setAttribute("aria-hidden", "true");
-    pageWheelMeter.innerHTML = `
-      <span class="page-wheel-meter__label" data-page-wheel-label></span>
-      <span class="page-wheel-meter__track"><i data-page-wheel-progress></i></span>
-      <output class="page-wheel-meter__value" data-page-wheel-value>00%</output>
-    `;
-    pageWheelLabel = pageWheelMeter.querySelector("[data-page-wheel-label]");
-    pageWheelBar = pageWheelMeter.querySelector("[data-page-wheel-progress]");
-    pageWheelValue = pageWheelMeter.querySelector("[data-page-wheel-value]");
-  }
+    wheelProgressLink.classList.remove("is-wheel-target");
+    wheelProgressLink.removeAttribute("data-wheel-direction");
+    wheelProgressLink.style.removeProperty("--page-wheel-progress");
+    wheelProgressLink = null;
+  };
 
-  const updateWheelMeter = (direction = 1) => {
-    if (!pageWheelMeter || pageIndex < 0) return;
+  const updateWheelTabProgress = (direction = 1) => {
+    if (pageIndex < 0) return;
 
     const normalizedDirection = direction < 0 ? -1 : 1;
     const destinationIndex =
       (pageIndex + normalizedDirection + pageSequence.length) %
       pageSequence.length;
-    const destination = pageSequence[destinationIndex].id.toUpperCase();
+    const destinationLink = pageSequence[destinationIndex].link;
     const progress = Math.min(wheelDistance / wheelThreshold, 1);
-    const percentage = Math.round(progress * 100);
 
-    pageWheelMeter.dataset.direction =
+    if (wheelProgressLink !== destinationLink) {
+      clearWheelProgressLink();
+    }
+
+    if (!destinationLink || progress <= 0) return;
+
+    destinationLink.classList.add("is-wheel-target");
+    destinationLink.dataset.wheelDirection =
       normalizedDirection < 0 ? "previous" : "next";
-    if (pageWheelLabel) {
-      pageWheelLabel.textContent = `${
-        normalizedDirection < 0 ? "PREV" : "NEXT"
-      } / ${destination}`;
-    }
-    if (pageWheelBar) {
-      pageWheelBar.style.transform = `scaleX(${progress})`;
-    }
-    if (pageWheelValue) {
-      pageWheelValue.textContent = `${String(percentage).padStart(2, "0")}%`;
-    }
+    destinationLink.style.setProperty(
+      "--page-wheel-progress",
+      `${progress * 100}%`,
+    );
+    wheelProgressLink = destinationLink;
   };
 
-  updateWheelMeter();
+  updateWheelTabProgress();
 
   try {
     arrivalLockUntil = Number(sessionStorage.getItem(wheelLockKey)) || 0;
@@ -359,7 +347,7 @@
         }
       }
 
-      updateWheelMeter(wheelDirection);
+      updateWheelTabProgress(wheelDirection);
 
       if (wheelDistance >= wheelThreshold) {
         moveToAdjacentPage(wheelDirection);
