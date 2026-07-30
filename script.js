@@ -7,7 +7,7 @@
   const themeColor = document.querySelector('meta[name="theme-color"]');
 
   const applyTheme = (theme, save = false) => {
-    const nextTheme = theme === "light" ? "light" : "dark";
+    const nextTheme = theme === "dark" ? "dark" : "light";
     root.dataset.theme = nextTheme;
 
     if (themeToggle) {

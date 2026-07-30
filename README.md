@@ -1,10 +1,10 @@
 # kelvingao.com
 
 A build-free, multi-page personal portfolio made as a flat blueprint drawing
-system, with a blue/black default theme, switchable white/blue theme, four
-accessible project tabs, a hover-scroll exploded CAD sequence, and three
-playable mini games. Desktop pages fit one browser viewport and cycle in order
-after a deliberate vertical wheel gesture.
+system, with a white/blue default theme, switchable blue/black theme, four
+accessible project tabs, a looping hover-scroll CAD sequence, and three
+playable mini games. Desktop pages use a fixed navigation sidebar, fit one
+browser viewport, and cycle in order after a deliberate vertical wheel gesture.
 
 ## Files
 
@@ -14,7 +14,7 @@ after a deliberate vertical wheel gesture.
 - `about.html` — profile copy, compact portrait placeholder, and capabilities
 - `contact.html` — contact page
 - `styles.css` — layout, themes, responsive styles, and preview illustrations
-- `script.js` — theme persistence, project tabs, and metered page cycling
+- `script.js` — theme persistence, project tabs, and page-tab cycling progress
 - `game-library.js` — accessible switching between the three game panels
 - `flappy-game.js` — dependency-free responsive Flappy Bird canvas demo
 - `snake-game.js` — dependency-free responsive Snake canvas demo
@@ -44,8 +44,9 @@ after a deliberate vertical wheel gesture.
    portrait again.
 
 The color palettes live at the top of `styles.css` under `:root` and
-`html[data-theme="light"]`. The transparent blue logo is derived from the
-untouched source with its original geometry preserved exactly.
+`html[data-theme="light"]`; each page starts in light mode unless a saved theme
+preference overrides it. The transparent blue logo is derived from the untouched
+source with its original geometry preserved exactly.
 
 The hero coordinate strip points to the historic University of Glasgow Old
 College site on High Street (`55.8591 N, 004.2404 W`), Kelvin's university
@@ -56,8 +57,9 @@ The live panel loads the pre-tessellated GLB, avoiding the much slower raw STEP
 conversion in each visitor's browser. The model remains split into 109 rendered
 parts, so the explosion is still assembly-level rather than a single-object
 effect. Hovering over the Project 1 window and scrolling advances from the
-assembled model to the exploded view and then through four photo placeholders;
-scrolling upward reverses the sequence. To regenerate the GLB after replacing
+assembled model to the exploded view and then through four photo placeholders.
+The final photo fades back into the reassembled model so the sequence loops
+continuously; scrolling upward reverses it. To regenerate the GLB after replacing
 the STEP file, install Node.js and run `node tools/convert-step-to-glb.cjs` from
 the repository root.
 
