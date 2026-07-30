@@ -34,14 +34,16 @@ if (viewer && stage && plate && canvas) {
   };
   const parts = [];
 
-  const MAX_SEQUENCE = 1;
+  const PHOTO_SEQUENCE_END = 1;
+  const LOOP_RETURN = 0.12;
+  const MAX_SEQUENCE = PHOTO_SEQUENCE_END + LOOP_RETURN;
   const MODEL_SCROLL_SHARE = 0.6;
   const PHOTO_FADE = 0.08;
   const PHOTO_START = MODEL_SCROLL_SHARE;
   const PHOTO_FULL = PHOTO_START + PHOTO_FADE;
   const PHOTO_STEP =
     photos.length > 1
-      ? (MAX_SEQUENCE - PHOTO_FULL) / (photos.length - 1)
+      ? (PHOTO_SEQUENCE_END - PHOTO_FULL) / (photos.length - 1)
       : 0;
   const TOTAL_WHEEL_PIXELS = 2400;
   const MODEL_VIEW_HEIGHT_FACTOR = 1.72;
@@ -64,6 +66,14 @@ if (viewer && stage && plate && canvas) {
   const clamp = (value, minimum = 0, maximum = 1) =>
     Math.min(maximum, Math.max(minimum, value));
   const smoothstep = (value) => value * value * (3 - 2 * value);
+  const wrapSequence = (value) => {
+    const wrapped = value % MAX_SEQUENCE;
+    return wrapped < 0 ? wrapped + MAX_SEQUENCE : wrapped;
+  };
+  const distanceToCycleStart = (value) => {
+    const phase = wrapSequence(value);
+    return Math.min(phase, MAX_SEQUENCE - phase);
+  };
 
   const sequenceStops = [0, PHOTO_START];
   if (photos.length) {
@@ -71,8 +81,11 @@ if (viewer && stage && plate && canvas) {
       sequenceStops.push(PHOTO_FULL + index * PHOTO_STEP);
     }
   }
-  if (MAX_SEQUENCE - sequenceStops[sequenceStops.length - 1] > EPSILON) {
-    sequenceStops.push(MAX_SEQUENCE);
+  if (
+    PHOTO_SEQUENCE_END - sequenceStops[sequenceStops.length - 1] >
+    EPSILON
+  ) {
+    sequenceStops.push(PHOTO_SEQUENCE_END);
   }
 
   function setLoadState(value, label) {
@@ -92,7 +105,13 @@ if (viewer && stage && plate && canvas) {
   }
 
   function updateSequenceMeter(value) {
-    const totalProgress = MAX_SEQUENCE ? clamp(value / MAX_SEQUENCE) : 0;
+    const returnProgress = smoothstep(
+      clamp((value - PHOTO_SEQUENCE_END) / LOOP_RETURN),
+    );
+    const totalProgress =
+      value > PHOTO_SEQUENCE_END
+        ? 1 - returnProgress
+        : clamp(value / PHOTO_SEQUENCE_END);
     const totalPercent = Math.round(totalProgress * 100);
 
     if (ui.sequenceBar) {
@@ -103,7 +122,9 @@ if (viewer && stage && plate && canvas) {
     }
     if (!ui.sequenceLabel) return;
 
-    if (value < PHOTO_START) {
+    if (value > PHOTO_SEQUENCE_END + EPSILON) {
+      ui.sequenceLabel.textContent = "LOOP / REASSEMBLY";
+    } else if (value < PHOTO_START) {
       const explodePercent = Math.round(clamp(value / PHOTO_START) * 100);
       ui.sequenceLabel.textContent = `ASSEMBLY / ${String(explodePercent).padStart(2, "0")}%`;
     } else if (value < PHOTO_FULL) {
@@ -128,10 +149,13 @@ if (viewer && stage && plate && canvas) {
     } else if (value < PHOTO_FULL - EPSILON) {
       key = "assembly-exploded";
       message = "Assembly fully exploded. Continuing reveals the project photos.";
-    } else {
+    } else if (value <= PHOTO_SEQUENCE_END + EPSILON) {
       const photoIndex = Math.round(photoPositionFor(value));
       key = `photo-${photoIndex}`;
       message = `Photo placeholder ${photoIndex + 1} of ${photos.length}.`;
+    } else {
+      key = "loop-return";
+      message = "Returning smoothly to the assembled model for the next loop.";
     }
 
     if (key !== announcedState) {
@@ -142,9 +166,11 @@ if (viewer && stage && plate && canvas) {
 
   function updateControlState() {
     if (!modelReady) return;
-    if (ui.previous) ui.previous.disabled = sequenceTarget <= EPSILON;
-    if (ui.next) ui.next.disabled = sequenceTarget >= MAX_SEQUENCE - EPSILON;
-    if (ui.reset) ui.reset.disabled = sequenceTarget <= EPSILON;
+    if (ui.previous) ui.previous.disabled = false;
+    if (ui.next) ui.next.disabled = false;
+    if (ui.reset) {
+      ui.reset.disabled = distanceToCycleStart(sequenceTarget) <= EPSILON;
+    }
   }
 
   function updateTheme() {
@@ -198,8 +224,16 @@ if (viewer && stage && plate && canvas) {
   }
 
   function updateSequenceVisuals(value) {
-    const explodeProgress = clamp(value / PHOTO_START, 0, 1);
-    const handoff = smoothstep(clamp((value - PHOTO_START) / PHOTO_FADE));
+    const returnProgress = smoothstep(
+      clamp((value - PHOTO_SEQUENCE_END) / LOOP_RETURN),
+    );
+    const isReturning = value > PHOTO_SEQUENCE_END;
+    const explodeProgress = isReturning
+      ? 1 - returnProgress
+      : clamp(value / PHOTO_START, 0, 1);
+    const handoff = isReturning
+      ? 1 - returnProgress
+      : smoothstep(clamp((value - PHOTO_START) / PHOTO_FADE));
     const photoPosition = photoPositionFor(value);
     const lowerPhoto = Math.floor(photoPosition);
     const photoMix = smoothstep(photoPosition - lowerPhoto);
@@ -230,7 +264,7 @@ if (viewer && stage && plate && canvas) {
       sequenceCurrent += difference * 0.16;
     }
 
-    updateSequenceVisuals(sequenceCurrent);
+    updateSequenceVisuals(wrapSequence(sequenceCurrent));
     renderer.render(scene, camera);
 
     if (!motionQuery.matches && Math.abs(sequenceTarget - sequenceCurrent) > EPSILON) {
@@ -242,11 +276,17 @@ if (viewer && stage && plate && canvas) {
     if (!frameId && renderer) frameId = requestAnimationFrame(renderFrame);
   }
 
-  function setSequenceTarget(value) {
-    sequenceTarget = clamp(value, 0, MAX_SEQUENCE);
-    viewer.classList.toggle("has-sequence-progress", sequenceTarget > EPSILON);
+  function setSequenceTarget(value, revealHint = false) {
+    sequenceTarget = Number.isFinite(value) ? value : 0;
+    viewer.classList.toggle("has-sequence-progress", !revealHint);
     updateControlState();
     scheduleRender();
+  }
+
+  function resetSequence() {
+    const nearestCycleStart =
+      Math.round(sequenceTarget / MAX_SEQUENCE) * MAX_SEQUENCE;
+    setSequenceTarget(nearestCycleStart, true);
   }
 
   function deterministicDirection(index) {
@@ -444,31 +484,35 @@ if (viewer && stage && plate && canvas) {
       return;
     }
 
-    const delta = normalizedWheelDelta(event);
-    if (Math.abs(delta) < EPSILON) return;
-
-    const movingBackward = delta < 0;
-    const movingForward = delta > 0;
-    const atStart = sequenceTarget <= EPSILON;
-    const atEnd = sequenceTarget >= MAX_SEQUENCE - EPSILON;
-    if ((movingBackward && atStart) || (movingForward && atEnd)) return;
+    const rawDelta = normalizedWheelDelta(event);
+    if (Math.abs(rawDelta) < EPSILON) return;
+    const delta = Math.sign(rawDelta) * Math.min(Math.abs(rawDelta), 160);
 
     event.preventDefault();
     setSequenceTarget(sequenceTarget + delta / TOTAL_WHEEL_PIXELS);
   }
 
   function adjacentStop(direction) {
+    const phase = wrapSequence(sequenceTarget);
+    const cycleStart = sequenceTarget - phase;
+
     if (direction > 0) {
-      return sequenceStops.find((stop) => stop > sequenceTarget + EPSILON);
+      const nextStop = sequenceStops.find((stop) => stop > phase + EPSILON);
+      return nextStop === undefined
+        ? cycleStart + MAX_SEQUENCE
+        : cycleStart + nextStop;
     }
-    return [...sequenceStops]
+
+    const previousStop = [...sequenceStops]
       .reverse()
-      .find((stop) => stop < sequenceTarget - EPSILON);
+      .find((stop) => stop < phase - EPSILON);
+    return previousStop === undefined
+      ? cycleStart - MAX_SEQUENCE + sequenceStops[sequenceStops.length - 1]
+      : cycleStart + previousStop;
   }
 
   function stepSequence(direction) {
     const stop = adjacentStop(direction);
-    if (stop === undefined) return false;
     setSequenceTarget(stop);
     return true;
   }
@@ -482,23 +526,30 @@ if (viewer && stage && plate && canvas) {
 
     if (forwardKeys.includes(event.key)) handled = stepSequence(1);
     if (backwardKeys.includes(event.key)) handled = stepSequence(-1);
-    if (event.key === "Home" && sequenceTarget > EPSILON) {
-      setSequenceTarget(0);
+    if (
+      event.key === "Home" &&
+      distanceToCycleStart(sequenceTarget) > EPSILON
+    ) {
+      resetSequence();
       handled = true;
     }
-    if (event.key === "End" && sequenceTarget < MAX_SEQUENCE - EPSILON) {
-      setSequenceTarget(MAX_SEQUENCE);
+    if (
+      event.key === "End" &&
+      Math.abs(wrapSequence(sequenceTarget) - PHOTO_SEQUENCE_END) > EPSILON
+    ) {
+      const phase = wrapSequence(sequenceTarget);
+      setSequenceTarget(sequenceTarget - phase + PHOTO_SEQUENCE_END);
       handled = true;
     }
 
     if (handled) event.preventDefault();
   }
 
-  viewer.addEventListener("wheel", handleWheel, { passive: false });
+  plate.addEventListener("wheel", handleWheel, { passive: false });
   plate.addEventListener("keydown", handleSequenceKey);
   ui.previous?.addEventListener("click", () => stepSequence(-1));
   ui.next?.addEventListener("click", () => stepSequence(1));
-  ui.reset?.addEventListener("click", () => setSequenceTarget(0));
+  ui.reset?.addEventListener("click", resetSequence);
 
   motionQuery.addEventListener("change", () => {
     sequenceCurrent = sequenceTarget;

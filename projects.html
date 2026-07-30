@@ -95,7 +95,7 @@
           </div>
           <p class="section-description">
             Project 01 is interactive: hover over its model window and scroll to
-            explode the assembly, then continue into the photo sequence.
+            explode the assembly, continue into the photos, and loop continuously.
           </p>
         </div>
 
@@ -225,7 +225,7 @@
                     data-model-plate
                     tabindex="0"
                     role="region"
-                    aria-label="Hover here and scroll to explode the spider robot and reveal photos"
+                    aria-label="Hover here and scroll through the continuously looping spider robot and photo sequence"
                     aria-describedby="assembly-window-description"
                     aria-keyshortcuts="ArrowUp ArrowDown PageUp PageDown Home End"
                   >
@@ -275,7 +275,7 @@
 
                     <span class="sequence-hover-note" aria-hidden="true">
                       <strong>HOVER HERE + SCROLL</strong>
-                      <small>EXPLODE MODEL ↕ REVEAL PHOTOS</small>
+                      <small>EXPLODE ↕ PHOTOS ↕ REPEAT</small>
                     </span>
                   </div>
 
@@ -286,8 +286,8 @@
                       <output data-sequence-value>00%</output>
                     </div>
                     <div class="sequence-help" aria-hidden="true">
-                      <span>HOVER + SCROLL / EXPLODE</span>
-                      <span>KEEP SCROLLING / PHOTOS</span>
+                      <span>HOVER + SCROLL / LOOP</span>
+                      <span>MOVE OUT / CHANGE PAGE</span>
                     </div>
                     <div class="sequence-controls" role="group" aria-label="Project sequence controls">
                       <button type="button" data-sequence-prev aria-label="Previous sequence stage" disabled>←</button>
@@ -302,7 +302,9 @@
                   <p class="model-description" id="assembly-window-description">
                     Hover over the window and scroll to explode the spider robot, then
                     continue scrolling through four photo placeholders. The sequence is
-                    reversible. When focused, use the arrow or page keys.
+                    reversible and loops continuously. When focused, use the arrow or
+                    page keys. Move the pointer outside the window to resume page
+                    navigation.
                   </p>
                 </figure>
                 <span class="preview-index" aria-hidden="true">01</span>
@@ -471,6 +473,6 @@
     </footer>
 
     <script src="script.js?v=blueprint-10"></script>
-    <script type="module" src="model-viewer.js?v=spider-9"></script>
+    <script type="module" src="model-viewer.js?v=spider-10"></script>
   </body>
 </html>
