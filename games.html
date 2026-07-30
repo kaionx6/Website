@@ -18,7 +18,7 @@
     <title>Games — Kelvin Gao</title>
     <link rel="canonical" href="https://kelvingao.com/games.html" />
     <link rel="icon" href="assets/kg-logo-blue.png" type="image/png" />
-    <link rel="stylesheet" href="styles.css?v=blueprint-16" />
+    <link rel="stylesheet" href="styles.css?v=blueprint-17" />
     <script>
       document.documentElement.classList.add("js");
       try {
@@ -91,7 +91,7 @@
             <h1 id="games-title">Small games,<br />built for a quick break.</h1>
           </div>
           <p class="section-description">
-            Three compact browser experiments rendered in the same blueprint
+            Four compact browser experiments rendered in the same blueprint
             system. Choose a program and start playing—no download required.
           </p>
         </div>
@@ -159,6 +159,23 @@
                 <small>Defence test</small>
               </span>
               <i aria-hidden="true">FIRE</i>
+            </button>
+            <button
+              class="game-entry"
+              id="game-tab-tetris"
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="game-panel-tetris"
+              tabindex="-1"
+              data-game-tab
+            >
+              <span class="game-entry__number">04</span>
+              <span class="game-entry__copy">
+                <strong>Tetris</strong>
+                <small>Stack test</small>
+              </span>
+              <i aria-hidden="true">DROP</i>
             </button>
           </div>
 
@@ -300,6 +317,71 @@
             </p>
             <p class="visually-hidden" data-invaders-announcement aria-live="polite"></p>
           </article>
+
+          <article
+            class="game-console"
+            id="game-panel-tetris"
+            role="tabpanel"
+            aria-labelledby="game-tab-tetris"
+            tabindex="0"
+            hidden
+            data-game-panel
+            data-tetris-game
+          >
+            <div class="game-window tetris-window">
+              <header class="game-window__bar">
+                <span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                <h2>TETRIS / STACK TEST</h2>
+                <span>BUILD 004</span>
+              </header>
+              <div
+                class="game-stage tetris-stage"
+                data-tetris-stage
+                tabindex="0"
+                role="region"
+                aria-label="Tetris game"
+                aria-describedby="tetris-help"
+                aria-keyshortcuts="ArrowLeft ArrowRight ArrowDown ArrowUp A D S W X Space C Shift P"
+              >
+                <canvas data-tetris-canvas width="500" height="600" aria-hidden="true"></canvas>
+                <div class="game-overlay" data-tetris-overlay>
+                  <strong data-tetris-message>READY TO STACK</strong>
+                  <span>SWIPE TO MOVE / TAP TO ROTATE</span>
+                </div>
+              </div>
+              <div class="tetris-mobile-previews" aria-label="Tetris piece and level information">
+                <div class="tetris-mini-preview">
+                  <span>HOLD</span>
+                  <canvas data-tetris-hold-canvas width="96" height="96" aria-hidden="true"></canvas>
+                  <output class="visually-hidden">Held piece: <b data-tetris-held-piece>empty</b></output>
+                </div>
+                <div class="tetris-mini-preview">
+                  <span>NEXT</span>
+                  <canvas data-tetris-next-canvas width="96" height="96" aria-hidden="true"></canvas>
+                  <output class="visually-hidden">Next piece: <b data-tetris-next-piece>unknown</b></output>
+                </div>
+                <output>LEVEL <b data-tetris-level>01</b></output>
+                <output>LINES <b data-tetris-lines>00</b></output>
+              </div>
+              <footer class="game-window__footer tetris-footer">
+                <span class="game-state" data-tetris-state>STATUS / READY</span>
+                <div class="game-scores">
+                  <output aria-label="Current score">SCORE / <b data-tetris-score>00</b></output>
+                  <output aria-label="Best score">BEST / <b data-tetris-best>00</b></output>
+                </div>
+                <button type="button" data-tetris-hold disabled>HOLD</button>
+                <button type="button" data-tetris-action>START</button>
+              </footer>
+            </div>
+            <p id="tetris-help" class="visually-hidden">
+              Press Start. Move with Left and Right or A and D. Soft drop with
+              Down or S, and hard drop with Space. Rotate with Up, W, X, or a
+              tap. Swipe sideways to move and swipe down to drop. Press C,
+              Shift, or the Hold button to store one piece per turn. Press P or
+              the game button to pause.
+            </p>
+            <p class="visually-hidden" data-tetris-announcement aria-live="polite"></p>
+          </article>
         </div>
       </section>
     </main>
@@ -323,5 +405,6 @@
     <script src="flappy-game.js?v=game-2"></script>
     <script src="snake-game.js?v=game-1"></script>
     <script src="space-invaders-game.js?v=game-1"></script>
+    <script src="tetris-game.js?v=game-1"></script>
   </body>
 </html>
