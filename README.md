@@ -46,10 +46,10 @@ browser viewport, and cycle in order after a deliberate vertical wheel gesture.
 
 The color palettes live at the top of `styles.css` under `:root` and
 `html[data-theme="light"]`; each page starts in light mode unless a saved theme
-preference overrides it. Shantell Sans is loaded as a variable font from Google
-Fonts, with a system sans-serif fallback if that request is unavailable. The
-transparent blue logo is derived from the untouched source with its original
-geometry preserved exactly.
+preference overrides it. Nunito is used for body and interface text, while Cabin
+Sketch is reserved for headings; both load from Google Fonts with system
+sans-serif fallbacks. The transparent blue logo is derived from the untouched
+source with its original geometry preserved exactly.
 
 The hero coordinate strip points to the historic University of Glasgow Old
 College site on High Street (`55.8591 N, 004.2404 W`), Kelvin's university

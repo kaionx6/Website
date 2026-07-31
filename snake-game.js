@@ -207,10 +207,7 @@
         grid: variable("--grid-minor", "rgba(77, 163, 255, 0.07)"),
         success: variable("--green", "#6ee7b7"),
         danger: variable("--danger", "#ff6b6b"),
-        mono: variable(
-          "--mono",
-          '"Shantell Sans", ui-sans-serif, sans-serif',
-        ),
+        mono: variable("--mono", "Nunito, ui-sans-serif, sans-serif"),
       };
     }
 

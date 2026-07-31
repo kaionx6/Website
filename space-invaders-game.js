@@ -886,16 +886,16 @@
 
     drawHud() {
       const context = this.context;
-      context.font = '700 11px "Shantell Sans", sans-serif';
+      context.font = '700 11px "Nunito", sans-serif';
       context.textAlign = "left";
       context.fillStyle = this.colors.muted;
       context.fillText("SCORE", 18, 25);
       context.fillStyle = this.colors.text;
-      context.font = '700 24px "Shantell Sans", sans-serif';
+      context.font = '700 24px "Nunito", sans-serif';
       context.fillText(String(this.score).padStart(5, "0"), 18, 50);
 
       context.fillStyle = this.colors.muted;
-      context.font = '700 11px "Shantell Sans", sans-serif';
+      context.font = '700 11px "Nunito", sans-serif';
       context.textAlign = "center";
       context.fillText(`WAVE ${String(this.wave).padStart(2, "0")}`, this.worldWidth / 2, 25);
 
@@ -921,10 +921,10 @@
       context.strokeRect(x, y, width, height);
       context.fillStyle = this.colors.text;
       context.textAlign = "center";
-      context.font = '700 17px "Shantell Sans", sans-serif';
+      context.font = '700 17px "Nunito", sans-serif';
       context.fillText(title, this.worldWidth / 2, y + 35);
       context.fillStyle = this.colors.muted;
-      context.font = '700 10px "Shantell Sans", sans-serif';
+      context.font = '700 10px "Nunito", sans-serif';
       context.fillText(instruction, this.worldWidth / 2, y + 63);
       context.restore();
     }

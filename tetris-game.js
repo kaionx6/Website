@@ -298,10 +298,7 @@
           "rgba(77, 163, 255, 0.56)",
         ),
         grid: variable("--grid-minor", "rgba(77, 163, 255, 0.07)"),
-        mono: variable(
-          "--mono",
-          '"Shantell Sans", ui-sans-serif, sans-serif',
-        ),
+        mono: variable("--mono", "Nunito, ui-sans-serif, sans-serif"),
         pieces: {
           I: variable("--tetris-i", "#25b9cf"),
           J: variable("--tetris-j", "#5277d9"),
