@@ -29,7 +29,7 @@
   --preview-quiet: rgba(222, 241, 255, 0.18);
   --container: 1440px;
   --sidebar-width: 136px;
-  --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --mono: "Nunito", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 html[data-theme="light"] {
@@ -75,7 +75,7 @@ body {
   overflow-x: clip;
   background: var(--bg);
   color: var(--text);
-  font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: "Nunito", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 16px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
@@ -3212,9 +3212,34 @@ html[data-theme="light"] .button--light:hover {
   .tetris-mobile-previews > output {
     display: grid;
     min-width: 0;
+    min-height: 72px;
     place-items: center;
     padding: 5px;
+    border: 0;
     border-right: 1px solid var(--line);
+    background: transparent;
+    color: inherit;
+    font: inherit;
+  }
+
+  .tetris-mini-preview--hold {
+    appearance: none;
+    border-radius: 0;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  .tetris-mini-preview--hold:disabled {
+    cursor: not-allowed;
+  }
+
+  .tetris-mini-preview--hold:not(:disabled):active {
+    background: var(--blue-fill);
+  }
+
+  .tetris-mini-preview--hold:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: -3px;
   }
 
   .tetris-mobile-previews > :last-child {
@@ -3225,6 +3250,7 @@ html[data-theme="light"] .button--light:hover {
     width: 48px;
     max-width: 100%;
     height: 48px;
+    pointer-events: none;
   }
 
   .tetris-mobile-previews b {

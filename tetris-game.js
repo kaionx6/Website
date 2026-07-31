@@ -129,9 +129,8 @@
       this.actionLabel = this.actionButton?.querySelector(
         "[data-tetris-action-label]",
       );
-      this.holdButton = findHook("[data-tetris-hold]");
-      this.holdLabel = this.holdButton?.querySelector(
-        "[data-tetris-hold-label]",
+      this.holdButtons = Array.from(
+        this.root.querySelectorAll("[data-tetris-hold]"),
       );
       this.restartButton = findHook("[data-tetris-restart]");
       this.announcement = findHook("[data-tetris-announcement]");
@@ -189,6 +188,14 @@
         "Tetris ready. Press Start, then move with the arrow keys or swipe. Tap to rotate and use Hold once per piece.",
       );
       this.draw();
+      if (document.fonts?.ready) {
+        document.fonts.ready
+          .then(() => {
+            this.draw();
+            this.drawPreviews();
+          })
+          .catch(() => {});
+      }
     }
 
     prepareAccessibility() {
@@ -228,7 +235,9 @@
       this.stage.addEventListener("pointerup", this.onPointerUp);
       this.stage.addEventListener("pointercancel", this.onPointerCancel);
       this.actionButton?.addEventListener("click", this.onActionClick);
-      this.holdButton?.addEventListener("click", this.onHoldClick);
+      this.holdButtons.forEach((button) => {
+        button.addEventListener("click", this.onHoldClick);
+      });
       this.restartButton?.addEventListener("click", this.onRestartClick);
       document.addEventListener("visibilitychange", this.onVisibilityChange);
 
@@ -289,10 +298,7 @@
           "rgba(77, 163, 255, 0.56)",
         ),
         grid: variable("--grid-minor", "rgba(77, 163, 255, 0.07)"),
-        mono: variable(
-          "--mono",
-          "SFMono-Regular, Consolas, Liberation Mono, monospace",
-        ),
+        mono: variable("--mono", "Nunito, ui-sans-serif, sans-serif"),
         pieces: {
           I: variable("--tetris-i", "#25b9cf"),
           J: variable("--tetris-j", "#5277d9"),
@@ -498,21 +504,22 @@
         this.overlay.setAttribute("aria-hidden", String(!showOverlay));
       }
 
-      if (this.holdButton) {
+      if (this.holdButtons.length) {
         const available = this.state === "running" && this.canHold;
         const unavailableLabel =
           this.state === "running"
             ? "Hold already used for the current Tetris piece"
             : "Hold is available while Tetris is running";
-        if ("disabled" in this.holdButton) this.holdButton.disabled = !available;
-        this.holdButton.setAttribute("aria-disabled", String(!available));
-        this.holdButton.setAttribute(
-          "aria-label",
-          available ? "Hold current Tetris piece" : unavailableLabel,
-        );
-        if (this.holdLabel) {
-          this.holdLabel.textContent = available ? "HOLD" : "HOLD USED";
-        }
+        this.holdButtons.forEach((button) => {
+          if ("disabled" in button) button.disabled = !available;
+          button.setAttribute("aria-disabled", String(!available));
+          button.setAttribute(
+            "aria-label",
+            available ? "Hold current Tetris piece" : unavailableLabel,
+          );
+          const label = button.querySelector("[data-tetris-hold-label]");
+          if (label) label.textContent = available ? "HOLD" : "HOLD USED";
+        });
       }
       this.drawPreviews();
       this.dispatchState();

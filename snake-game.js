@@ -118,6 +118,11 @@
         "Snake ready. Press Start, use the arrow keys or WASD, or swipe to move.",
       );
       this.draw();
+      if (document.fonts?.ready) {
+        document.fonts.ready
+          .then(() => this.draw())
+          .catch(() => {});
+      }
     }
 
     prepareAccessibility() {
@@ -202,10 +207,7 @@
         grid: variable("--grid-minor", "rgba(77, 163, 255, 0.07)"),
         success: variable("--green", "#6ee7b7"),
         danger: variable("--danger", "#ff6b6b"),
-        mono: variable(
-          "--mono",
-          "SFMono-Regular, Consolas, Liberation Mono, monospace",
-        ),
+        mono: variable("--mono", "Nunito, ui-sans-serif, sans-serif"),
       };
     }
 

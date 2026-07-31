@@ -89,6 +89,11 @@
         "Flappy demo ready. Press Start, Space, or the up arrow to fly.",
       );
       this.queueFrame();
+      if (document.fonts?.ready) {
+        document.fonts.ready
+          .then(() => this.draw())
+          .catch(() => {});
+      }
     }
 
     prepareAccessibility() {
@@ -647,15 +652,15 @@
     drawHud() {
       const context = this.context;
       context.fillStyle = this.colors.muted;
-      context.font = "700 11px SFMono-Regular, Consolas, monospace";
+      context.font = '700 11px "Nunito", sans-serif';
       context.textAlign = "left";
       context.fillText("SCORE", 18, 27);
       context.fillStyle = this.colors.text;
-      context.font = "700 27px SFMono-Regular, Consolas, monospace";
+      context.font = '700 27px "Nunito", sans-serif';
       context.fillText(String(this.score).padStart(2, "0"), 18, 55);
 
       context.fillStyle = this.colors.muted;
-      context.font = "700 11px SFMono-Regular, Consolas, monospace";
+      context.font = '700 11px "Nunito", sans-serif';
       context.textAlign = "right";
       context.fillText(
         `BEST ${String(this.bestScore).padStart(2, "0")}`,
@@ -682,10 +687,10 @@
 
       context.fillStyle = this.colors.text;
       context.textAlign = "center";
-      context.font = "700 17px SFMono-Regular, Consolas, monospace";
+      context.font = '700 17px "Nunito", sans-serif';
       context.fillText(title, this.worldWidth / 2, y + 34);
       context.fillStyle = this.colors.muted;
-      context.font = "700 10px SFMono-Regular, Consolas, monospace";
+      context.font = '700 10px "Nunito", sans-serif';
       context.fillText(instruction, this.worldWidth / 2, y + 61);
       context.restore();
     }

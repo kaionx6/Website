@@ -18,7 +18,13 @@
     <title>Games — Kelvin Gao</title>
     <link rel="canonical" href="https://kelvingao.com/games.html" />
     <link rel="icon" href="assets/kg-logo-blue.png" type="image/png" />
-    <link rel="stylesheet" href="styles.css?v=blueprint-17" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@200..1000&amp;display=swap"
+    />
+    <link rel="stylesheet" href="styles.css?v=blueprint-18" />
     <script>
       document.documentElement.classList.add("js");
       try {
@@ -350,11 +356,16 @@
                 </div>
               </div>
               <div class="tetris-mobile-previews" aria-label="Tetris piece and level information">
-                <div class="tetris-mini-preview">
+                <button
+                  class="tetris-mini-preview tetris-mini-preview--hold"
+                  type="button"
+                  data-tetris-hold
+                  disabled
+                >
                   <span>HOLD</span>
                   <canvas data-tetris-hold-canvas width="96" height="96" aria-hidden="true"></canvas>
                   <output class="visually-hidden">Held piece: <b data-tetris-held-piece>empty</b></output>
-                </div>
+                </button>
                 <div class="tetris-mini-preview">
                   <span>NEXT</span>
                   <canvas data-tetris-next-canvas width="96" height="96" aria-hidden="true"></canvas>
@@ -402,9 +413,9 @@
 
     <script src="script.js?v=blueprint-11"></script>
     <script src="game-library.js?v=game-1"></script>
-    <script src="flappy-game.js?v=game-2"></script>
-    <script src="snake-game.js?v=game-1"></script>
-    <script src="space-invaders-game.js?v=game-1"></script>
-    <script src="tetris-game.js?v=game-1"></script>
+    <script src="flappy-game.js?v=game-3"></script>
+    <script src="snake-game.js?v=game-2"></script>
+    <script src="space-invaders-game.js?v=game-2"></script>
+    <script src="tetris-game.js?v=game-2"></script>
   </body>
 </html>
