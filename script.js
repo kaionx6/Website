@@ -286,7 +286,7 @@
 
     return Boolean(
       target.closest(
-        'a, button, input, select, textarea, [role="tab"], [role="slider"], [contenteditable]:not([contenteditable="false"]), .game-stage',
+        'a, button, input, select, textarea, [role="tab"], [role="slider"], [contenteditable]:not([contenteditable="false"]), .game-window',
       ),
     );
   };
@@ -311,7 +311,13 @@
   window.addEventListener(
     "wheel",
     (event) => {
+      const gameIsFullscreen =
+        document.fullscreenElement ||
+        document.webkitFullscreenElement ||
+        root.classList.contains("has-game-fullscreen");
+
       if (
+        gameIsFullscreen ||
         isChangingPage ||
         event.defaultPrevented ||
         event.ctrlKey ||

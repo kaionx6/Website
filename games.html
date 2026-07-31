@@ -24,7 +24,7 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&amp;family=Nunito:wght@200..1000&amp;display=swap"
     />
-    <link rel="stylesheet" href="styles.css?v=blueprint-24" />
+    <link rel="stylesheet" href="styles.css?v=blueprint-25" />
     <script>
       document.documentElement.classList.add("js");
       try {
@@ -198,7 +198,16 @@
               <header class="game-window__bar">
                 <span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
                 <h2>FLAPPY BIRD / QUICK DEMO</h2>
-                <span>BUILD 001</span>
+                <span class="game-build-label">BUILD 001</span>
+                <button
+                  class="game-fullscreen-toggle"
+                  type="button"
+                  data-game-fullscreen
+                  aria-label="Enter fullscreen for Flappy Bird"
+                  aria-pressed="false"
+                >
+                  <span data-game-fullscreen-label>FULL</span>
+                </button>
               </header>
               <div
                 class="game-stage flappy-stage"
@@ -245,7 +254,16 @@
               <header class="game-window__bar">
                 <span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
                 <h2>SNAKE / GRID RUN</h2>
-                <span>BUILD 002</span>
+                <span class="game-build-label">BUILD 002</span>
+                <button
+                  class="game-fullscreen-toggle"
+                  type="button"
+                  data-game-fullscreen
+                  aria-label="Enter fullscreen for Snake"
+                  aria-pressed="false"
+                >
+                  <span data-game-fullscreen-label>FULL</span>
+                </button>
               </header>
               <div
                 class="game-stage snake-stage"
@@ -292,7 +310,16 @@
               <header class="game-window__bar">
                 <span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
                 <h2>SPACE INVADERS / DEFENCE TEST</h2>
-                <span>BUILD 003</span>
+                <span class="game-build-label">BUILD 003</span>
+                <button
+                  class="game-fullscreen-toggle"
+                  type="button"
+                  data-game-fullscreen
+                  aria-label="Enter fullscreen for Space Invaders"
+                  aria-pressed="false"
+                >
+                  <span data-game-fullscreen-label>FULL</span>
+                </button>
               </header>
               <div
                 class="game-stage invaders-stage"
@@ -338,7 +365,16 @@
               <header class="game-window__bar">
                 <span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
                 <h2>TETRIS / STACK TEST</h2>
-                <span>BUILD 004</span>
+                <span class="game-build-label">BUILD 004</span>
+                <button
+                  class="game-fullscreen-toggle"
+                  type="button"
+                  data-game-fullscreen
+                  aria-label="Enter fullscreen for Tetris"
+                  aria-pressed="false"
+                >
+                  <span data-game-fullscreen-label>FULL</span>
+                </button>
               </header>
               <div
                 class="game-stage tetris-stage"
@@ -411,8 +447,8 @@
       <p>© <span data-year></span> Kelvin Gao</p>
     </footer>
 
-    <script src="script.js?v=blueprint-11"></script>
-    <script src="game-library.js?v=game-1"></script>
+    <script src="script.js?v=blueprint-12"></script>
+    <script src="game-library.js?v=game-2"></script>
     <script src="flappy-game.js?v=game-5"></script>
     <script src="snake-game.js?v=game-4"></script>
     <script src="space-invaders-game.js?v=game-4"></script>
