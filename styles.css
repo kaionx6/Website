@@ -2395,6 +2395,7 @@ html.has-game-fullscreen body {
   max-width: none;
   height: 100%;
   min-height: 0;
+  max-height: none;
   margin: 0;
   box-sizing: border-box;
   padding:
@@ -2615,6 +2616,174 @@ html[data-theme="light"] .game-window__footer button:focus-visible {
 .tetris-footer [data-tetris-hold]:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+}
+
+/* Desktop game chassis: keep the playfield portrait and move its readouts
+   into a compact rail. Phone layouts retain the horizontal footer below. */
+
+@media (min-width: 951px) and (min-height: 600px) {
+  .game-console.is-game-fullscreen-active {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  .game-console:fullscreen {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    max-width: none !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    max-height: none !important;
+    margin: 0 !important;
+    transform: none !important;
+  }
+
+  .game-console {
+    container-type: size;
+  }
+
+  .game-console.is-game-fullscreen-active {
+    place-items: center;
+  }
+
+  .game-console .game-window,
+  .game-console.is-game-fullscreen-active .game-window {
+    --game-rail-width: 180px;
+    display: grid;
+    width: min(100%, 720px);
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    grid-template-areas:
+      "stage bar"
+      "stage controls";
+    grid-template-columns: minmax(0, 1fr) var(--game-rail-width);
+    grid-template-rows: 44px minmax(0, 1fr);
+    overflow: hidden;
+  }
+
+  .game-console.is-game-fullscreen-active .game-window,
+  .game-console.is-game-fullscreen-active .tetris-window {
+    grid-template-rows: 44px minmax(0, 1fr);
+  }
+
+  #game-panel-flappy .game-window {
+    width: min(100%, 720px) !important;
+    width: min(100%, calc(75cqh + var(--game-rail-width))) !important;
+  }
+
+  #game-panel-snake .game-window {
+    width: min(100%, 860px) !important;
+    width: min(100%, calc(100cqh + var(--game-rail-width))) !important;
+  }
+
+  #game-panel-invaders .game-window {
+    width: min(100%, 800px) !important;
+    width: min(100%, calc(88.889cqh + var(--game-rail-width))) !important;
+  }
+
+  #game-panel-tetris .game-window {
+    --game-rail-width: 190px;
+    width: min(100%, 790px) !important;
+    width: min(100%, calc(83.333cqh + var(--game-rail-width))) !important;
+  }
+
+  .game-console .game-window__bar {
+    grid-area: bar;
+    grid-template-columns: minmax(0, 1fr) 48px;
+    border-bottom: 1px solid var(--preview-line);
+    border-left: 1px solid var(--preview-line);
+  }
+
+  .game-console .game-window__bar .window-dots,
+  .game-console .game-window__bar .game-build-label {
+    display: none;
+  }
+
+  .game-console .game-stage {
+    grid-area: stage;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    aspect-ratio: auto;
+  }
+
+  .game-console .game-window__footer {
+    display: grid;
+    min-width: 0;
+    min-height: 0;
+    grid-area: controls;
+    grid-template-columns: 1fr;
+    grid-template-rows:
+      minmax(44px, 0.65fr)
+      minmax(80px, 1.35fr)
+      54px;
+    border-top: 0;
+    border-left: 1px solid var(--preview-line);
+  }
+
+  .game-console .game-state,
+  .game-console .game-scores,
+  .game-console .game-window__footer button {
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .game-console .game-state {
+    justify-content: center;
+    padding: 10px;
+    text-align: center;
+  }
+
+  .game-console .game-scores {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+  }
+
+  .game-console .game-scores output {
+    justify-content: center;
+    padding: 8px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .game-console .game-scores output:last-child {
+    border-bottom: 0;
+  }
+
+  .game-console .game-window__footer > button {
+    border-bottom: 0;
+  }
+
+  .game-console .tetris-footer {
+    grid-template-columns: 1fr;
+    grid-template-rows:
+      minmax(44px, 0.55fr)
+      minmax(72px, 1.15fr)
+      50px
+      54px;
+  }
+
+  .game-console .tetris-footer > button {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .game-console .tetris-footer > button:last-child {
+    border-bottom: 0;
+  }
+
+  .game-console .tetris-footer [data-tetris-hold] {
+    border-right: 0;
+  }
 }
 
 /* About */
@@ -3812,22 +3981,6 @@ html[data-theme="light"] .button--light:hover {
     min-height: 0;
     padding: 10px;
     overflow: hidden;
-  }
-
-  #game-panel-flappy .game-window {
-    width: min(100%, 460px, calc(75dvh - 298px));
-  }
-
-  #game-panel-snake .game-window {
-    width: min(100%, 460px, calc(100dvh - 396px));
-  }
-
-  #game-panel-invaders .game-window {
-    width: min(100%, 460px, calc(88.889dvh - 352px));
-  }
-
-  #game-panel-tetris .game-window {
-    width: min(100%, 560px, calc(83.333dvh - 262.5px));
   }
 
   /* About */
