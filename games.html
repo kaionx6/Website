@@ -24,7 +24,7 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&amp;family=Nunito:wght@200..1000&amp;display=swap"
     />
-    <link rel="stylesheet" href="styles.css?v=blueprint-27" />
+    <link rel="stylesheet" href="styles.css?v=blueprint-29" />
     <script>
       document.documentElement.classList.add("js");
       try {
@@ -195,10 +195,10 @@
             >
               <span class="game-entry__number">05</span>
               <span class="game-entry__copy">
-                <strong>Garden Guard</strong>
-                <small>Lane defence</small>
+                <strong>Grid Command</strong>
+                <small>Sector defence</small>
               </span>
-              <i aria-hidden="true">DEFEND</i>
+              <i aria-hidden="true">DEPLOY</i>
             </button>
           </div>
 
@@ -460,13 +460,13 @@
             <div class="game-window garden-window">
               <header class="game-window__bar">
                 <span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-                <h2>GARDEN GUARD / LANE DEFENCE</h2>
-                <span class="game-build-label">BUILD 005</span>
+                <h2>GRID COMMAND / SECTOR DEFENCE</h2>
+                <span class="game-build-label">BUILD 009</span>
                 <button
                   class="game-fullscreen-toggle"
                   type="button"
                   data-game-fullscreen
-                  aria-label="Enter fullscreen for Garden Guard"
+                  aria-label="Enter fullscreen for Grid Command"
                   aria-pressed="false"
                 >
                   <span data-game-fullscreen-label>FULL</span>
@@ -477,9 +477,9 @@
                 data-garden-stage
                 tabindex="0"
                 role="application"
-                aria-label="Garden Guard lane defence game"
+                aria-label="Grid Command sector defence game"
                 aria-describedby="garden-help"
-                aria-keyshortcuts="1 2 3 4 5 ArrowUp ArrowDown ArrowLeft ArrowRight Enter Space Delete R P"
+                aria-keyshortcuts="1 2 3 4 5 6 7 8 9 ArrowUp ArrowDown ArrowLeft ArrowRight Enter Space Delete R P"
               >
                 <canvas
                   data-garden-canvas
@@ -490,69 +490,146 @@
                 <div
                   class="garden-toolbar"
                   role="toolbar"
-                  aria-label="Garden Guard defender selection"
+                  aria-orientation="horizontal"
+                  aria-label="Grid Command unit selection"
                   data-garden-toolbar
                 >
-                  <button
-                    class="garden-unit-card"
-                    type="button"
-                    data-garden-unit="lumen"
-                    aria-pressed="false"
-                    aria-label="Select Lumen, costs 50 energy"
-                  >
-                    <span aria-hidden="true">LU</span>
-                    <strong>LUMEN</strong>
-                    <small>50 E</small>
-                    <i data-garden-cooldown aria-hidden="true"></i>
-                  </button>
-                  <button
-                    class="garden-unit-card"
-                    type="button"
-                    data-garden-unit="pulse"
-                    aria-pressed="false"
-                    aria-label="Select Pulse Pod, costs 100 energy"
-                  >
-                    <span aria-hidden="true">PP</span>
-                    <strong>PULSE</strong>
-                    <small>100 E</small>
-                    <i data-garden-cooldown aria-hidden="true"></i>
-                  </button>
-                  <button
-                    class="garden-unit-card"
-                    type="button"
-                    data-garden-unit="bulwark"
-                    aria-pressed="false"
-                    aria-label="Select Bulwark, costs 75 energy"
-                  >
-                    <span aria-hidden="true">BW</span>
-                    <strong>WALL</strong>
-                    <small>75 E</small>
-                    <i data-garden-cooldown aria-hidden="true"></i>
-                  </button>
-                  <button
-                    class="garden-unit-card"
-                    type="button"
-                    data-garden-unit="frost"
-                    aria-pressed="false"
-                    aria-label="Select Frost Reed, costs 150 energy"
-                  >
-                    <span aria-hidden="true">FR</span>
-                    <strong>FROST</strong>
-                    <small>150 E</small>
-                    <i data-garden-cooldown aria-hidden="true"></i>
-                  </button>
-                  <button
-                    class="garden-unit-card"
-                    type="button"
-                    data-garden-unit="mine"
-                    aria-pressed="false"
-                    aria-label="Select Echo Mine, costs 125 energy"
-                  >
-                    <span aria-hidden="true">EM</span>
-                    <strong>MINE</strong>
-                    <small>125 E</small>
-                    <i data-garden-cooldown aria-hidden="true"></i>
-                  </button>
+                  <div class="garden-unit-strip" data-garden-unit-strip>
+                    <button
+                      class="garden-unit-card"
+                      type="button"
+                      data-garden-unit="pulse"
+                      data-garden-new
+                      data-unlock-round="01"
+                      aria-pressed="false"
+                      aria-label="Select Sentry Cannon, 100 supply"
+                    >
+                      <span aria-hidden="true">SC</span>
+                      <strong>SENTRY</strong>
+                      <small>100 SP</small>
+                      <i data-garden-cooldown aria-hidden="true"></i>
+                    </button>
+                    <button
+                      class="garden-unit-card"
+                      type="button"
+                      data-garden-unit="lumen"
+                      data-garden-locked
+                      data-unlock-round="02"
+                      aria-pressed="false"
+                      aria-disabled="true"
+                      aria-label="Supply Relay, locked until round 2"
+                    >
+                      <span aria-hidden="true">SR</span>
+                      <strong>SUPPLY</strong>
+                      <small>LOCK / R02</small>
+                      <i data-garden-cooldown aria-hidden="true"></i>
+                    </button>
+                    <button
+                      class="garden-unit-card"
+                      type="button"
+                      data-garden-unit="mine"
+                      data-garden-locked
+                      data-unlock-round="03"
+                      aria-pressed="false"
+                      aria-disabled="true"
+                      aria-label="Proximity Mine, locked until round 3"
+                    >
+                      <span aria-hidden="true">PM</span>
+                      <strong>MINE</strong>
+                      <small>LOCK / R03</small>
+                      <i data-garden-cooldown aria-hidden="true"></i>
+                    </button>
+                    <button
+                      class="garden-unit-card"
+                      type="button"
+                      data-garden-unit="bulwark"
+                      data-garden-locked
+                      data-unlock-round="04"
+                      aria-pressed="false"
+                      aria-disabled="true"
+                      aria-label="Field Barrier, locked until round 4"
+                    >
+                      <span aria-hidden="true">FB</span>
+                      <strong>BARRIER</strong>
+                      <small>LOCK / R04</small>
+                      <i data-garden-cooldown aria-hidden="true"></i>
+                    </button>
+                    <button
+                      class="garden-unit-card"
+                      type="button"
+                      data-garden-unit="frost"
+                      data-garden-locked
+                      data-unlock-round="05"
+                      aria-pressed="false"
+                      aria-disabled="true"
+                      aria-label="Cryo Turret, locked until round 5"
+                    >
+                      <span aria-hidden="true">CT</span>
+                      <strong>CRYO</strong>
+                      <small>LOCK / R05</small>
+                      <i data-garden-cooldown aria-hidden="true"></i>
+                    </button>
+                    <button
+                      class="garden-unit-card"
+                      type="button"
+                      data-garden-unit="burst"
+                      data-garden-locked
+                      data-unlock-round="06"
+                      aria-pressed="false"
+                      aria-disabled="true"
+                      aria-label="Twin Cannon, locked until round 6"
+                    >
+                      <span aria-hidden="true">TC</span>
+                      <strong>TWIN</strong>
+                      <small>LOCK / R06</small>
+                      <i data-garden-cooldown aria-hidden="true"></i>
+                    </button>
+                    <button
+                      class="garden-unit-card"
+                      type="button"
+                      data-garden-unit="nova"
+                      data-garden-locked
+                      data-unlock-round="07"
+                      aria-pressed="false"
+                      aria-disabled="true"
+                      aria-label="Demolition Charge, locked until round 7"
+                    >
+                      <span aria-hidden="true">DC</span>
+                      <strong>DEMO</strong>
+                      <small>LOCK / R07</small>
+                      <i data-garden-cooldown aria-hidden="true"></i>
+                    </button>
+                    <button
+                      class="garden-unit-card"
+                      type="button"
+                      data-garden-unit="snap"
+                      data-garden-locked
+                      data-unlock-round="08"
+                      aria-pressed="false"
+                      aria-disabled="true"
+                      aria-label="Hunter Drone, locked until round 8"
+                    >
+                      <span aria-hidden="true">HD</span>
+                      <strong>HUNTER</strong>
+                      <small>LOCK / R08</small>
+                      <i data-garden-cooldown aria-hidden="true"></i>
+                    </button>
+                    <button
+                      class="garden-unit-card"
+                      type="button"
+                      data-garden-unit="triad"
+                      data-garden-locked
+                      data-unlock-round="09"
+                      aria-pressed="false"
+                      aria-disabled="true"
+                      aria-label="Crossfire Battery, locked until round 9"
+                    >
+                      <span aria-hidden="true">CB</span>
+                      <strong>CROSSFIRE</strong>
+                      <small>LOCK / R09</small>
+                      <i data-garden-cooldown aria-hidden="true"></i>
+                    </button>
+                  </div>
                   <button
                     class="garden-unit-card garden-unit-card--remove"
                     type="button"
@@ -566,25 +643,26 @@
                   </button>
                 </div>
                 <div class="game-overlay" data-garden-overlay>
-                  <strong data-garden-message>DEFENCE GRID READY</strong>
-                  <span>SELECT A DEFENDER / TAP A CELL</span>
+                  <strong data-garden-message>COMMAND GRID READY</strong>
+                  <span>SELECT A UNIT / TAP A CELL</span>
                 </div>
               </div>
               <footer class="game-window__footer garden-footer">
                 <span class="game-state" data-garden-state>STATUS / READY</span>
                 <div class="game-scores garden-readouts">
-                  <output aria-label="Available energy">ENERGY / <b data-garden-energy>175</b></output>
-                  <output aria-label="Current wave">WAVE / <b data-garden-wave>00/05</b></output>
+                  <output aria-label="Available supply">SUPPLY / <b data-garden-energy>175</b></output>
+                  <output aria-label="Current round">ROUND / <b data-garden-wave>00/09</b></output>
                   <output aria-label="Current score">SCORE / <b data-garden-score>000000</b></output>
                 </div>
                 <button type="button" data-garden-action>START</button>
               </footer>
             </div>
             <p id="garden-help" class="visually-hidden">
-              Select a defender card and then choose a grid cell. Collect
-              energy nodes to deploy more defenders. Use number keys one to
-              five to select a card, arrow keys to move the grid cursor, Enter
-              or Space to place, R or Delete to remove, and P to pause.
+              Select a unit card and then choose a grid cell. Collect supply
+              drops to deploy more units. One unit unlocks at the start of each
+              round. Use number keys one to nine to select a card, arrow keys
+              to move the grid cursor, Enter or Space to place, R or Delete to
+              remove, and P to pause.
             </p>
             <p class="visually-hidden" data-garden-announcement aria-live="polite"></p>
           </article>
@@ -612,6 +690,6 @@
     <script src="snake-game.js?v=game-4"></script>
     <script src="space-invaders-game.js?v=game-4"></script>
     <script src="tetris-game.js?v=game-4"></script>
-    <script src="garden-guard-game.js?v=game-1"></script>
+    <script src="grid-command-game.js?v=game-3"></script>
   </body>
 </html>

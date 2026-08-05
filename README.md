@@ -10,8 +10,8 @@ browser viewport, and cycle in order after a deliberate vertical wheel gesture.
 
 - `index.html` — landing page
 - `projects.html` — four project panels and the spider robot viewer
-- `games.html` — tabbed Flappy Bird, Snake, Space Invaders, Tetris, and Garden
-  Guard library
+- `games.html` — tabbed Flappy Bird, Snake, Space Invaders, Tetris, and Grid
+  Command library
 - `about.html` — profile copy, compact portrait placeholder, and capabilities
 - `contact.html` — contact page
 - `styles.css` — layout, themes, responsive styles, and preview illustrations
@@ -21,7 +21,8 @@ browser viewport, and cycle in order after a deliberate vertical wheel gesture.
 - `snake-game.js` — dependency-free responsive Snake canvas demo
 - `space-invaders-game.js` — dependency-free responsive Space Invaders demo
 - `tetris-game.js` — responsive Tetris with touch gestures and a hold queue
-- `garden-guard-game.js` — original lane-defence game with touch controls
+- `grid-command-game.js` — nine-round sector-defence campaign with progressive
+  unit unlocks and touch controls
 - `model-viewer.js` — GLB rendering and the model-to-photo interaction sequence
 - `assets/kelvin-presentation.png` — archived supplied photo (not currently rendered)
 - `assets/kg-logo-blue.png` — transparent site-blue KG logo and browser favicon

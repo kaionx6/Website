@@ -2497,18 +2497,29 @@ html.has-game-fullscreen body {
   top: 8px;
   right: 8px;
   left: 8px;
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 5px;
   min-height: 66px;
   padding: 5px;
-  overflow-x: auto;
+  overflow: hidden;
   border: 1px solid var(--preview-line);
   background: var(--surface);
   background: color-mix(in srgb, var(--surface) 94%, transparent);
   box-shadow: 0 7px 0 color-mix(in srgb, var(--preview-bg) 72%, transparent);
+  touch-action: manipulation;
+}
+
+.garden-unit-strip {
+  display: flex;
+  min-width: 0;
+  gap: 5px;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
   scrollbar-color: var(--blue) transparent;
   scrollbar-width: thin;
   touch-action: pan-x;
+  -webkit-overflow-scrolling: touch;
 }
 
 .garden-unit-card {
@@ -2590,11 +2601,35 @@ html.has-game-fullscreen body {
 }
 
 .garden-unit-card[aria-disabled="true"] {
-  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+.garden-unit-card[data-garden-locked] {
+  border-style: dashed;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent 0 7px,
+    var(--grid-minor) 7px 8px
+  );
+  cursor: help;
+}
+
+.garden-unit-card[data-garden-locked] strong,
+.garden-unit-card[data-garden-locked] small {
+  color: var(--faint);
+}
+
+.garden-unit-card[data-garden-locked] > span {
+  border-color: var(--faint);
+  color: var(--faint);
+}
+
+.garden-unit-card[data-garden-new]:not([data-garden-locked]) {
+  box-shadow: inset 0 -3px 0 var(--blue);
 }
 
 .garden-unit-card--remove {
-  margin-left: 3px;
+  flex: 0 0 82px;
   border-color: var(--line-strong);
 }
 
@@ -3622,6 +3657,10 @@ html[data-theme="light"] .button--light:hover {
     min-height: 52px;
     flex-basis: 74px;
     padding-inline: 5px;
+  }
+
+  .garden-unit-card--remove {
+    flex-basis: 74px;
   }
 
   .garden-readouts {

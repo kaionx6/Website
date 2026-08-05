@@ -1,7 +1,8 @@
 (() => {
   "use strict";
 
-  const BEST_SCORE_KEY = "kelvin-garden-guard-best";
+  const BEST_SCORE_KEY = "kelvin-grid-command-best";
+  const LEGACY_BEST_SCORE_KEY = "kelvin-garden-guard-best";
   const ROW_COUNT = 5;
   const COLUMN_COUNT = 9;
   const STARTING_ENERGY = 175;
@@ -11,7 +12,7 @@
 
   const UNIT_TYPES = {
     lumen: {
-      label: "Lumen",
+      label: "Supply Relay",
       cost: 50,
       cooldown: 5,
       health: 250,
@@ -19,7 +20,7 @@
       color: "#e6c84c",
     },
     pulse: {
-      label: "Pulse Pod",
+      label: "Sentry Cannon",
       cost: 100,
       cooldown: 4.5,
       health: 310,
@@ -29,15 +30,15 @@
       color: "#58b968",
     },
     bulwark: {
-      label: "Bulwark",
+      label: "Field Barrier",
       cost: 75,
       cooldown: 8,
       health: 1_100,
       color: "#8da3b8",
     },
     frost: {
-      label: "Frost Reed",
-      cost: 150,
+      label: "Cryo Turret",
+      cost: 175,
       cooldown: 7,
       health: 285,
       fireTime: 1.65,
@@ -48,22 +49,76 @@
       color: "#6ec9dc",
     },
     mine: {
-      label: "Echo Mine",
-      cost: 125,
-      cooldown: 11,
+      label: "Proximity Mine",
+      cost: 25,
+      cooldown: 18,
       health: 180,
-      armTime: 1.8,
+      armTime: 5.5,
       damage: 390,
       blastRadius: 1.2,
       color: "#d58a4a",
     },
+    burst: {
+      label: "Twin Cannon",
+      cost: 200,
+      cooldown: 7,
+      health: 310,
+      fireTime: 1.15,
+      damage: 26,
+      projectileSpeed: 3.6,
+      shots: 2,
+      burstSpacing: 0.14,
+      color: "#4ea47f",
+    },
+    nova: {
+      label: "Demolition Charge",
+      cost: 150,
+      cooldown: 25,
+      health: 220,
+      fuseTime: 0.65,
+      damage: 1_000,
+      blastRadius: 1.5,
+      blastRows: 1,
+      color: "#d95b63",
+    },
+    snap: {
+      label: "Hunter Drone",
+      cost: 150,
+      cooldown: 9,
+      health: 440,
+      attackRange: 1.18,
+      damage: 1_000,
+      chewTime: 18,
+      color: "#9d6fc5",
+    },
+    triad: {
+      label: "Crossfire Battery",
+      cost: 325,
+      cooldown: 8,
+      health: 300,
+      fireTime: 1.35,
+      damage: 26,
+      projectileSpeed: 3.5,
+      laneSpread: 1,
+      color: "#4f93b7",
+    },
   };
 
-  const UNIT_ORDER = ["lumen", "pulse", "bulwark", "frost", "mine"];
+  const UNIT_ORDER = [
+    "pulse",
+    "lumen",
+    "mine",
+    "bulwark",
+    "frost",
+    "burst",
+    "nova",
+    "snap",
+    "triad",
+  ];
 
   const ENEMY_TYPES = {
     drifter: {
-      label: "Drifter",
+      label: "Patrol Drone",
       health: 175,
       speed: 0.19,
       damage: 52,
@@ -72,7 +127,7 @@
       color: "#b47b5d",
     },
     runner: {
-      label: "Runner",
+      label: "Recon Skimmer",
       health: 110,
       speed: 0.34,
       damage: 38,
@@ -81,7 +136,7 @@
       color: "#c99a54",
     },
     shield: {
-      label: "Shield Rig",
+      label: "Armoured Rig",
       health: 360,
       speed: 0.135,
       damage: 62,
@@ -90,7 +145,7 @@
       color: "#7d91a8",
     },
     hauler: {
-      label: "Heavy Hauler",
+      label: "Siege Carrier",
       health: 760,
       speed: 0.085,
       damage: 92,
@@ -100,23 +155,101 @@
     },
   };
 
-  const WAVES = [
-    { count: 7, interval: 2.5, pool: ["drifter", "drifter", "drifter"] },
-    { count: 9, interval: 2.15, pool: ["drifter", "drifter", "runner"] },
+  const ROUNDS = [
+    { count: 5, interval: 4.6, pool: ["drifter", "drifter", "drifter"] },
+    {
+      count: 7,
+      interval: 4.35,
+      pool: ["drifter", "drifter", "drifter", "runner"],
+    },
+    {
+      count: 9,
+      interval: 4.1,
+      pool: ["drifter", "drifter", "drifter", "runner", "runner", "shield"],
+    },
     {
       count: 11,
-      interval: 1.95,
-      pool: ["drifter", "runner", "shield"],
+      interval: 3.9,
+      pool: ["drifter", "drifter", "runner", "runner", "shield"],
     },
     {
       count: 13,
-      interval: 1.7,
-      pool: ["drifter", "runner", "shield", "shield", "hauler"],
+      interval: 3.7,
+      pool: [
+        "drifter",
+        "drifter",
+        "drifter",
+        "runner",
+        "runner",
+        "runner",
+        "shield",
+        "shield",
+        "shield",
+        "hauler",
+      ],
     },
     {
-      count: 16,
-      interval: 1.45,
-      pool: ["runner", "shield", "shield", "hauler"],
+      count: 15,
+      interval: 3.5,
+      pool: [
+        "drifter",
+        "drifter",
+        "runner",
+        "runner",
+        "runner",
+        "shield",
+        "shield",
+        "shield",
+        "hauler",
+      ],
+    },
+    {
+      count: 17,
+      interval: 3.3,
+      pool: [
+        "drifter",
+        "drifter",
+        "runner",
+        "runner",
+        "runner",
+        "shield",
+        "shield",
+        "shield",
+        "hauler",
+        "hauler",
+      ],
+    },
+    {
+      count: 20,
+      interval: 3.15,
+      pool: [
+        "drifter",
+        "runner",
+        "runner",
+        "runner",
+        "shield",
+        "shield",
+        "shield",
+        "hauler",
+        "hauler",
+        "hauler",
+      ],
+    },
+    {
+      count: 24,
+      interval: 3,
+      pool: [
+        "runner",
+        "runner",
+        "runner",
+        "shield",
+        "shield",
+        "shield",
+        "shield",
+        "hauler",
+        "hauler",
+        "hauler",
+      ],
     },
   ];
 
@@ -125,7 +258,9 @@
 
   const readBestScore = () => {
     try {
-      const value = Number.parseInt(localStorage.getItem(BEST_SCORE_KEY), 10);
+      const saved = localStorage.getItem(BEST_SCORE_KEY);
+      const legacy = localStorage.getItem(LEGACY_BEST_SCORE_KEY);
+      const value = Number.parseInt(saved || legacy, 10);
       return Number.isFinite(value) && value > 0 ? value : 0;
     } catch (_error) {
       return 0;
@@ -140,7 +275,7 @@
     }
   };
 
-  class GardenGuardGame {
+  class GridCommandGame {
     constructor(root) {
       this.root = root;
       this.stage = root.querySelector("[data-garden-stage]");
@@ -196,7 +331,7 @@
       this.syncInterface(true);
       this.draw();
       this.announce(
-        "Garden Guard ready. Select a defender, then choose a lane and column.",
+        "Grid Command ready. Select a unit, then choose a lane and column.",
       );
 
       if (document.fonts?.ready) {
@@ -225,8 +360,7 @@
       this.removeButton?.addEventListener("click", this.onRemoveClick);
       this.unitButtons.forEach((button) => {
         button.addEventListener("click", () => {
-          this.selectUnit(button.dataset.gardenUnit);
-          this.focusStage();
+          if (this.selectUnit(button.dataset.gardenUnit)) this.focusStage();
         });
       });
       document.addEventListener("visibilitychange", this.onVisibilityChange);
@@ -292,6 +426,19 @@
       };
     }
 
+    unlockRoundFor(type) {
+      const index = UNIT_ORDER.indexOf(type);
+      return index >= 0 ? index + 1 : Number.POSITIVE_INFINITY;
+    }
+
+    currentRound() {
+      return Math.max(1, this.waveIndex + 1);
+    }
+
+    isUnitUnlocked(type) {
+      return this.unlockRoundFor(type) <= this.currentRound();
+    }
+
     resetRound() {
       this.state = "ready";
       this.pauseReason = "";
@@ -303,14 +450,16 @@
       this.waitingForWave = false;
       this.waveBreakTimer = 0;
       this.waveBannerTimer = 0;
+      this.lastUnlockedUnit = null;
       this.skyEnergyTimer = 2.5;
-      this.selectedUnit = "pulse";
+      this.selectedUnit = UNIT_ORDER[0];
       this.removeMode = false;
       this.cursor = { row: 2, column: 2 };
       this.units = [];
       this.enemies = [];
       this.projectiles = [];
       this.energyNodes = [];
+      this.effects = [];
       this.sweepers = Array.from({ length: ROW_COUNT }, (_, row) => ({
         row,
         used: false,
@@ -331,22 +480,17 @@
         this.pauseReason = "";
         this.lastTime = 0;
         this.setOverlay(false);
-        this.announce("Defence resumed.");
+        this.announce("Operation resumed.");
         this.syncInterface(true);
         this.queueFrame();
         this.focusStage();
         return;
       }
 
-      const selectedUnit = this.selectedUnit;
-      const removeMode = this.removeMode;
       this.resetRound();
-      this.selectedUnit = selectedUnit;
-      this.removeMode = removeMode;
       this.state = "running";
-      this.beginWave(0, 3);
+      this.beginWave(0, 6);
       this.setOverlay(false);
-      this.announce("Wave one started. Protect all five lanes.");
       this.syncInterface(true);
       this.focusStage();
       this.queueFrame();
@@ -359,9 +503,9 @@
       this.lastTime = 0;
       if (this.frameId) cancelAnimationFrame(this.frameId);
       this.frameId = 0;
-      this.setOverlay(true, "DEFENCE PAUSED");
+      this.setOverlay(true, "OPERATION PAUSED");
       this.syncInterface(true);
-      if (reason === "manual") this.announce("Defence paused.");
+      if (reason === "manual") this.announce("Operation paused.");
       this.draw();
     }
 
@@ -378,12 +522,12 @@
       }
 
       if (outcome === "won") {
-        this.setOverlay(true, "ALL LANES SECURE");
+        this.setOverlay(true, "SECTOR SECURE");
         this.announce(
-          `Garden secured. Final score ${this.score}. Press Replay to defend again.`,
+          `Sector secured. Final score ${this.score}. Press Replay to deploy again.`,
         );
       } else {
-        this.setOverlay(true, "DEFENCE BREACHED");
+        this.setOverlay(true, "SECTOR BREACHED");
         this.announce(
           `The defence grid was breached. Score ${this.score}. Press Replay to try again.`,
         );
@@ -398,8 +542,18 @@
       this.spawnTimer = delay;
       this.waitingForWave = false;
       this.waveBreakTimer = 0;
-      this.waveBannerTimer = 2.2;
-      this.announce(`Wave ${index + 1} of ${WAVES.length} incoming.`);
+      this.waveBannerTimer = 3;
+      this.lastUnlockedUnit = UNIT_ORDER[index] || null;
+      if (!this.isUnitUnlocked(this.selectedUnit)) {
+        this.selectedUnit = UNIT_ORDER[0];
+        this.removeMode = false;
+      }
+      const unlockedLabel = this.lastUnlockedUnit
+        ? `${UNIT_TYPES[this.lastUnlockedUnit].label} unlocked. `
+        : "";
+      this.announce(
+        `Round ${index + 1} of ${ROUNDS.length}. ${unlockedLabel}Protect all five lanes.`,
+      );
       this.syncInterface(true);
     }
 
@@ -416,7 +570,7 @@
       event?.preventDefault();
       this.removeMode = true;
       this.selectedUnit = null;
-      this.announce("Remove tool selected. Choose a deployed defender.");
+      this.announce("Remove tool selected. Choose a deployed unit.");
       this.syncInterface(true);
       this.draw();
       this.focusStage();
@@ -424,19 +578,26 @@
 
     selectUnit(type) {
       const specification = UNIT_TYPES[type];
-      if (!specification) return;
+      if (!specification) return false;
+
+      if (!this.isUnitUnlocked(type)) {
+        this.announce(
+          `${specification.label} unlocks at the start of round ${this.unlockRoundFor(type)}.`,
+        );
+        return false;
+      }
 
       if (this.cooldowns[type] > 0.05) {
         this.announce(
           `${specification.label} is recharging for ${Math.ceil(this.cooldowns[type])} seconds.`,
         );
-        return;
+        return false;
       }
       if (this.energy < specification.cost) {
         this.announce(
-          `${specification.label} needs ${specification.cost} energy. You have ${this.energy}.`,
+          `${specification.label} needs ${specification.cost} supply. You have ${this.energy}.`,
         );
-        return;
+        return false;
       }
 
       this.selectedUnit = type;
@@ -446,6 +607,7 @@
       );
       this.syncInterface(true);
       this.draw();
+      return true;
     }
 
     focusStage() {
@@ -476,7 +638,7 @@
         this.lastTime = 0;
         this.queueFrame();
       } else if (!this.suspended && this.pauseReason === "visibility") {
-        this.announce("Garden Guard is paused. Press Resume when ready.");
+        this.announce("Grid Command is paused. Press Resume when ready.");
       }
     }
 
@@ -612,7 +774,7 @@
     onKeyDown(event) {
       if (event.target.closest?.("button, a, input, select, textarea")) return;
 
-      if (/^[1-5]$/.test(event.key)) {
+      if (/^[1-9]$/.test(event.key)) {
         event.preventDefault();
         this.selectUnit(UNIT_ORDER[Number(event.key) - 1]);
         return;
@@ -700,7 +862,7 @@
       }
 
       if (!this.selectedUnit) {
-        this.announce("Select a defender card before choosing a cell.");
+        this.announce("Select a unit card before choosing a cell.");
         return;
       }
       this.placeUnit(this.selectedUnit, row, column);
@@ -709,6 +871,12 @@
     placeUnit(type, row, column) {
       const specification = UNIT_TYPES[type];
       if (!specification) return false;
+      if (!this.isUnitUnlocked(type)) {
+        this.announce(
+          `${specification.label} unlocks at the start of round ${this.unlockRoundFor(type)}.`,
+        );
+        return false;
+      }
       if (this.unitAt(row, column)) {
         this.announce(`Lane ${row + 1}, column ${column + 1} is occupied.`);
         return false;
@@ -721,7 +889,7 @@
       }
       if (this.energy < specification.cost) {
         this.announce(
-          `${specification.label} needs ${specification.cost} energy. You have ${this.energy}.`,
+          `${specification.label} needs ${specification.cost} supply. You have ${this.energy}.`,
         );
         return false;
       }
@@ -741,6 +909,11 @@
             : specification.fireTime || 0,
         armed: type !== "mine",
         armTimer: specification.armTime || 0,
+        fuseTimer: specification.fuseTime || 0,
+        chewTimer: 0,
+        burstRemaining: 0,
+        burstTimer: 0,
+        burstRows: [],
       });
       this.announce(
         `${specification.label} deployed in lane ${row + 1}, column ${column + 1}.`,
@@ -768,7 +941,7 @@
       node.collected = true;
       this.energy = Math.min(999, this.energy + node.value);
       this.score += node.value * 2;
-      this.announce(`${node.value} energy collected. Total ${this.energy}.`);
+      this.announce(`${node.value} supply collected. Total ${this.energy}.`);
       this.energyNodes = this.energyNodes.filter((candidate) => !candidate.collected);
       this.syncInterface(true);
       this.draw();
@@ -815,8 +988,8 @@
     }
 
     updateWave(delta) {
-      if (this.waveIndex < 0 || this.waveIndex >= WAVES.length) return;
-      const wave = WAVES[this.waveIndex];
+      if (this.waveIndex < 0 || this.waveIndex >= ROUNDS.length) return;
+      const wave = ROUNDS[this.waveIndex];
 
       if (this.waveSpawned < wave.count) {
         this.spawnTimer -= delta;
@@ -824,14 +997,14 @@
           const type = wave.pool[Math.floor(Math.random() * wave.pool.length)];
           this.spawnEnemy(type);
           this.waveSpawned += 1;
-          const jitter = 0.78 + Math.random() * 0.44;
+          const jitter = 0.88 + Math.random() * 0.3;
           this.spawnTimer = wave.interval * jitter;
         }
         return;
       }
 
       if (this.enemies.length > 0) return;
-      if (this.waveIndex === WAVES.length - 1) {
+      if (this.waveIndex === ROUNDS.length - 1) {
         this.score += this.energy * 3 + this.units.length * 75;
         this.finishRound("won");
         return;
@@ -839,10 +1012,10 @@
 
       if (!this.waitingForWave) {
         this.waitingForWave = true;
-        this.waveBreakTimer = 4;
+        this.waveBreakTimer = 8;
         this.energy = Math.min(999, this.energy + 50);
         this.announce(
-          `Wave ${this.waveIndex + 1} cleared. Fifty reserve energy added.`,
+          `Round ${this.waveIndex + 1} cleared. Fifty reserve supply added.`,
         );
         this.syncInterface(true);
       } else {
@@ -854,6 +1027,56 @@
     updateCooldowns(delta) {
       UNIT_ORDER.forEach((type) => {
         this.cooldowns[type] = Math.max(0, this.cooldowns[type] - delta);
+      });
+    }
+
+    projectileRowsFor(unit, specification) {
+      const spread = specification.laneSpread || 0;
+      const rows = [];
+      for (let row = unit.row - spread; row <= unit.row + spread; row += 1) {
+        if (row >= 0 && row < ROW_COUNT) rows.push(row);
+      }
+      return rows;
+    }
+
+    fireUnitVolley(unit, specification, rows) {
+      rows.forEach((row) => {
+        this.projectiles.push({
+          id: ++this.entityId,
+          type: unit.type,
+          row,
+          x: unit.column + 0.82,
+          damage: specification.damage,
+          speed: specification.projectileSpeed,
+          slowFactor: specification.slowFactor || 1,
+          slowTime: specification.slowTime || 0,
+          spent: false,
+        });
+      });
+    }
+
+    detonateArea(unit, specification, effectType) {
+      const centerX = unit.column + 0.5;
+      const rowRadius = specification.blastRows || 0;
+      this.enemies.forEach((enemy) => {
+        if (
+          enemy.health > 0 &&
+          Math.abs(enemy.row - unit.row) <= rowRadius &&
+          Math.abs(enemy.x - centerX) <= specification.blastRadius
+        ) {
+          enemy.health -= specification.damage;
+        }
+      });
+      unit.health = 0;
+      this.effects.push({
+        type: effectType,
+        x: centerX,
+        y: unit.row + 0.5,
+        radiusX: specification.blastRadius,
+        radiusY: rowRadius + 0.48,
+        age: 0,
+        duration: effectType === "nova" ? 0.58 : 0.42,
+        color: specification.color,
       });
     }
 
@@ -884,11 +1107,66 @@
           return;
         }
 
+        if (unit.type === "nova") {
+          unit.fuseTimer -= delta;
+          if (unit.fuseTimer <= 0) {
+            this.detonateArea(unit, specification, "nova");
+            this.announce(
+              `Demolition Charge cleared the area around lane ${unit.row + 1}, column ${unit.column + 1}.`,
+            );
+          }
+          return;
+        }
+
+        if (unit.type === "snap") {
+          if (unit.chewTimer > 0) {
+            unit.chewTimer = Math.max(0, unit.chewTimer - delta);
+            return;
+          }
+
+          const centerX = unit.column + 0.5;
+          const target = this.enemies
+            .filter(
+              (enemy) =>
+                enemy.health > 0 &&
+                enemy.row === unit.row &&
+                enemy.x >= centerX - 0.12 &&
+                enemy.x <= centerX + specification.attackRange,
+            )
+            .sort((first, second) => first.x - second.x)[0];
+          if (target) {
+            target.health -= specification.damage;
+            unit.chewTimer = specification.chewTime;
+            this.effects.push({
+              type: "snap",
+              x: target.x,
+              y: target.row + 0.5,
+              radiusX: 0.5,
+              radiusY: 0.42,
+              age: 0,
+              duration: 0.32,
+              color: specification.color,
+            });
+          }
+          return;
+        }
+
         if (!specification.fireTime) return;
+        const projectileRows = this.projectileRowsFor(unit, specification);
+
+        if (unit.burstRemaining > 0) {
+          unit.burstTimer -= delta;
+          if (unit.burstTimer <= 0) {
+            this.fireUnitVolley(unit, specification, unit.burstRows);
+            unit.burstRemaining -= 1;
+            unit.burstTimer += specification.burstSpacing || 0.12;
+          }
+        }
+
         const hasTarget = this.enemies.some(
           (enemy) =>
             enemy.health > 0 &&
-            enemy.row === unit.row &&
+            projectileRows.includes(enemy.row) &&
             enemy.x > unit.column + 0.15,
         );
         if (!hasTarget) {
@@ -898,17 +1176,10 @@
 
         unit.timer -= delta;
         if (unit.timer <= 0) {
-          this.projectiles.push({
-            id: ++this.entityId,
-            type: unit.type,
-            row: unit.row,
-            x: unit.column + 0.82,
-            damage: specification.damage,
-            speed: specification.projectileSpeed,
-            slowFactor: specification.slowFactor || 1,
-            slowTime: specification.slowTime || 0,
-            spent: false,
-          });
+          this.fireUnitVolley(unit, specification, projectileRows);
+          unit.burstRemaining = Math.max(0, (specification.shots || 1) - 1);
+          unit.burstTimer = specification.burstSpacing || 0.12;
+          unit.burstRows = projectileRows;
           unit.timer += specification.fireTime;
         }
       });
@@ -946,17 +1217,7 @@
 
     detonateMine(unit) {
       const specification = UNIT_TYPES.mine;
-      this.enemies.forEach((enemy) => {
-        if (
-          enemy.health > 0 &&
-          enemy.row === unit.row &&
-          Math.abs(enemy.x - (unit.column + 0.5)) <= specification.blastRadius
-        ) {
-          enemy.health -= specification.damage;
-        }
-      });
-      unit.health = 0;
-      this.score += 40;
+      this.detonateArea(unit, specification, "mine");
     }
 
     updateEnemies(delta) {
@@ -1040,6 +1301,13 @@
       );
     }
 
+    updateEffects(delta) {
+      this.effects.forEach((effect) => {
+        effect.age += delta;
+      });
+      this.effects = this.effects.filter((effect) => effect.age < effect.duration);
+    }
+
     removeDeadUnits() {
       this.units = this.units.filter((unit) => unit.health > 0);
     }
@@ -1078,6 +1346,7 @@
       }
       this.updateSweepers(delta);
       this.updateEnergyNodes(delta);
+      this.updateEffects(delta);
       this.removeDeadUnits();
       this.removeDeadEnemies();
       this.waveBannerTimer = Math.max(0, this.waveBannerTimer - delta);
@@ -1124,6 +1393,9 @@
       const cooldownSignature = UNIT_ORDER.map((type) =>
         Math.ceil(this.cooldowns[type] * 5),
       ).join(",");
+      const breakSeconds = this.waitingForWave
+        ? Math.max(1, Math.ceil(this.waveBreakTimer))
+        : 0;
       const signature = [
         this.state,
         this.energy,
@@ -1132,6 +1404,7 @@
         this.selectedUnit,
         this.removeMode,
         this.waitingForWave,
+        breakSeconds,
         cooldownSignature,
       ].join("|");
       if (!force && signature === this.interfaceSignature) return;
@@ -1139,7 +1412,9 @@
 
       const stateLabels = {
         ready: "STATUS / READY",
-        running: this.waitingForWave ? "STATUS / RE-GRID" : "STATUS / ACTIVE",
+        running: this.waitingForWave
+          ? `STATUS / REDEPLOY ${String(breakSeconds).padStart(2, "0")}`
+          : "STATUS / ACTIVE",
         paused: "STATUS / PAUSED",
         won: "STATUS / SECURE",
         lost: "STATUS / BREACHED",
@@ -1157,7 +1432,7 @@
       if (this.waveOutput) {
         const wave = this.waveIndex < 0 ? 0 : this.waveIndex + 1;
         this.waveOutput.textContent = `${String(wave).padStart(2, "0")}/${String(
-          WAVES.length,
+          ROUNDS.length,
         ).padStart(2, "0")}`;
       }
       if (this.scoreOutput) {
@@ -1169,12 +1444,12 @@
         this.actionButton.setAttribute(
           "aria-label",
           label === "PAUSE"
-            ? "Pause Garden Guard"
+            ? "Pause Grid Command"
             : label === "RESUME"
-              ? "Resume Garden Guard"
+              ? "Resume Grid Command"
               : label === "REPLAY"
-                ? "Replay Garden Guard"
-                : "Start Garden Guard",
+                ? "Replay Grid Command"
+                : "Start Grid Command",
         );
       }
 
@@ -1183,20 +1458,34 @@
         const specification = UNIT_TYPES[type];
         if (!specification) return;
         const cooldown = this.cooldowns[type];
-        const unavailable = cooldown > 0.05 || this.energy < specification.cost;
+        const unlockRound = this.unlockRoundFor(type);
+        const locked = !this.isUnitUnlocked(type);
+        const newlyUnlocked = !locked && unlockRound === this.currentRound();
+        const unavailable =
+          locked || cooldown > 0.05 || this.energy < specification.cost;
         button.setAttribute(
           "aria-pressed",
-          String(!this.removeMode && this.selectedUnit === type),
+          String(!locked && !this.removeMode && this.selectedUnit === type),
         );
         button.setAttribute("aria-disabled", String(unavailable));
+        button.toggleAttribute("data-garden-locked", locked);
+        button.toggleAttribute("data-garden-new", newlyUnlocked);
+        button.setAttribute("data-unlock-round", String(unlockRound).padStart(2, "0"));
         button.style.setProperty(
           "--garden-cooldown",
-          String(clamp(cooldown / specification.cooldown, 0, 1)),
+          locked ? "0" : String(clamp(cooldown / specification.cooldown, 0, 1)),
         );
-        const detail =
-          cooldown > 0.05
+        const detail = locked
+          ? `locked until round ${unlockRound}`
+          : cooldown > 0.05
             ? `${Math.ceil(cooldown)} seconds recharge remaining`
-            : `${specification.cost} energy`;
+            : `${specification.cost} supply`;
+        const costOutput = button.querySelector("small");
+        if (costOutput) {
+          costOutput.textContent = locked
+            ? `LOCK / R${String(unlockRound).padStart(2, "0")}`
+            : `${specification.cost} SP`;
+        }
         button.setAttribute("aria-label", `Select ${specification.label}, ${detail}`);
       });
       this.removeButton?.setAttribute("aria-pressed", String(this.removeMode));
@@ -1250,10 +1539,9 @@
       context.textBaseline = "middle";
       context.textAlign = "left";
       context.fillText(
-        `ENERGY ${String(this.energy).padStart(3, "0")}  /  WAVE ${Math.max(
-          0,
-          this.waveIndex + 1,
-        )}.${WAVES.length}`,
+        `SUPPLY ${String(this.energy).padStart(3, "0")}  /  ROUND ${String(
+          Math.max(0, this.waveIndex + 1),
+        ).padStart(2, "0")}/${String(ROUNDS.length).padStart(2, "0")}`,
         Math.max(8, this.board.x),
         y,
       );
@@ -1340,36 +1628,81 @@
       context.fillStyle = this.colors.surface;
       context.lineWidth = Math.max(1.5, cell * 0.026);
 
+      // Low-profile mechanical plinth shared by every field unit.
       context.beginPath();
-      context.moveTo(0, radius * 0.2);
-      context.lineTo(0, radius * 1.18);
-      context.moveTo(-radius * 0.8, radius * 0.68);
-      context.quadraticCurveTo(-radius * 0.25, radius * 0.35, 0, radius * 0.8);
-      context.moveTo(radius * 0.8, radius * 0.68);
-      context.quadraticCurveTo(radius * 0.25, radius * 0.35, 0, radius * 0.8);
+      context.moveTo(-radius * 0.86, radius * 0.76);
+      context.lineTo(-radius * 0.62, radius * 0.42);
+      context.lineTo(-radius * 0.3, radius * 0.28);
+      context.lineTo(radius * 0.3, radius * 0.28);
+      context.lineTo(radius * 0.62, radius * 0.42);
+      context.lineTo(radius * 0.86, radius * 0.76);
+      context.lineTo(radius * 0.72, radius * 1.08);
+      context.lineTo(-radius * 0.72, radius * 1.08);
+      context.closePath();
+      context.fill();
       context.stroke();
+      context.strokeRect(
+        -radius * 0.46,
+        radius * 0.72,
+        radius * 0.92,
+        radius * 0.18,
+      );
+      context.fillStyle = specification.color;
+      [-0.57, 0.57].forEach((offset) => {
+        context.beginPath();
+        context.arc(radius * offset, radius * 0.87, radius * 0.07, 0, Math.PI * 2);
+        context.fill();
+      });
+      context.fillStyle = this.colors.surface;
 
       if (unit.type === "lumen") {
-        for (let index = 0; index < 8; index += 1) {
-          context.save();
-          context.rotate((Math.PI * 2 * index) / 8);
-          context.strokeRect(-radius * 0.16, -radius * 1.05, radius * 0.32, radius * 0.46);
-          context.restore();
-        }
+        context.fillRect(
+          -radius * 0.68,
+          -radius * 0.42,
+          radius * 1.36,
+          radius * 0.88,
+        );
+        context.strokeRect(
+          -radius * 0.68,
+          -radius * 0.42,
+          radius * 1.36,
+          radius * 0.88,
+        );
         context.beginPath();
-        context.arc(0, 0, radius * 0.58, 0, Math.PI * 2);
-        context.fill();
+        context.moveTo(0, -radius * 0.42);
+        context.lineTo(0, -radius * 1.08);
+        context.moveTo(-radius * 0.38, -radius * 0.72);
+        context.quadraticCurveTo(0, -radius * 1.02, radius * 0.38, -radius * 0.72);
+        context.moveTo(-radius * 0.64, -radius * 0.92);
+        context.quadraticCurveTo(0, -radius * 1.42, radius * 0.64, -radius * 0.92);
         context.stroke();
+        context.strokeRect(
+          -radius * 0.48,
+          -radius * 0.2,
+          radius * 0.44,
+          radius * 0.38,
+        );
         context.fillStyle = specification.color;
-        context.beginPath();
-        context.arc(0, 0, radius * 0.2, 0, Math.PI * 2);
-        context.fill();
-      } else if (unit.type === "pulse" || unit.type === "frost") {
+        context.fillRect(radius * 0.18, -radius * 0.17, radius * 0.27, radius * 0.12);
+        context.fillRect(radius * 0.18, radius * 0.07, radius * 0.27, radius * 0.12);
+      } else if (
+        unit.type === "pulse" ||
+        unit.type === "frost" ||
+        unit.type === "burst"
+      ) {
         context.beginPath();
         context.arc(0, 0, radius * 0.72, 0, Math.PI * 2);
         context.fill();
         context.stroke();
-        context.strokeRect(radius * 0.48, -radius * 0.25, radius * 0.82, radius * 0.5);
+        const barrelOffsets = unit.type === "burst" ? [-0.3, 0.3] : [0];
+        barrelOffsets.forEach((offset) => {
+          context.strokeRect(
+            radius * 0.48,
+            radius * offset - radius * 0.19,
+            radius * 0.82,
+            radius * 0.38,
+          );
+        });
         if (unit.type === "frost") {
           context.beginPath();
           context.moveTo(-radius * 0.75, 0);
@@ -1378,6 +1711,24 @@
           context.lineTo(0, radius * 0.75);
           context.stroke();
         }
+        if (unit.type === "burst") {
+          context.beginPath();
+          context.arc(0, 0, radius * 0.34, 0, Math.PI * 2);
+          context.stroke();
+        }
+      } else if (unit.type === "triad") {
+        [-0.58, 0, 0.58].forEach((offset) => {
+          context.beginPath();
+          context.arc(0, radius * offset, radius * 0.37, 0, Math.PI * 2);
+          context.fill();
+          context.stroke();
+          context.strokeRect(
+            radius * 0.28,
+            radius * offset - radius * 0.13,
+            radius * 0.68,
+            radius * 0.26,
+          );
+        });
       } else if (unit.type === "bulwark") {
         context.beginPath();
         for (let index = 0; index < 6; index += 1) {
@@ -1396,28 +1747,102 @@
         context.moveTo(-radius * 0.45, radius * 0.3);
         context.lineTo(radius * 0.45, -radius * 0.1);
         context.stroke();
-      } else {
+      } else if (unit.type === "nova") {
+        context.save();
+        context.rotate(Math.PI / 4);
+        context.fillRect(-radius * 0.5, -radius * 0.5, radius, radius);
+        context.strokeRect(-radius * 0.5, -radius * 0.5, radius, radius);
+        context.restore();
         context.beginPath();
-        context.arc(0, radius * 0.22, radius * 0.72, 0, Math.PI * 2);
+        context.arc(0, 0, radius * 0.3, 0, Math.PI * 2);
+        context.stroke();
+        context.beginPath();
+        context.moveTo(radius * 0.38, -radius * 0.4);
+        context.lineTo(radius * 0.78, -radius * 0.88);
+        context.stroke();
+      } else if (unit.type === "snap") {
+        const chewing = unit.chewTimer > 0;
+        context.beginPath();
+        context.moveTo(-radius * 0.72, -radius * 0.5);
+        context.lineTo(radius * 0.18, -radius * 0.64);
+        context.lineTo(radius * 0.58, -radius * 0.3);
+        context.lineTo(radius * 0.58, radius * 0.3);
+        context.lineTo(radius * 0.18, radius * 0.64);
+        context.lineTo(-radius * 0.72, radius * 0.5);
+        context.closePath();
         context.fill();
         context.stroke();
-        for (let index = 0; index < 6; index += 1) {
-          const angle = (Math.PI * 2 * index) / 6;
-          context.beginPath();
-          context.moveTo(
-            Math.cos(angle) * radius * 0.72,
-            radius * 0.22 + Math.sin(angle) * radius * 0.72,
+        context.beginPath();
+        context.moveTo(radius * 0.2, -radius * 0.36);
+        context.lineTo(
+          chewing ? radius * 0.46 : radius * 0.92,
+          chewing ? -radius * 0.16 : -radius * 0.72,
+        );
+        context.lineTo(
+          chewing ? radius * 0.68 : radius * 1.12,
+          chewing ? -radius * 0.04 : -radius * 0.5,
+        );
+        context.moveTo(radius * 0.2, radius * 0.36);
+        context.lineTo(
+          chewing ? radius * 0.46 : radius * 0.92,
+          chewing ? radius * 0.16 : radius * 0.72,
+        );
+        context.lineTo(
+          chewing ? radius * 0.68 : radius * 1.12,
+          chewing ? radius * 0.04 : radius * 0.5,
+        );
+        context.stroke();
+        context.fillStyle = specification.color;
+        context.beginPath();
+        context.arc(-radius * 0.12, 0, radius * 0.19, 0, Math.PI * 2);
+        context.fill();
+        context.strokeStyle = this.colors.surface;
+        context.beginPath();
+        context.moveTo(-radius * 0.22, 0);
+        context.lineTo(-radius * 0.02, 0);
+        context.moveTo(-radius * 0.12, -radius * 0.1);
+        context.lineTo(-radius * 0.12, radius * 0.1);
+        context.stroke();
+      } else {
+        // Proximity mine: armoured disc, four ground anchors and a status lamp.
+        context.save();
+        context.translate(0, radius * 0.12);
+        for (let index = 0; index < 4; index += 1) {
+          context.save();
+          context.rotate((Math.PI * index) / 2);
+          context.strokeRect(
+            radius * 0.66,
+            -radius * 0.14,
+            radius * 0.34,
+            radius * 0.28,
           );
-          context.lineTo(
-            Math.cos(angle) * radius * 1.05,
-            radius * 0.22 + Math.sin(angle) * radius * 1.05,
-          );
-          context.stroke();
+          context.restore();
         }
+        context.beginPath();
+        context.arc(0, 0, radius * 0.72, 0, Math.PI * 2);
+        context.fill();
+        context.stroke();
+        context.beginPath();
+        context.arc(0, 0, radius * 0.4, 0, Math.PI * 2);
+        context.stroke();
+        context.moveTo(-radius * 0.27, 0);
+        context.lineTo(radius * 0.27, 0);
+        context.moveTo(0, -radius * 0.27);
+        context.lineTo(0, radius * 0.27);
+        context.stroke();
+        context.fillStyle = specification.color;
+        context.beginPath();
+        context.arc(0, 0, unit.armed ? radius * 0.11 : radius * 0.07, 0, Math.PI * 2);
+        context.fill();
         if (!unit.armed) {
-          context.fillStyle = specification.color;
-          context.fillRect(-radius * 0.38, radius * 0.08, radius * 0.76, radius * 0.22);
+          context.strokeStyle = specification.color;
+          context.setLineDash([radius * 0.12, radius * 0.1]);
+          context.beginPath();
+          context.arc(0, 0, radius * 0.55, 0, Math.PI * 2);
+          context.stroke();
+          context.setLineDash([]);
         }
+        context.restore();
       }
       context.restore();
 
@@ -1483,10 +1908,8 @@
         const x = this.board.x + projectile.x * cell;
         const y = this.board.y + (projectile.row + 0.5) * cell;
         const radius = clamp(cell * 0.09, 3, 9);
-        context.fillStyle =
-          projectile.type === "frost"
-            ? UNIT_TYPES.frost.color
-            : UNIT_TYPES.pulse.color;
+        const specification = UNIT_TYPES[projectile.type] || UNIT_TYPES.pulse;
+        context.fillStyle = specification.color;
         context.beginPath();
         if (projectile.type === "frost") {
           context.moveTo(x, y - radius);
@@ -1494,10 +1917,58 @@
           context.lineTo(x, y + radius);
           context.lineTo(x - radius, y);
           context.closePath();
+        } else if (projectile.type === "triad") {
+          context.moveTo(x + radius, y);
+          context.lineTo(x - radius * 0.75, y + radius * 0.75);
+          context.lineTo(x - radius * 0.75, y - radius * 0.75);
+          context.closePath();
         } else {
           context.arc(x, y, radius, 0, Math.PI * 2);
         }
         context.fill();
+      });
+    }
+
+    drawEffects() {
+      const context = this.context;
+      const cell = this.board.cell;
+      this.effects.forEach((effect) => {
+        const progress = clamp(effect.age / effect.duration, 0, 1);
+        const pulse = 0.45 + progress * 0.55;
+        const x = this.board.x + effect.x * cell;
+        const y = this.board.y + effect.y * cell;
+        const radiusX = effect.radiusX * cell * pulse;
+        const radiusY = effect.radiusY * cell * pulse;
+
+        context.save();
+        context.translate(x, y);
+        context.strokeStyle = effect.color;
+        context.fillStyle = effect.color;
+        context.lineWidth = Math.max(1.5, cell * 0.035);
+
+        if (effect.type === "snap") {
+          context.globalAlpha = 1 - progress;
+          context.beginPath();
+          context.moveTo(-radiusX, -radiusY);
+          context.lineTo(0, 0);
+          context.lineTo(-radiusX, radiusY);
+          context.moveTo(radiusX, -radiusY);
+          context.lineTo(0, 0);
+          context.lineTo(radiusX, radiusY);
+          context.stroke();
+        } else {
+          context.globalAlpha = (1 - progress) * 0.16;
+          context.fillRect(-radiusX, -radiusY, radiusX * 2, radiusY * 2);
+          context.globalAlpha = 1 - progress;
+          context.strokeRect(-radiusX, -radiusY, radiusX * 2, radiusY * 2);
+          context.beginPath();
+          context.moveTo(-radiusX, -radiusY);
+          context.lineTo(radiusX, radiusY);
+          context.moveTo(radiusX, -radiusY);
+          context.lineTo(-radiusX, radiusY);
+          context.stroke();
+        }
+        context.restore();
       });
     }
 
@@ -1574,6 +2045,7 @@
         ? Boolean(this.unitAt(this.cursor.row, this.cursor.column))
         : Boolean(
             this.selectedUnit &&
+              this.isUnitUnlocked(this.selectedUnit) &&
               !this.unitAt(this.cursor.row, this.cursor.column) &&
               this.energy >= UNIT_TYPES[this.selectedUnit].cost &&
               this.cooldowns[this.selectedUnit] <= 0.05,
@@ -1590,7 +2062,7 @@
       if (this.waveBannerTimer <= 0 || this.waveIndex < 0) return;
       const context = this.context;
       const width = clamp(this.board.cell * 3.8, 150, 310);
-      const height = clamp(this.board.cell * 0.72, 34, 60);
+      const height = clamp(this.board.cell * 1.02, 52, 82);
       const x = this.board.x + this.board.width / 2 - width / 2;
       const y = this.board.y + this.board.height / 2 - height / 2;
       context.fillStyle = this.colors.surface;
@@ -1599,16 +2071,25 @@
       context.fillRect(x, y, width, height);
       context.strokeRect(x + 0.5, y + 0.5, width - 1, height - 1);
       context.fillStyle = this.colors.text;
-      context.font = `700 ${clamp(height * 0.28, 10, 16)}px ${this.colors.mono}`;
+      context.font = `700 ${clamp(height * 0.19, 9, 14)}px ${this.colors.mono}`;
       context.textAlign = "center";
       context.textBaseline = "middle";
       context.fillText(
-        `WAVE ${String(this.waveIndex + 1).padStart(2, "0")} / ${String(
-          WAVES.length,
+        `ROUND ${String(this.waveIndex + 1).padStart(2, "0")} / ${String(
+          ROUNDS.length,
         ).padStart(2, "0")}`,
         x + width / 2,
-        y + height / 2,
+        y + height * 0.34,
       );
+      if (this.lastUnlockedUnit) {
+        context.fillStyle = UNIT_TYPES[this.lastUnlockedUnit].color;
+        context.font = `700 ${clamp(height * 0.16, 8, 12)}px ${this.colors.mono}`;
+        context.fillText(
+          `UNIT ONLINE / ${UNIT_TYPES[this.lastUnlockedUnit].label.toUpperCase()}`,
+          x + width / 2,
+          y + height * 0.68,
+        );
+      }
     }
 
     draw() {
@@ -1621,6 +2102,7 @@
       this.units.forEach((unit) => this.drawUnit(unit));
       this.drawProjectiles();
       this.enemies.forEach((enemy) => this.drawEnemy(enemy));
+      this.drawEffects();
       this.drawEnergyNodes();
       this.drawCursor();
       this.drawWaveBanner();
@@ -1631,7 +2113,7 @@
     document.querySelectorAll("[data-garden-game]").forEach((root) => {
       if (root.dataset.gardenReady === "true") return;
       root.dataset.gardenReady = "true";
-      new GardenGuardGame(root);
+      new GridCommandGame(root);
     });
   };
 
