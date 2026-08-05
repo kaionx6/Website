@@ -2,7 +2,7 @@
 
 A build-free, multi-page personal portfolio made as a flat blueprint drawing
 system, with a white/blue default theme, switchable blue/black theme, four
-accessible project tabs, a looping hover-scroll CAD sequence, and four
+accessible project tabs, a looping hover-scroll CAD sequence, and five
 playable mini games. Desktop pages use a fixed navigation sidebar, fit one
 browser viewport, and cycle in order after a deliberate vertical wheel gesture.
 
@@ -10,16 +10,18 @@ browser viewport, and cycle in order after a deliberate vertical wheel gesture.
 
 - `index.html` — landing page
 - `projects.html` — four project panels and the spider robot viewer
-- `games.html` — tabbed Flappy Bird, Snake, Space Invaders, and Tetris library
+- `games.html` — tabbed Flappy Bird, Snake, Space Invaders, Tetris, and Garden
+  Guard library
 - `about.html` — profile copy, compact portrait placeholder, and capabilities
 - `contact.html` — contact page
 - `styles.css` — layout, themes, responsive styles, and preview illustrations
 - `script.js` — theme persistence, project tabs, and page-tab cycling progress
-- `game-library.js` — accessible switching between the four game panels
+- `game-library.js` — accessible switching between the five game panels
 - `flappy-game.js` — dependency-free responsive Flappy Bird canvas demo
 - `snake-game.js` — dependency-free responsive Snake canvas demo
 - `space-invaders-game.js` — dependency-free responsive Space Invaders demo
 - `tetris-game.js` — responsive Tetris with touch gestures and a hold queue
+- `garden-guard-game.js` — original lane-defence game with touch controls
 - `model-viewer.js` — GLB rendering and the model-to-photo interaction sequence
 - `assets/kelvin-presentation.png` — archived supplied photo (not currently rendered)
 - `assets/kg-logo-blue.png` — transparent site-blue KG logo and browser favicon

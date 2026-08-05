@@ -24,7 +24,7 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&amp;family=Nunito:wght@200..1000&amp;display=swap"
     />
-    <link rel="stylesheet" href="styles.css?v=blueprint-26" />
+    <link rel="stylesheet" href="styles.css?v=blueprint-27" />
     <script>
       document.documentElement.classList.add("js");
       try {
@@ -97,7 +97,7 @@
             <h1 id="games-title">Small games,<br />built for a quick break.</h1>
           </div>
           <p class="section-description">
-            Four compact browser experiments rendered in the same blueprint
+            Five compact browser experiments rendered in the same blueprint
             system. Choose a program and start playing—no download required.
           </p>
         </div>
@@ -182,6 +182,23 @@
                 <small>Stack test</small>
               </span>
               <i aria-hidden="true">DROP</i>
+            </button>
+            <button
+              class="game-entry"
+              id="game-tab-garden"
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="game-panel-garden"
+              tabindex="-1"
+              data-game-tab
+            >
+              <span class="game-entry__number">05</span>
+              <span class="game-entry__copy">
+                <strong>Garden Guard</strong>
+                <small>Lane defence</small>
+              </span>
+              <i aria-hidden="true">DEFEND</i>
             </button>
           </div>
 
@@ -429,6 +446,148 @@
             </p>
             <p class="visually-hidden" data-tetris-announcement aria-live="polite"></p>
           </article>
+
+          <article
+            class="game-console"
+            id="game-panel-garden"
+            role="tabpanel"
+            aria-labelledby="game-tab-garden"
+            tabindex="0"
+            hidden
+            data-game-panel
+            data-garden-game
+          >
+            <div class="game-window garden-window">
+              <header class="game-window__bar">
+                <span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                <h2>GARDEN GUARD / LANE DEFENCE</h2>
+                <span class="game-build-label">BUILD 005</span>
+                <button
+                  class="game-fullscreen-toggle"
+                  type="button"
+                  data-game-fullscreen
+                  aria-label="Enter fullscreen for Garden Guard"
+                  aria-pressed="false"
+                >
+                  <span data-game-fullscreen-label>FULL</span>
+                </button>
+              </header>
+              <div
+                class="game-stage garden-stage"
+                data-garden-stage
+                tabindex="0"
+                role="application"
+                aria-label="Garden Guard lane defence game"
+                aria-describedby="garden-help"
+                aria-keyshortcuts="1 2 3 4 5 ArrowUp ArrowDown ArrowLeft ArrowRight Enter Space Delete R P"
+              >
+                <canvas
+                  data-garden-canvas
+                  width="900"
+                  height="600"
+                  aria-hidden="true"
+                ></canvas>
+                <div
+                  class="garden-toolbar"
+                  role="toolbar"
+                  aria-label="Garden Guard defender selection"
+                  data-garden-toolbar
+                >
+                  <button
+                    class="garden-unit-card"
+                    type="button"
+                    data-garden-unit="lumen"
+                    aria-pressed="false"
+                    aria-label="Select Lumen, costs 50 energy"
+                  >
+                    <span aria-hidden="true">LU</span>
+                    <strong>LUMEN</strong>
+                    <small>50 E</small>
+                    <i data-garden-cooldown aria-hidden="true"></i>
+                  </button>
+                  <button
+                    class="garden-unit-card"
+                    type="button"
+                    data-garden-unit="pulse"
+                    aria-pressed="false"
+                    aria-label="Select Pulse Pod, costs 100 energy"
+                  >
+                    <span aria-hidden="true">PP</span>
+                    <strong>PULSE</strong>
+                    <small>100 E</small>
+                    <i data-garden-cooldown aria-hidden="true"></i>
+                  </button>
+                  <button
+                    class="garden-unit-card"
+                    type="button"
+                    data-garden-unit="bulwark"
+                    aria-pressed="false"
+                    aria-label="Select Bulwark, costs 75 energy"
+                  >
+                    <span aria-hidden="true">BW</span>
+                    <strong>WALL</strong>
+                    <small>75 E</small>
+                    <i data-garden-cooldown aria-hidden="true"></i>
+                  </button>
+                  <button
+                    class="garden-unit-card"
+                    type="button"
+                    data-garden-unit="frost"
+                    aria-pressed="false"
+                    aria-label="Select Frost Reed, costs 150 energy"
+                  >
+                    <span aria-hidden="true">FR</span>
+                    <strong>FROST</strong>
+                    <small>150 E</small>
+                    <i data-garden-cooldown aria-hidden="true"></i>
+                  </button>
+                  <button
+                    class="garden-unit-card"
+                    type="button"
+                    data-garden-unit="mine"
+                    aria-pressed="false"
+                    aria-label="Select Echo Mine, costs 125 energy"
+                  >
+                    <span aria-hidden="true">EM</span>
+                    <strong>MINE</strong>
+                    <small>125 E</small>
+                    <i data-garden-cooldown aria-hidden="true"></i>
+                  </button>
+                  <button
+                    class="garden-unit-card garden-unit-card--remove"
+                    type="button"
+                    data-garden-remove
+                    aria-pressed="false"
+                    aria-label="Select remove tool"
+                  >
+                    <span aria-hidden="true">RX</span>
+                    <strong>REMOVE</strong>
+                    <small>NO REFUND</small>
+                  </button>
+                </div>
+                <div class="game-overlay" data-garden-overlay>
+                  <strong data-garden-message>DEFENCE GRID READY</strong>
+                  <span>SELECT A DEFENDER / TAP A CELL</span>
+                </div>
+              </div>
+              <footer class="game-window__footer garden-footer">
+                <span class="game-state" data-garden-state>STATUS / READY</span>
+                <div class="game-scores garden-readouts">
+                  <output aria-label="Available energy">ENERGY / <b data-garden-energy>175</b></output>
+                  <output aria-label="Current wave">WAVE / <b data-garden-wave>00/05</b></output>
+                  <output aria-label="Current score">SCORE / <b data-garden-score>000000</b></output>
+                </div>
+                <button type="button" data-garden-action>START</button>
+              </footer>
+            </div>
+            <p id="garden-help" class="visually-hidden">
+              Select a defender card and then choose a grid cell. Collect
+              energy nodes to deploy more defenders. Use number keys one to
+              five to select a card, arrow keys to move the grid cursor, Enter
+              or Space to place, R or Delete to remove, and P to pause.
+            </p>
+            <p class="visually-hidden" data-garden-announcement aria-live="polite"></p>
+          </article>
         </div>
       </section>
     </main>
@@ -453,5 +612,6 @@
     <script src="snake-game.js?v=game-4"></script>
     <script src="space-invaders-game.js?v=game-4"></script>
     <script src="tetris-game.js?v=game-4"></script>
+    <script src="garden-guard-game.js?v=game-1"></script>
   </body>
 </html>
