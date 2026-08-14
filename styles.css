@@ -2319,7 +2319,7 @@ html[data-theme="light"] .project-model-viewport:focus-visible .sequence-hover-n
 
 .game-window__bar {
   display: grid;
-  grid-template-columns: 62px minmax(0, 1fr) auto 48px;
+  grid-template-columns: 62px minmax(0, 1fr) auto 58px 48px;
   align-items: center;
   min-height: 38px;
   border-bottom: 1px solid var(--preview-line);
@@ -2357,10 +2357,10 @@ html[data-theme="light"] .project-model-viewport:focus-visible .sequence-hover-n
   gap: 5px;
 }
 
-.game-fullscreen-toggle {
+.game-fullscreen-toggle,
+.game-sound-toggle {
   align-self: stretch;
   justify-content: center;
-  min-width: 48px;
   min-height: 44px;
   padding-inline: 4px;
   border: 0;
@@ -2372,14 +2372,36 @@ html[data-theme="light"] .project-model-viewport:focus-visible .sequence-hover-n
   touch-action: manipulation;
 }
 
+.game-fullscreen-toggle {
+  min-width: 48px;
+}
+
+.game-sound-toggle {
+  min-width: 58px;
+}
+
+.game-sound-toggle[aria-pressed="false"] {
+  color: var(--faint);
+}
+
+.game-sound-toggle:disabled {
+  color: var(--faint);
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
 .game-fullscreen-toggle:hover,
-.game-fullscreen-toggle:focus-visible {
+.game-fullscreen-toggle:focus-visible,
+.game-sound-toggle:not(:disabled):hover,
+.game-sound-toggle:not(:disabled):focus-visible {
   background: var(--blue);
   color: #06101c;
 }
 
 html[data-theme="light"] .game-fullscreen-toggle:hover,
-html[data-theme="light"] .game-fullscreen-toggle:focus-visible {
+html[data-theme="light"] .game-fullscreen-toggle:focus-visible,
+html[data-theme="light"] .game-sound-toggle:not(:disabled):hover,
+html[data-theme="light"] .game-sound-toggle:not(:disabled):focus-visible {
   color: #fff;
 }
 
@@ -2868,7 +2890,7 @@ html[data-theme="light"] .game-window__footer button:focus-visible {
 
   .game-console .game-window__bar {
     grid-area: bar;
-    grid-template-columns: minmax(0, 1fr) 48px;
+    grid-template-columns: minmax(0, 1fr) 58px 48px;
     border-bottom: 1px solid var(--preview-line);
     border-left: 1px solid var(--preview-line);
   }
@@ -3607,7 +3629,7 @@ html[data-theme="light"] .button--light:hover {
   }
 
   .game-window__bar {
-    grid-template-columns: 62px minmax(0, 1fr) 48px;
+    grid-template-columns: 62px minmax(0, 1fr) 58px 48px;
   }
 
   .game-window__bar .game-build-label {

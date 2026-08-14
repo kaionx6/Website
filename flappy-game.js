@@ -310,6 +310,7 @@
 
     startRound() {
       if (this.suspended) return;
+      window.KelvinGameAudio?.play?.("game-start");
       this.state = "running";
       this.resetRound();
       this.bird.velocity = FLAP_VELOCITY;
@@ -341,6 +342,7 @@
 
     endRound() {
       if (this.state !== "running") return;
+      window.KelvinGameAudio?.play?.("collision");
       this.state = "gameover";
       this.bird.velocity = 0;
 
@@ -358,6 +360,7 @@
 
     flap() {
       if (this.state !== "running" || this.suspended) return;
+      window.KelvinGameAudio?.play?.("flap");
       this.bird.velocity = FLAP_VELOCITY;
     }
 
@@ -455,6 +458,7 @@
         if (!pipe.passed && pipe.x + PIPE_WIDTH < this.bird.x) {
           pipe.passed = true;
           this.score += 1;
+          window.KelvinGameAudio?.play?.("score");
           if (this.scoreOutput) {
             this.scoreOutput.textContent = String(this.score).padStart(2, "0");
           }

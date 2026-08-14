@@ -480,6 +480,7 @@
         this.pauseReason = "";
         this.lastTime = 0;
         this.setOverlay(false);
+        window.KelvinGameAudio?.play?.("resume");
         this.announce("Operation resumed.");
         this.syncInterface(true);
         this.queueFrame();
@@ -489,6 +490,7 @@
 
       this.resetRound();
       this.state = "running";
+      window.KelvinGameAudio?.play?.("game-start");
       this.beginWave(0, 6);
       this.setOverlay(false);
       this.syncInterface(true);
@@ -505,7 +507,10 @@
       this.frameId = 0;
       this.setOverlay(true, "OPERATION PAUSED");
       this.syncInterface(true);
-      if (reason === "manual") this.announce("Operation paused.");
+      if (reason === "manual") {
+        window.KelvinGameAudio?.play?.("pause");
+        this.announce("Operation paused.");
+      }
       this.draw();
     }
 
@@ -522,11 +527,13 @@
       }
 
       if (outcome === "won") {
+        window.KelvinGameAudio?.play?.("victory");
         this.setOverlay(true, "SECTOR SECURE");
         this.announce(
           `Sector secured. Final score ${this.score}. Press Replay to deploy again.`,
         );
       } else {
+        window.KelvinGameAudio?.play?.("game-over");
         this.setOverlay(true, "SECTOR BREACHED");
         this.announce(
           `The defence grid was breached. Score ${this.score}. Press Replay to try again.`,
@@ -551,6 +558,7 @@
       const unlockedLabel = this.lastUnlockedUnit
         ? `${UNIT_TYPES[this.lastUnlockedUnit].label} unlocked. `
         : "";
+      if (index > 0) window.KelvinGameAudio?.play?.("round");
       this.announce(
         `Round ${index + 1} of ${ROUNDS.length}. ${unlockedLabel}Protect all five lanes.`,
       );
@@ -915,6 +923,7 @@
         burstTimer: 0,
         burstRows: [],
       });
+      window.KelvinGameAudio?.play?.("deploy");
       this.announce(
         `${specification.label} deployed in lane ${row + 1}, column ${column + 1}.`,
       );
@@ -941,6 +950,7 @@
       node.collected = true;
       this.energy = Math.min(999, this.energy + node.value);
       this.score += node.value * 2;
+      window.KelvinGameAudio?.play?.("collect");
       this.announce(`${node.value} supply collected. Total ${this.energy}.`);
       this.energyNodes = this.energyNodes.filter((candidate) => !candidate.collected);
       this.syncInterface(true);
@@ -1014,6 +1024,7 @@
         this.waitingForWave = true;
         this.waveBreakTimer = 8;
         this.energy = Math.min(999, this.energy + 50);
+        window.KelvinGameAudio?.play?.("round-clear");
         this.announce(
           `Round ${this.waveIndex + 1} cleared. Fifty reserve supply added.`,
         );
@@ -1040,6 +1051,13 @@
     }
 
     fireUnitVolley(unit, specification, rows) {
+      if (rows.length > 0) {
+        window.KelvinGameAudio?.play?.("shoot", {
+          channel: "grid-shoot",
+          cooldown: 90,
+          volume: 0.08,
+        });
+      }
       rows.forEach((row) => {
         this.projectiles.push({
           id: ++this.entityId,
@@ -1078,6 +1096,10 @@
         duration: effectType === "nova" ? 0.58 : 0.42,
         color: specification.color,
       });
+      window.KelvinGameAudio?.play?.(
+        effectType === "nova" ? "heavy-blast" : "blast",
+        { channel: "grid-blast", cooldown: 100 },
+      );
     }
 
     updateUnits(delta) {

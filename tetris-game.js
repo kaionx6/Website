@@ -578,6 +578,7 @@
       this.announce(
         "Tetris started. Swipe left or right to move, swipe down to drop, tap to rotate, or use the keyboard.",
       );
+      window.KelvinGameAudio?.play?.("game-start");
       this.queueFrame();
     }
 
@@ -623,6 +624,7 @@
       this.announce(
         `Game over. Score ${this.score}. Best ${this.bestScore}. Press Replay to try again.`,
       );
+      window.KelvinGameAudio?.play?.("game-over");
       this.draw();
     }
 
@@ -888,6 +890,7 @@
       if (this.collides(candidate)) return false;
       this.activePiece = candidate;
       this.resetLockDelay(wasGrounded);
+      window.KelvinGameAudio?.play?.("move");
       this.draw();
       return true;
     }
@@ -908,6 +911,7 @@
         if (this.collides(candidate)) continue;
         this.activePiece = candidate;
         this.resetLockDelay(wasGrounded);
+        window.KelvinGameAudio?.play?.("rotate");
         this.draw();
         return true;
       }
@@ -952,6 +956,7 @@
       const distance = this.getDropDistance();
       this.activePiece.y += distance;
       this.addScore(distance * 2);
+      window.KelvinGameAudio?.play?.("hard-drop");
       this.lockPiece();
     }
 
@@ -973,6 +978,7 @@
         ? this.spawnPiece(incomingType, false)
         : this.spawnPiece(null, false);
       if (!spawned) return false;
+      window.KelvinGameAudio?.play?.("hold");
       this.syncInterface();
       this.announce(
         incomingType
@@ -994,9 +1000,13 @@
       for (const { x, y } of cells) {
         this.boardCells[y][x] = this.activePiece.type;
       }
+      window.KelvinGameAudio?.play?.("lock");
 
       const cleared = this.clearLines();
       if (cleared) {
+        window.KelvinGameAudio?.play?.("line-clear", {
+          intensity: cleared,
+        });
         this.lines += cleared;
         this.level = Math.floor(this.lines / LINES_PER_LEVEL) + 1;
         this.addScore(LINE_SCORES[cleared] * this.level);

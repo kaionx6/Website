@@ -16,6 +16,7 @@ browser viewport, and cycle in order after a deliberate vertical wheel gesture.
 - `contact.html` — contact page
 - `styles.css` — layout, themes, responsive styles, and preview illustrations
 - `script.js` — theme persistence, project tabs, and page-tab cycling progress
+- `game-audio.js` — shared 8-bit game effects and persistent sound toggle
 - `game-library.js` — accessible switching between the five game panels
 - `flappy-game.js` — dependency-free responsive Flappy Bird canvas demo
 - `snake-game.js` — dependency-free responsive Snake canvas demo

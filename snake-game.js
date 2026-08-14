@@ -385,6 +385,7 @@
         return;
       }
 
+      window.KelvinGameAudio?.play?.("game-start");
       this.state = "running";
       this.pauseReason = "";
       this.resetRound(direction);
@@ -428,6 +429,7 @@
 
     endRound(won = false) {
       if (this.state !== "running") return;
+      window.KelvinGameAudio?.play?.(won ? "victory" : "collision");
       this.state = "gameover";
       this.pauseReason = "";
       cancelAnimationFrame(this.frameId);
@@ -539,7 +541,9 @@
       }
       if (this.state !== "running" || this.suspended) return;
       if (isOpposite(nextDirection, this.direction)) return;
+      if (sameCell(nextDirection, this.queuedDirection)) return;
       this.queuedDirection = nextDirection;
+      window.KelvinGameAudio?.play?.("turn");
     }
 
     spawnFood() {
@@ -597,6 +601,7 @@
       }
 
       this.score += 1;
+      window.KelvinGameAudio?.play?.("collect");
       const isNewBest = this.score > this.bestScore;
       if (isNewBest) {
         this.bestScore = this.score;

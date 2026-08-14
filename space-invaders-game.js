@@ -427,6 +427,7 @@
       this.lastTime = 0;
       this.syncInterface();
       this.setStatus("Space Invaders started. Wave 1.");
+      window.KelvinGameAudio?.play?.("game-start");
       this.queueFrame();
     }
 
@@ -463,6 +464,7 @@
       this.setStatus(
         `Game over. Score ${this.score}. Best ${this.bestScore}. Press Replay to try again.`,
       );
+      window.KelvinGameAudio?.play?.("game-over");
       this.draw();
     }
 
@@ -588,6 +590,7 @@
         height: 14,
       });
       this.playerFireClock = 0.18;
+      window.KelvinGameAudio?.play?.("shoot");
     }
 
     fireEnemyShot() {
@@ -652,6 +655,7 @@
     hitPlayer() {
       if (this.hitCooldown > 0) return;
       this.lives -= 1;
+      window.KelvinGameAudio?.play?.("player-hit");
       this.enemyShots.length = 0;
       this.player.x = (this.worldWidth - this.player.width) / 2;
       this.pointerTarget = null;
@@ -677,6 +681,7 @@
           enemy.alive = false;
           hit = true;
           this.score += enemy.value;
+          window.KelvinGameAudio?.play?.("enemy-hit");
           if (this.score > this.bestScore) this.bestScore = this.score;
           this.updateScoreOutputs();
           break;
@@ -715,6 +720,7 @@
           this.wave += 1;
           this.createFormation();
           this.setStatus(`Wave ${this.wave} started.`);
+          window.KelvinGameAudio?.play?.("wave");
         }
         return;
       }
@@ -740,6 +746,7 @@
         if (this.score > this.bestScore) this.bestScore = this.score;
         this.updateScoreOutputs();
         this.setStatus(`Wave ${this.wave} cleared.`);
+        window.KelvinGameAudio?.play?.("victory");
       }
     }
 
