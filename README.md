@@ -22,8 +22,9 @@ browser viewport, and cycle in order after a deliberate vertical wheel gesture.
 - `snake-game.js` — dependency-free responsive Snake canvas demo
 - `space-invaders-game.js` — dependency-free responsive Space Invaders demo
 - `tetris-game.js` — responsive Tetris with touch gestures and a hold queue
-- `grid-command-game.js` — nine-round sector-defence campaign with progressive
-  unit unlocks and touch controls
+- `grid-command-game.js` — nine-round sector-defence campaign with staged
+  one-, three-, and five-lane fields, specialist enemies, progressive unit
+  unlocks, and touch controls
 - `model-viewer.js` — GLB rendering and the model-to-photo interaction sequence
 - `assets/kelvin-presentation.png` — archived supplied photo (not currently rendered)
 - `assets/kg-logo-blue.png` — transparent site-blue KG logo and browser favicon

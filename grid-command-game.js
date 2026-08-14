@@ -9,6 +9,11 @@
   const FIXED_STEP = 1 / 60;
   const MAX_FRAME_STEP = 0.05;
   const MAX_CATCH_UP_STEPS = 5;
+  const LANE_PHASES = [
+    { fromRound: 1, rows: [2], label: "CENTRE LANE" },
+    { fromRound: 3, rows: [1, 2, 3], label: "MIDDLE THREE" },
+    { fromRound: 6, rows: [0, 1, 2, 3, 4], label: "ALL FIVE" },
+  ];
 
   const UNIT_TYPES = {
     lumen: {
@@ -115,6 +120,7 @@
     "snap",
     "triad",
   ];
+  const JAMMABLE_UNITS = new Set(["pulse", "frost", "burst", "snap", "triad"]);
 
   const ENEMY_TYPES = {
     drifter: {
@@ -144,6 +150,53 @@
       scale: 0.92,
       color: "#7d91a8",
     },
+    breacher: {
+      label: "Assault Ram",
+      health: 250,
+      speed: 0.21,
+      damage: 44,
+      impactDamage: 175,
+      score: 180,
+      scale: 0.9,
+      color: "#c56b52",
+    },
+    jammer: {
+      label: "Signal Jammer",
+      health: 220,
+      speed: 0.16,
+      damage: 46,
+      jamRange: 2.65,
+      jamDuration: 1.75,
+      jamPeriod: 6,
+      score: 220,
+      scale: 0.86,
+      color: "#a779c5",
+    },
+    repair: {
+      label: "Repair Drone",
+      health: 155,
+      speed: 0.185,
+      damage: 34,
+      repairRange: 1.6,
+      repairRows: 1,
+      repairAmount: 42,
+      repairPeriod: 3.4,
+      score: 240,
+      scale: 0.7,
+      color: "#55b7a5",
+    },
+    artillery: {
+      label: "Mortar Walker",
+      health: 330,
+      speed: 0.105,
+      damage: 56,
+      attackRange: 3.2,
+      shotDamage: 75,
+      fireTime: 4,
+      score: 320,
+      scale: 1,
+      color: "#b45e68",
+    },
     hauler: {
       label: "Siege Carrier",
       health: 760,
@@ -156,99 +209,140 @@
   };
 
   const ROUNDS = [
-    { count: 5, interval: 4.6, pool: ["drifter", "drifter", "drifter"] },
+    { count: 5, interval: 4.7, pool: ["drifter"] },
     {
       count: 7,
       interval: 4.35,
-      pool: ["drifter", "drifter", "drifter", "runner"],
+      pool: ["drifter", "drifter", "drifter", "drifter", "runner"],
     },
     {
-      count: 9,
+      count: 10,
       interval: 4.1,
-      pool: ["drifter", "drifter", "drifter", "runner", "runner", "shield"],
+      pool: [
+        "drifter",
+        "drifter",
+        "drifter",
+        "drifter",
+        "runner",
+        "runner",
+        "shield",
+      ],
     },
     {
-      count: 11,
-      interval: 3.9,
-      pool: ["drifter", "drifter", "runner", "runner", "shield"],
-    },
-    {
-      count: 13,
-      interval: 3.7,
+      count: 12,
+      interval: 3.85,
       pool: [
         "drifter",
         "drifter",
         "drifter",
         "runner",
         "runner",
-        "runner",
         "shield",
         "shield",
-        "shield",
-        "hauler",
+        "breacher",
       ],
+      featured: { 2: "breacher" },
     },
     {
       count: 15,
-      interval: 3.5,
+      interval: 3.6,
       pool: [
         "drifter",
         "drifter",
         "runner",
         "runner",
-        "runner",
         "shield",
         "shield",
         "shield",
-        "hauler",
+        "breacher",
+        "breacher",
+        "jammer",
       ],
+      featured: { 2: "jammer" },
     },
     {
-      count: 17,
-      interval: 3.3,
+      count: 18,
+      interval: 3.35,
       pool: [
         "drifter",
         "drifter",
         "runner",
         "runner",
-        "runner",
         "shield",
         "shield",
         "shield",
         "hauler",
-        "hauler",
+        "breacher",
+        "breacher",
+        "jammer",
+        "repair",
       ],
+      featured: { 4: "repair" },
     },
     {
-      count: 20,
+      count: 21,
       interval: 3.15,
       pool: [
         "drifter",
         "runner",
         "runner",
+        "shield",
+        "shield",
+        "shield",
+        "hauler",
+        "breacher",
+        "breacher",
+        "jammer",
+        "jammer",
+        "repair",
+        "artillery",
+      ],
+      featured: { 3: "artillery" },
+    },
+    {
+      count: 25,
+      interval: 2.95,
+      pool: [
+        "drifter",
+        "runner",
         "runner",
         "shield",
         "shield",
         "shield",
         "hauler",
         "hauler",
-        "hauler",
+        "breacher",
+        "breacher",
+        "jammer",
+        "jammer",
+        "repair",
+        "repair",
+        "artillery",
+        "artillery",
       ],
     },
     {
-      count: 24,
-      interval: 3,
+      count: 30,
+      interval: 2.75,
       pool: [
+        "drifter",
         "runner",
         "runner",
-        "runner",
-        "shield",
         "shield",
         "shield",
         "shield",
         "hauler",
         "hauler",
         "hauler",
+        "breacher",
+        "breacher",
+        "jammer",
+        "jammer",
+        "repair",
+        "repair",
+        "artillery",
+        "artillery",
+        "artillery",
       ],
     },
   ];
@@ -331,7 +425,7 @@
       this.syncInterface(true);
       this.draw();
       this.announce(
-        "Grid Command ready. Select a unit, then choose a lane and column.",
+        "Grid Command ready. The centre lane is online. Select a unit, then choose a lane and column.",
       );
 
       if (document.fonts?.ready) {
@@ -435,6 +529,40 @@
       return Math.max(1, this.waveIndex + 1);
     }
 
+    lanePhaseForRound(round = this.currentRound()) {
+      return [...LANE_PHASES]
+        .reverse()
+        .find((phase) => round >= phase.fromRound) || LANE_PHASES[0];
+    }
+
+    activeRows(round = this.currentRound()) {
+      return this.lanePhaseForRound(round).rows;
+    }
+
+    isLaneActive(row, round = this.currentRound()) {
+      return this.activeRows(round).includes(row);
+    }
+
+    laneUnlockRound(row) {
+      const phase = LANE_PHASES.find((candidate) => candidate.rows.includes(row));
+      return phase?.fromRound ?? Number.POSITIVE_INFINITY;
+    }
+
+    nearestActiveRow(row) {
+      return this.activeRows().reduce((nearest, candidate) =>
+        Math.abs(candidate - row) < Math.abs(nearest - row)
+          ? candidate
+          : nearest,
+      );
+    }
+
+    activeLaneDescription(round = this.currentRound()) {
+      const phase = this.lanePhaseForRound(round);
+      if (phase.rows.length === 1) return "One centre lane active.";
+      if (phase.rows.length === 3) return "The middle three lanes are active.";
+      return "All five lanes are active.";
+    }
+
     isUnitUnlocked(type) {
       return this.unlockRoundFor(type) <= this.currentRound();
     }
@@ -450,7 +578,10 @@
       this.waitingForWave = false;
       this.waveBreakTimer = 0;
       this.waveBannerTimer = 0;
+      this.laneRevealTimer = 0;
+      this.newlyActivatedRows = [];
       this.lastUnlockedUnit = null;
+      this.lastFeaturedEnemy = null;
       this.skyEnergyTimer = 2.5;
       this.selectedUnit = UNIT_ORDER[0];
       this.removeMode = false;
@@ -544,13 +675,25 @@
     }
 
     beginWave(index, delay = 1.8) {
+      const previousRows = this.activeRows();
       this.waveIndex = index;
       this.waveSpawned = 0;
       this.spawnTimer = delay;
       this.waitingForWave = false;
       this.waveBreakTimer = 0;
       this.waveBannerTimer = 3;
+      const nextRows = this.activeRows();
+      this.newlyActivatedRows = nextRows.filter(
+        (row) => !previousRows.includes(row),
+      );
+      this.laneRevealTimer = this.reducedMotion || !this.newlyActivatedRows.length
+        ? 0
+        : 1.25;
+      if (!this.isLaneActive(this.cursor.row)) {
+        this.cursor.row = this.nearestActiveRow(this.cursor.row);
+      }
       this.lastUnlockedUnit = UNIT_ORDER[index] || null;
+      this.lastFeaturedEnemy = Object.values(ROUNDS[index]?.featured || {})[0] || null;
       if (!this.isUnitUnlocked(this.selectedUnit)) {
         this.selectedUnit = UNIT_ORDER[0];
         this.removeMode = false;
@@ -559,8 +702,17 @@
         ? `${UNIT_TYPES[this.lastUnlockedUnit].label} unlocked. `
         : "";
       if (index > 0) window.KelvinGameAudio?.play?.("round");
+      const laneNotice =
+        index === 2
+          ? "Lanes 2 through 4 are now online."
+          : index === 5
+            ? "All five lanes are now online."
+            : this.activeLaneDescription();
+      const threatNotice = this.lastFeaturedEnemy
+        ? ` New threat: ${ENEMY_TYPES[this.lastFeaturedEnemy].label}.`
+        : "";
       this.announce(
-        `Round ${index + 1} of ${ROUNDS.length}. ${unlockedLabel}Protect all five lanes.`,
+        `Round ${index + 1} of ${ROUNDS.length}. ${unlockedLabel}${laneNotice}${threatNotice}`,
       );
       this.syncInterface(true);
     }
@@ -771,10 +923,17 @@
       if (this.collectEnergyAtPoint(point)) return;
       const cell = this.pointToCell(point);
       if (!cell) {
-        this.announce("Choose a cell inside the five-lane defence grid.");
+        this.announce("Choose a cell inside the defence grid.");
         return;
       }
 
+      if (!this.isLaneActive(cell.row)) {
+        this.announce(
+          `Lane ${cell.row + 1} is offline until round ${this.laneUnlockRound(cell.row)}.`,
+        );
+        this.draw();
+        return;
+      }
       this.cursor = cell;
       this.useSelectedTool(cell.row, cell.column);
     }
@@ -819,8 +978,18 @@
 
       if (movement) {
         event.preventDefault();
+        const activeRows = this.activeRows();
+        const currentRowIndex = Math.max(
+          0,
+          activeRows.indexOf(this.nearestActiveRow(this.cursor.row)),
+        );
+        const nextRowIndex = clamp(
+          currentRowIndex + movement.row,
+          0,
+          activeRows.length - 1,
+        );
         this.cursor = {
-          row: clamp(this.cursor.row + movement.row, 0, ROW_COUNT - 1),
+          row: movement.row ? activeRows[nextRowIndex] : activeRows[currentRowIndex],
           column: clamp(
             this.cursor.column + movement.column,
             0,
@@ -843,6 +1012,12 @@
     }
 
     describeCursor() {
+      if (!this.isLaneActive(this.cursor.row)) {
+        this.announce(
+          `Lane ${this.cursor.row + 1} is offline until round ${this.laneUnlockRound(this.cursor.row)}.`,
+        );
+        return;
+      }
       const occupant = this.unitAt(this.cursor.row, this.cursor.column);
       this.announce(
         `Lane ${this.cursor.row + 1}, column ${this.cursor.column + 1}, ${
@@ -853,6 +1028,12 @@
 
     useSelectedTool(row, column) {
       if (this.state !== "running") return;
+      if (!this.isLaneActive(row)) {
+        this.announce(
+          `Lane ${row + 1} is offline until round ${this.laneUnlockRound(row)}.`,
+        );
+        return;
+      }
 
       if (this.removeMode) {
         const unit = this.unitAt(row, column);
@@ -879,6 +1060,23 @@
     placeUnit(type, row, column) {
       const specification = UNIT_TYPES[type];
       if (!specification) return false;
+      if (
+        !Number.isInteger(row) ||
+        !Number.isInteger(column) ||
+        row < 0 ||
+        row >= ROW_COUNT ||
+        column < 0 ||
+        column >= COLUMN_COUNT
+      ) {
+        this.announce("Choose a valid lane and column inside the defence grid.");
+        return false;
+      }
+      if (!this.isLaneActive(row)) {
+        this.announce(
+          `Lane ${row + 1} is offline until round ${this.laneUnlockRound(row)}.`,
+        );
+        return false;
+      }
       if (!this.isUnitUnlocked(type)) {
         this.announce(
           `${specification.label} unlocks at the start of round ${this.unlockRoundFor(type)}.`,
@@ -922,6 +1120,7 @@
         burstRemaining: 0,
         burstTimer: 0,
         burstRows: [],
+        jamTimer: 0,
       });
       window.KelvinGameAudio?.play?.("deploy");
       this.announce(
@@ -974,8 +1173,9 @@
     }
 
     spawnEnemy(type) {
-      const specification = ENEMY_TYPES[type] || ENEMY_TYPES.drifter;
-      const laneLoads = Array.from({ length: ROW_COUNT }, (_, row) => ({
+      const resolvedType = ENEMY_TYPES[type] ? type : "drifter";
+      const specification = ENEMY_TYPES[resolvedType];
+      const laneLoads = this.activeRows().map((row) => ({
         row,
         count: this.enemies.filter((enemy) => enemy.row === row).length,
       }));
@@ -987,12 +1187,21 @@
 
       this.enemies.push({
         id: ++this.entityId,
-        type,
+        type: resolvedType,
         row,
         x: COLUMN_COUNT + 0.62 + Math.random() * 0.25,
         health: specification.health,
         maxHealth: specification.health,
         slowTimer: 0,
+        ramReady: resolvedType === "breacher",
+        abilityTimer:
+          resolvedType === "jammer"
+            ? 2.8
+            : resolvedType === "repair"
+              ? 2.2
+              : 0,
+        attackTimer: resolvedType === "artillery" ? 2.4 : 0,
+        abilityFlashTimer: 0,
         rewarded: false,
       });
     }
@@ -1004,7 +1213,9 @@
       if (this.waveSpawned < wave.count) {
         this.spawnTimer -= delta;
         if (this.spawnTimer <= 0) {
-          const type = wave.pool[Math.floor(Math.random() * wave.pool.length)];
+          const type =
+            wave.featured?.[this.waveSpawned] ||
+            wave.pool[Math.floor(Math.random() * wave.pool.length)];
           this.spawnEnemy(type);
           this.waveSpawned += 1;
           const jitter = 0.88 + Math.random() * 0.3;
@@ -1045,7 +1256,7 @@
       const spread = specification.laneSpread || 0;
       const rows = [];
       for (let row = unit.row - spread; row <= unit.row + spread; row += 1) {
-        if (row >= 0 && row < ROW_COUNT) rows.push(row);
+        if (row >= 0 && row < ROW_COUNT && this.isLaneActive(row)) rows.push(row);
       }
       return rows;
     }
@@ -1079,6 +1290,7 @@
       this.enemies.forEach((enemy) => {
         if (
           enemy.health > 0 &&
+          this.isLaneActive(enemy.row) &&
           Math.abs(enemy.row - unit.row) <= rowRadius &&
           Math.abs(enemy.x - centerX) <= specification.blastRadius
         ) {
@@ -1106,6 +1318,10 @@
       this.units.forEach((unit) => {
         if (unit.health <= 0) return;
         const specification = UNIT_TYPES[unit.type];
+        if (unit.jamTimer > 0) {
+          unit.jamTimer = Math.max(0, unit.jamTimer - delta);
+          if (JAMMABLE_UNITS.has(unit.type)) return;
+        }
 
         if (unit.type === "lumen") {
           unit.timer -= delta;
@@ -1242,12 +1458,106 @@
       this.detonateArea(unit, specification, "mine");
     }
 
+    updateEnemyAbility(enemy, specification, delta) {
+      enemy.abilityFlashTimer = Math.max(0, enemy.abilityFlashTimer - delta);
+
+      if (enemy.type === "jammer") {
+        enemy.abilityTimer = Math.max(0, enemy.abilityTimer - delta);
+        if (enemy.abilityTimer > 0) return;
+        const target = this.units
+          .filter(
+            (unit) =>
+              unit.health > 0 &&
+              JAMMABLE_UNITS.has(unit.type) &&
+              unit.row === enemy.row &&
+              unit.column + 0.5 <= enemy.x &&
+              enemy.x - (unit.column + 0.5) <= specification.jamRange,
+          )
+          .sort((first, second) => {
+            const firstDistance = enemy.x - (first.column + 0.5);
+            const secondDistance = enemy.x - (second.column + 0.5);
+            return firstDistance - secondDistance || first.id - second.id;
+          })[0];
+        if (!target) return;
+        target.jamTimer = Math.max(target.jamTimer, specification.jamDuration);
+        enemy.abilityTimer = specification.jamPeriod;
+        enemy.abilityFlashTimer = 0.42;
+        this.effects.push({
+          type: "jam",
+          x: enemy.x,
+          y: enemy.row + 0.5,
+          targetX: target.column + 0.5,
+          targetY: target.row + 0.5,
+          radiusX: 0.42,
+          radiusY: 0.42,
+          age: 0,
+          duration: 0.42,
+          color: specification.color,
+        });
+        return;
+      }
+
+      if (enemy.type === "repair") {
+        enemy.abilityTimer = Math.max(0, enemy.abilityTimer - delta);
+        if (enemy.abilityTimer > 0) return;
+        const target = this.enemies
+          .filter(
+            (candidate) =>
+              candidate.id !== enemy.id &&
+              candidate.health > 0 &&
+              candidate.health < candidate.maxHealth &&
+              this.isLaneActive(candidate.row) &&
+              Math.abs(candidate.row - enemy.row) <= specification.repairRows &&
+              Math.abs(candidate.x - enemy.x) <= specification.repairRange,
+          )
+          .sort((first, second) => {
+            const healthDifference =
+              first.health / first.maxHealth - second.health / second.maxHealth;
+            return (
+              healthDifference ||
+              Math.abs(first.x - enemy.x) - Math.abs(second.x - enemy.x) ||
+              first.id - second.id
+            );
+          })[0];
+        if (!target) return;
+        target.health = Math.min(
+          target.maxHealth,
+          target.health + specification.repairAmount,
+        );
+        enemy.abilityTimer = specification.repairPeriod;
+        enemy.abilityFlashTimer = 0.48;
+        this.effects.push({
+          type: "repair",
+          x: enemy.x,
+          y: enemy.row + 0.5,
+          targetX: target.x,
+          targetY: target.row + 0.5,
+          radiusX: 0.48,
+          radiusY: 0.48,
+          age: 0,
+          duration: 0.48,
+          color: specification.color,
+        });
+      }
+    }
+
+    artilleryTarget(enemy, specification) {
+      return this.units
+        .filter((unit) => {
+          if (unit.health <= 0 || unit.row !== enemy.row) return false;
+          const distance = enemy.x - (unit.column + 0.5);
+          return distance >= 0.66 && distance <= specification.attackRange;
+        })
+        .sort((first, second) => second.column - first.column || first.id - second.id)[0];
+    }
+
     updateEnemies(delta) {
       for (const enemy of this.enemies) {
         if (enemy.health <= 0 || this.state !== "running") continue;
         const specification = ENEMY_TYPES[enemy.type];
         if (enemy.slowTimer > 0) enemy.slowTimer -= delta;
         const slowFactor = enemy.slowTimer > 0 ? enemy.slowFactor || 0.52 : 1;
+        this.updateEnemyAbility(enemy, specification, delta);
 
         const blockingUnit = this.units
           .filter(
@@ -1261,8 +1571,56 @@
         if (blockingUnit) {
           if (blockingUnit.type === "mine" && blockingUnit.armed) {
             this.detonateMine(blockingUnit);
+          } else if (enemy.type === "breacher" && enemy.ramReady) {
+            blockingUnit.health -= specification.impactDamage;
+            enemy.ramReady = false;
+            enemy.abilityFlashTimer = 0.35;
+            this.effects.push({
+              type: "ram",
+              x: blockingUnit.column + 0.5,
+              y: blockingUnit.row + 0.5,
+              radiusX: 0.58,
+              radiusY: 0.44,
+              age: 0,
+              duration: 0.35,
+              color: specification.color,
+            });
+            window.KelvinGameAudio?.play?.("player-hit", {
+              channel: "grid-enemy-impact",
+              cooldown: 120,
+              volume: 0.1,
+            });
           } else {
             blockingUnit.health -= specification.damage * delta;
+          }
+        } else if (enemy.type === "artillery") {
+          const target = this.artilleryTarget(enemy, specification);
+          if (target) {
+            enemy.attackTimer = Math.max(0, enemy.attackTimer - delta);
+            if (enemy.attackTimer <= 0) {
+              target.health -= specification.shotDamage;
+              enemy.attackTimer = specification.fireTime;
+              enemy.abilityFlashTimer = 0.45;
+              this.effects.push({
+                type: "mortar",
+                x: enemy.x,
+                y: enemy.row + 0.5,
+                targetX: target.column + 0.5,
+                targetY: target.row + 0.5,
+                radiusX: 0.52,
+                radiusY: 0.52,
+                age: 0,
+                duration: 0.45,
+                color: specification.color,
+              });
+              window.KelvinGameAudio?.play?.("player-hit", {
+                channel: "grid-enemy-shot",
+                cooldown: 120,
+                volume: 0.08,
+              });
+            }
+          } else {
+            enemy.x -= specification.speed * slowFactor * delta;
           }
         } else {
           enemy.x -= specification.speed * slowFactor * delta;
@@ -1285,7 +1643,7 @@
 
     updateSweepers(delta) {
       this.sweepers.forEach((sweeper) => {
-        if (!sweeper.active) return;
+        if (!sweeper.active || !this.isLaneActive(sweeper.row)) return;
         sweeper.x += 5.4 * delta;
         this.enemies.forEach((enemy) => {
           if (
@@ -1303,9 +1661,11 @@
     updateEnergyNodes(delta) {
       this.skyEnergyTimer -= delta;
       if (this.skyEnergyTimer <= 0) {
+        const activeRows = this.activeRows();
+        const targetRow = activeRows[Math.floor(Math.random() * activeRows.length)];
         this.spawnEnergyNode(
           0.5 + Math.random() * (COLUMN_COUNT - 1),
-          0.55 + Math.random() * (ROW_COUNT - 1.1),
+          targetRow + 0.5,
           25,
           true,
         );
@@ -1372,6 +1732,7 @@
       this.removeDeadUnits();
       this.removeDeadEnemies();
       this.waveBannerTimer = Math.max(0, this.waveBannerTimer - delta);
+      this.laneRevealTimer = Math.max(0, this.laneRevealTimer - delta);
       this.syncInterface();
     }
 
@@ -1560,18 +1921,25 @@
       context.font = `700 ${clamp(this.board.cell * 0.15, 8, 12)}px ${this.colors.mono}`;
       context.textBaseline = "middle";
       context.textAlign = "left";
+      const roundText = `${String(Math.max(0, this.waveIndex + 1)).padStart(
+        2,
+        "0",
+      )}/${String(ROUNDS.length).padStart(2, "0")}`;
+      const laneText = `${this.activeRows().length}/${ROW_COUNT}`;
       context.fillText(
-        `SUPPLY ${String(this.energy).padStart(3, "0")}  /  ROUND ${String(
-          Math.max(0, this.waveIndex + 1),
-        ).padStart(2, "0")}/${String(ROUNDS.length).padStart(2, "0")}`,
+        width < 620
+          ? `SP ${String(this.energy).padStart(3, "0")} / R ${roundText} / L ${laneText}`
+          : `SUPPLY ${String(this.energy).padStart(3, "0")}  /  ROUND ${roundText}  /  LANES ${laneText}`,
         Math.max(8, this.board.x),
         y,
       );
       context.textAlign = "right";
       context.fillText(
-        `SCORE ${String(this.score).padStart(6, "0")}  /  BEST ${String(
-          this.bestScore,
-        ).padStart(6, "0")}`,
+        width < 620
+          ? `S ${String(this.score).padStart(6, "0")}`
+          : `SCORE ${String(this.score).padStart(6, "0")}  /  BEST ${String(
+              this.bestScore,
+            ).padStart(6, "0")}`,
         Math.min(width - 8, this.board.x + this.board.width),
         y,
       );
@@ -1580,10 +1948,18 @@
     drawBoard() {
       const context = this.context;
       const { x, y, cell } = this.board;
+      const activeRows = this.activeRows();
 
       for (let row = 0; row < ROW_COUNT; row += 1) {
+        if (!activeRows.includes(row)) continue;
+        const isRevealing = this.newlyActivatedRows.includes(row) && this.laneRevealTimer > 0;
+        const revealProgress = isRevealing
+          ? 1 - this.laneRevealTimer / 1.25
+          : 1;
         for (let column = 0; column < COLUMN_COUNT; column += 1) {
-          context.globalAlpha = (row + column) % 2 === 0 ? 0.11 : 0.055;
+          context.globalAlpha =
+            ((row + column) % 2 === 0 ? 0.11 : 0.055) *
+            clamp(0.2 + revealProgress * 0.8, 0.2, 1);
           context.fillStyle = this.colors.accent;
           context.fillRect(
             x + column * cell,
@@ -1594,30 +1970,57 @@
         }
       }
       context.globalAlpha = 1;
-      context.strokeStyle = this.colors.line;
-      context.lineWidth = 1;
-      context.beginPath();
-      for (let column = 0; column <= COLUMN_COUNT; column += 1) {
-        const lineX = x + column * cell + 0.5;
-        context.moveTo(lineX, y);
-        context.lineTo(lineX, y + ROW_COUNT * cell);
-      }
-      for (let row = 0; row <= ROW_COUNT; row += 1) {
-        const lineY = y + row * cell + 0.5;
-        context.moveTo(x, lineY);
-        context.lineTo(x + COLUMN_COUNT * cell, lineY);
-      }
-      context.stroke();
+      activeRows.forEach((row) => {
+        const isRevealing = this.newlyActivatedRows.includes(row) && this.laneRevealTimer > 0;
+        const revealProgress = isRevealing
+          ? 1 - this.laneRevealTimer / 1.25
+          : 1;
+        context.save();
+        context.globalAlpha = clamp(0.28 + revealProgress * 0.72, 0.28, 1);
+        context.strokeStyle = isRevealing
+          ? this.colors.accent
+          : this.colors.line;
+        context.lineWidth = isRevealing ? 2 : 1;
+        context.beginPath();
+        for (let column = 0; column <= COLUMN_COUNT; column += 1) {
+          const lineX = x + column * cell + 0.5;
+          context.moveTo(lineX, y + row * cell);
+          context.lineTo(lineX, y + (row + 1) * cell);
+        }
+        context.moveTo(x, y + row * cell + 0.5);
+        context.lineTo(x + COLUMN_COUNT * cell, y + row * cell + 0.5);
+        context.moveTo(x, y + (row + 1) * cell + 0.5);
+        context.lineTo(x + COLUMN_COUNT * cell, y + (row + 1) * cell + 0.5);
+        context.stroke();
+        context.strokeStyle = this.colors.lineStrong;
+        context.lineWidth = 1.5;
+        context.strokeRect(
+          x + 0.5,
+          y + row * cell + 0.5,
+          COLUMN_COUNT * cell,
+          cell,
+        );
+        context.restore();
+      });
 
-      context.strokeStyle = this.colors.lineStrong;
-      context.lineWidth = 1.5;
-      context.strokeRect(x + 0.5, y + 0.5, COLUMN_COUNT * cell, ROW_COUNT * cell);
-
-      context.fillStyle = this.colors.faint;
       context.font = `700 ${clamp(cell * 0.13, 7, 11)}px ${this.colors.mono}`;
       context.textAlign = "right";
       context.textBaseline = "middle";
       for (let row = 0; row < ROW_COUNT; row += 1) {
+        if (!activeRows.includes(row)) {
+          context.fillStyle = this.colors.faint;
+          context.globalAlpha = 0.42;
+          context.fillText(
+            this.viewport.width < 620
+              ? `R${String(this.laneUnlockRound(row)).padStart(2, "0")}`
+              : `OFF / R${String(this.laneUnlockRound(row)).padStart(2, "0")}`,
+            x - cell * 0.12,
+            y + (row + 0.5) * cell,
+          );
+          context.globalAlpha = 1;
+          continue;
+        }
+        context.fillStyle = this.colors.faint;
         context.fillText(
           `L${row + 1}`,
           x - cell * 0.56,
@@ -1868,6 +2271,24 @@
       }
       context.restore();
 
+      if (unit.jamTimer > 0) {
+        context.save();
+        context.strokeStyle = ENEMY_TYPES.jammer.color;
+        context.lineWidth = Math.max(1.5, cell * 0.025);
+        context.setLineDash([cell * 0.1, cell * 0.07]);
+        context.strokeRect(
+          centerX - cell * 0.34,
+          centerY - cell * 0.34,
+          cell * 0.68,
+          cell * 0.68,
+        );
+        context.setLineDash([]);
+        context.beginPath();
+        context.arc(centerX, centerY, cell * 0.42, Math.PI * 1.15, Math.PI * 1.85);
+        context.stroke();
+        context.restore();
+      }
+
       this.drawHealthBar(
         unit,
         centerX,
@@ -1907,6 +2328,62 @@
 
       if (enemy.type === "shield" || enemy.type === "hauler") {
         context.strokeRect(-size * 1.08, -size * 0.62, size * 0.38, size * 1.08);
+      }
+      if (enemy.type === "breacher") {
+        context.beginPath();
+        context.moveTo(-size * 0.78, -size * 0.72);
+        context.lineTo(-size * 1.55, 0);
+        context.lineTo(-size * 0.78, size * 0.72);
+        if (enemy.ramReady) {
+          context.moveTo(-size * 1.18, -size * 0.48);
+          context.lineTo(-size * 1.75, 0);
+          context.lineTo(-size * 1.18, size * 0.48);
+        } else {
+          context.moveTo(-size * 1.04, -size * 0.35);
+          context.lineTo(-size * 1.3, -size * 0.08);
+          context.moveTo(-size * 1.04, size * 0.35);
+          context.lineTo(-size * 1.3, size * 0.08);
+        }
+        context.stroke();
+      }
+      if (enemy.type === "jammer") {
+        context.beginPath();
+        context.moveTo(0, -size * 0.9);
+        context.lineTo(0, -size * 1.65);
+        context.stroke();
+        for (let ring = 1; ring <= 2; ring += 1) {
+          context.beginPath();
+          context.arc(0, -size * 1.4, size * (0.25 + ring * 0.22), Math.PI * 1.15, Math.PI * 1.85);
+          context.stroke();
+        }
+      }
+      if (enemy.type === "repair") {
+        context.beginPath();
+        context.arc(0, -size * 1.05, size * 0.48, 0, Math.PI * 2);
+        context.stroke();
+        context.beginPath();
+        context.moveTo(-size * 0.25, -size * 1.05);
+        context.lineTo(size * 0.25, -size * 1.05);
+        context.moveTo(0, -size * 1.3);
+        context.lineTo(0, -size * 0.8);
+        context.stroke();
+      }
+      if (enemy.type === "artillery") {
+        context.lineWidth = Math.max(2, cell * 0.038);
+        context.beginPath();
+        context.moveTo(-size * 0.2, -size * 0.7);
+        context.lineTo(-size * 1.72, -size * 1.2);
+        context.stroke();
+        context.strokeRect(-size * 0.58, -size * 0.92, size * 0.78, size * 0.42);
+        if (enemy.attackTimer <= 0.45) {
+          context.fillStyle = specification.color;
+          context.beginPath();
+          context.moveTo(-size * 1.72, -size * 1.2);
+          context.lineTo(-size * 2.02, -size * 1.42);
+          context.lineTo(-size * 1.92, -size * 1.04);
+          context.closePath();
+          context.fill();
+        }
       }
       if (enemy.slowTimer > 0) {
         context.strokeStyle = UNIT_TYPES.frost.color;
@@ -1968,7 +2445,56 @@
         context.fillStyle = effect.color;
         context.lineWidth = Math.max(1.5, cell * 0.035);
 
-        if (effect.type === "snap") {
+        if (effect.type === "jam" || effect.type === "repair") {
+          const targetX = (effect.targetX - effect.x) * cell;
+          const targetY = (effect.targetY - effect.y) * cell;
+          context.globalAlpha = 1 - progress;
+          if (effect.type === "jam") {
+            context.setLineDash([cell * 0.09, cell * 0.06]);
+          }
+          context.beginPath();
+          context.moveTo(0, 0);
+          context.lineTo(targetX, targetY);
+          context.stroke();
+          context.setLineDash([]);
+          context.beginPath();
+          context.arc(targetX, targetY, radiusX, 0, Math.PI * 2);
+          context.stroke();
+          if (effect.type === "repair") {
+            context.beginPath();
+            context.moveTo(targetX - radiusX * 0.45, targetY);
+            context.lineTo(targetX + radiusX * 0.45, targetY);
+            context.moveTo(targetX, targetY - radiusY * 0.45);
+            context.lineTo(targetX, targetY + radiusY * 0.45);
+            context.stroke();
+          }
+        } else if (effect.type === "mortar") {
+          const targetX = (effect.targetX - effect.x) * cell;
+          const targetY = (effect.targetY - effect.y) * cell;
+          context.globalAlpha = 1 - progress;
+          context.beginPath();
+          context.moveTo(0, 0);
+          context.quadraticCurveTo(
+            targetX * 0.5,
+            -cell * (0.8 + progress * 0.35),
+            targetX,
+            targetY,
+          );
+          context.stroke();
+          context.beginPath();
+          context.arc(targetX, targetY, radiusX, 0, Math.PI * 2);
+          context.stroke();
+        } else if (effect.type === "ram") {
+          context.globalAlpha = 1 - progress;
+          for (let index = 0; index < 3; index += 1) {
+            const offset = radiusX * (0.15 + index * 0.38);
+            context.beginPath();
+            context.moveTo(offset, -radiusY);
+            context.lineTo(-offset, 0);
+            context.lineTo(offset, radiusY);
+            context.stroke();
+          }
+        } else if (effect.type === "snap") {
           context.globalAlpha = 1 - progress;
           context.beginPath();
           context.moveTo(-radiusX, -radiusY);
@@ -2031,6 +2557,7 @@
       const context = this.context;
       const cell = this.board.cell;
       this.sweepers.forEach((sweeper) => {
+        if (!this.isLaneActive(sweeper.row)) return;
         if (sweeper.used && !sweeper.active) return;
         const logicalX = sweeper.active ? sweeper.x : -0.42;
         const x = this.board.x + logicalX * cell;
@@ -2059,14 +2586,19 @@
       if (!this.stage.matches(":focus-within") && !this.selectedUnit && !this.removeMode) {
         return;
       }
+      if (!this.isLaneActive(this.cursor.row)) return;
       const context = this.context;
       const cell = this.board.cell;
       const x = this.board.x + this.cursor.column * cell;
       const y = this.board.y + this.cursor.row * cell;
       const valid = this.removeMode
-        ? Boolean(this.unitAt(this.cursor.row, this.cursor.column))
+        ? Boolean(
+            this.isLaneActive(this.cursor.row) &&
+              this.unitAt(this.cursor.row, this.cursor.column),
+          )
         : Boolean(
             this.selectedUnit &&
+              this.isLaneActive(this.cursor.row) &&
               this.isUnitUnlocked(this.selectedUnit) &&
               !this.unitAt(this.cursor.row, this.cursor.column) &&
               this.energy >= UNIT_TYPES[this.selectedUnit].cost &&
@@ -2084,7 +2616,7 @@
       if (this.waveBannerTimer <= 0 || this.waveIndex < 0) return;
       const context = this.context;
       const width = clamp(this.board.cell * 3.8, 150, 310);
-      const height = clamp(this.board.cell * 1.02, 52, 82);
+      const height = clamp(this.board.cell * 1.32, 70, 108);
       const x = this.board.x + this.board.width / 2 - width / 2;
       const y = this.board.y + this.board.height / 2 - height / 2;
       context.fillStyle = this.colors.surface;
@@ -2093,7 +2625,7 @@
       context.fillRect(x, y, width, height);
       context.strokeRect(x + 0.5, y + 0.5, width - 1, height - 1);
       context.fillStyle = this.colors.text;
-      context.font = `700 ${clamp(height * 0.19, 9, 14)}px ${this.colors.mono}`;
+      context.font = `700 ${clamp(height * 0.15, 9, 14)}px ${this.colors.mono}`;
       context.textAlign = "center";
       context.textBaseline = "middle";
       context.fillText(
@@ -2101,17 +2633,33 @@
           ROUNDS.length,
         ).padStart(2, "0")}`,
         x + width / 2,
-        y + height * 0.34,
+        y + height * 0.19,
       );
       if (this.lastUnlockedUnit) {
         context.fillStyle = UNIT_TYPES[this.lastUnlockedUnit].color;
-        context.font = `700 ${clamp(height * 0.16, 8, 12)}px ${this.colors.mono}`;
+        context.font = `700 ${clamp(height * 0.12, 8, 12)}px ${this.colors.mono}`;
         context.fillText(
           `UNIT ONLINE / ${UNIT_TYPES[this.lastUnlockedUnit].label.toUpperCase()}`,
           x + width / 2,
-          y + height * 0.68,
+          y + height * 0.43,
         );
       }
+      if (this.lastFeaturedEnemy) {
+        context.fillStyle = ENEMY_TYPES[this.lastFeaturedEnemy].color;
+        context.font = `700 ${clamp(height * 0.12, 8, 12)}px ${this.colors.mono}`;
+        context.fillText(
+          `NEW THREAT / ${ENEMY_TYPES[this.lastFeaturedEnemy].label.toUpperCase()}`,
+          x + width / 2,
+          y + height * 0.66,
+        );
+      }
+      context.fillStyle = this.colors.muted;
+      context.font = `700 ${clamp(height * 0.1, 7, 10)}px ${this.colors.mono}`;
+      context.fillText(
+        `LANES ONLINE / ${this.lanePhaseForRound().label}`,
+        x + width / 2,
+        y + height * 0.87,
+      );
     }
 
     draw() {
