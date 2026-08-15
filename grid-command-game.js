@@ -5,14 +5,14 @@
   const LEGACY_BEST_SCORE_KEY = "kelvin-garden-guard-best";
   const ROW_COUNT = 5;
   const COLUMN_COUNT = 9;
-  const STARTING_ENERGY = 175;
+  const MAX_ENERGY = 2_000;
   const FIXED_STEP = 1 / 60;
   const MAX_FRAME_STEP = 0.05;
   const MAX_CATCH_UP_STEPS = 5;
   const LANE_PHASES = [
-    { fromRound: 1, rows: [2], label: "CENTRE LANE" },
-    { fromRound: 3, rows: [1, 2, 3], label: "MIDDLE THREE" },
-    { fromRound: 6, rows: [0, 1, 2, 3, 4], label: "ALL FIVE" },
+    { fromLevel: 1, rows: [2], label: "CENTRE LANE" },
+    { fromLevel: 3, rows: [1, 2, 3], label: "MIDDLE THREE" },
+    { fromLevel: 6, rows: [0, 1, 2, 3, 4], label: "ALL FIVE" },
   ];
 
   const UNIT_TYPES = {
@@ -22,6 +22,7 @@
       cooldown: 5,
       health: 250,
       productionTime: 7.5,
+      description: "Produces 25 supply every 7.5 seconds. Deploy it early, then collect each supply cell.",
       color: "#e6c84c",
     },
     pulse: {
@@ -32,6 +33,7 @@
       fireTime: 1.15,
       damage: 26,
       projectileSpeed: 3.6,
+      description: "Reliable automatic fire down one lane. Establish a firing line before the patrol arrives.",
       color: "#58b968",
     },
     bulwark: {
@@ -39,6 +41,7 @@
       cost: 75,
       cooldown: 8,
       health: 1_100,
+      description: "A 1,100-integrity barricade that buys your weapons time. It deals no damage.",
       color: "#8da3b8",
     },
     frost: {
@@ -51,6 +54,7 @@
       projectileSpeed: 3.1,
       slowFactor: 0.52,
       slowTime: 2.7,
+      description: "Deals light damage and slows targets to 52% speed for 2.7 seconds. Pair it with cannons.",
       color: "#6ec9dc",
     },
     mine: {
@@ -61,6 +65,7 @@
       armTime: 5.5,
       damage: 390,
       blastRadius: 1.2,
+      description: "Arms after 5.5 seconds, then deals 390 damage in a compact blast. Cheap, but slow to recharge.",
       color: "#d58a4a",
     },
     burst: {
@@ -73,6 +78,7 @@
       projectileSpeed: 3.6,
       shots: 2,
       burstSpacing: 0.14,
+      description: "Fires two rounds per volley into one lane. Expensive, dependable lane suppression.",
       color: "#4ea47f",
     },
     nova: {
@@ -84,6 +90,7 @@
       damage: 1_000,
       blastRadius: 1.5,
       blastRows: 1,
+      description: "Detonates after a short fuse for 1,000 damage across its lane and both adjacent lanes.",
       color: "#d95b63",
     },
     snap: {
@@ -94,6 +101,7 @@
       attackRange: 1.18,
       damage: 1_000,
       chewTime: 18,
+      description: "Destroys one close target with a heavy strike, then needs 18 seconds before engaging again.",
       color: "#9d6fc5",
     },
     triad: {
@@ -105,6 +113,7 @@
       damage: 26,
       projectileSpeed: 3.5,
       laneSpread: 1,
+      description: "Fires into its own lane and both adjacent active lanes. Strongest on the centre line.",
       color: "#4f93b7",
     },
   };
@@ -208,141 +217,125 @@
     },
   };
 
-  const ROUNDS = [
-    { count: 5, interval: 4.7, pool: ["drifter"] },
+  const LEVELS = [
     {
-      count: 7,
-      interval: 4.35,
-      pool: ["drifter", "drifter", "drifter", "drifter", "runner"],
-    },
-    {
-      count: 10,
-      interval: 4.1,
-      pool: [
-        "drifter",
-        "drifter",
-        "drifter",
-        "drifter",
-        "runner",
-        "runner",
-        "shield",
+      title: "FIRST CONTACT",
+      startingEnergy: 200,
+      unlock: "pulse",
+      waves: [
+        { count: 4, interval: 4.8, pool: ["drifter"] },
+        { count: 6, interval: 3.8, pool: ["drifter"] },
+        { count: 10, interval: 2.2, pool: ["drifter"], large: true, batchSize: 2 },
       ],
     },
     {
-      count: 12,
-      interval: 3.85,
-      pool: [
-        "drifter",
-        "drifter",
-        "drifter",
-        "runner",
-        "runner",
-        "shield",
-        "shield",
-        "breacher",
-      ],
-      featured: { 2: "breacher" },
-    },
-    {
-      count: 15,
-      interval: 3.6,
-      pool: [
-        "drifter",
-        "drifter",
-        "runner",
-        "runner",
-        "shield",
-        "shield",
-        "shield",
-        "breacher",
-        "breacher",
-        "jammer",
-      ],
-      featured: { 2: "jammer" },
-    },
-    {
-      count: 18,
-      interval: 3.35,
-      pool: [
-        "drifter",
-        "drifter",
-        "runner",
-        "runner",
-        "shield",
-        "shield",
-        "shield",
-        "hauler",
-        "breacher",
-        "breacher",
-        "jammer",
-        "repair",
-      ],
-      featured: { 4: "repair" },
-    },
-    {
-      count: 21,
-      interval: 3.15,
-      pool: [
-        "drifter",
-        "runner",
-        "runner",
-        "shield",
-        "shield",
-        "shield",
-        "hauler",
-        "breacher",
-        "breacher",
-        "jammer",
-        "jammer",
-        "repair",
-        "artillery",
-      ],
-      featured: { 3: "artillery" },
-    },
-    {
-      count: 25,
-      interval: 2.95,
-      pool: [
-        "drifter",
-        "runner",
-        "runner",
-        "shield",
-        "shield",
-        "shield",
-        "hauler",
-        "hauler",
-        "breacher",
-        "breacher",
-        "jammer",
-        "jammer",
-        "repair",
-        "repair",
-        "artillery",
-        "artillery",
+      title: "SUPPLY LINE",
+      startingEnergy: 225,
+      unlock: "lumen",
+      waves: [
+        { count: 5, interval: 4.4, pool: ["drifter", "drifter", "runner"], featured: { 1: "runner" } },
+        { count: 8, interval: 3.5, pool: ["drifter", "drifter", "drifter", "runner"] },
+        { count: 13, interval: 2, pool: ["drifter", "drifter", "runner", "runner"], large: true, batchSize: 2 },
       ],
     },
     {
-      count: 30,
-      interval: 2.75,
-      pool: [
-        "drifter",
-        "runner",
-        "runner",
-        "shield",
-        "shield",
-        "shield",
-        "hauler",
-        "hauler",
-        "hauler",
-        "breacher",
-        "breacher",
-        "jammer",
-        "jammer",
-        "repair",
-        "repair",
-        "artillery",
-        "artillery",
-        "artillery",
+      title: "THREE-LANE FRONT",
+      startingEnergy: 350,
+      unlock: "mine",
+      waves: [
+        { count: 6, interval: 4.1, pool: ["drifter", "drifter", "runner", "shield"], featured: { 2: "shield" } },
+        { count: 9, interval: 3.3, pool: ["drifter", "drifter", "runner", "runner", "shield"] },
+        { count: 15, interval: 1.8, pool: ["drifter", "drifter", "runner", "runner", "shield", "shield"], large: true, batchSize: 2 },
+      ],
+    },
+    {
+      title: "BREAKER COLUMN",
+      startingEnergy: 375,
+      unlock: "bulwark",
+      waves: [
+        { count: 7, interval: 3.9, pool: ["drifter", "drifter", "runner", "shield", "breacher"], featured: { 2: "breacher" } },
+        { count: 10, interval: 3.1, pool: ["drifter", "runner", "runner", "shield", "shield", "breacher"] },
+        { count: 17, interval: 1.65, pool: ["drifter", "runner", "runner", "shield", "shield", "breacher", "breacher"], large: true, batchSize: 2 },
+      ],
+    },
+    {
+      title: "SIGNAL BLACKOUT",
+      startingEnergy: 400,
+      unlock: "frost",
+      waves: [
+        { count: 8, interval: 3.7, pool: ["drifter", "runner", "shield", "breacher", "jammer"], featured: { 3: "jammer" } },
+        { count: 11, interval: 2.9, pool: ["drifter", "runner", "runner", "shield", "shield", "breacher", "jammer"] },
+        { count: 19, interval: 1.5, pool: ["drifter", "runner", "runner", "shield", "shield", "breacher", "breacher", "jammer", "jammer"], large: true, batchSize: 2 },
+      ],
+    },
+    {
+      title: "FULL PERIMETER",
+      startingEnergy: 575,
+      unlock: "burst",
+      waves: [
+        { count: 10, interval: 3.5, pool: ["drifter", "drifter", "runner", "runner", "shield", "breacher", "jammer", "repair"], featured: { 4: "repair" } },
+        { count: 13, interval: 2.7, pool: ["drifter", "runner", "runner", "shield", "shield", "breacher", "jammer", "jammer", "repair"] },
+        { count: 22, interval: 1.35, pool: ["drifter", "runner", "runner", "runner", "shield", "shield", "breacher", "breacher", "jammer", "jammer", "repair", "repair"], large: true, batchSize: 2 },
+      ],
+    },
+    {
+      title: "LONG-RANGE FIRE",
+      startingEnergy: 600,
+      unlock: "nova",
+      waves: [
+        { count: 11, interval: 3.3, pool: ["drifter", "runner", "runner", "shield", "breacher", "jammer", "repair", "artillery"], featured: { 3: "artillery" } },
+        { count: 15, interval: 2.5, pool: ["runner", "runner", "shield", "shield", "breacher", "breacher", "jammer", "repair", "artillery"] },
+        { count: 25, interval: 1.2, pool: ["runner", "runner", "runner", "shield", "shield", "breacher", "breacher", "jammer", "jammer", "repair", "repair", "artillery", "artillery"], large: true, batchSize: 2 },
+      ],
+    },
+    {
+      title: "HEAVY ARMOUR",
+      startingEnergy: 625,
+      unlock: "snap",
+      waves: [
+        { count: 12, interval: 3.1, pool: ["runner", "shield", "shield", "breacher", "jammer", "repair", "artillery", "hauler"], featured: { 3: "hauler" } },
+        { count: 17, interval: 2.3, pool: ["runner", "runner", "shield", "shield", "breacher", "breacher", "jammer", "repair", "artillery", "artillery", "hauler"] },
+        { count: 28, interval: 1.1, pool: ["runner", "runner", "runner", "shield", "shield", "breacher", "breacher", "jammer", "jammer", "repair", "repair", "artillery", "artillery", "hauler", "hauler"], large: true, batchSize: 2 },
+      ],
+    },
+    {
+      title: "FINAL SIEGE",
+      startingEnergy: 700,
+      unlock: "triad",
+      waves: [
+        { count: 14, interval: 2.9, pool: ["runner", "runner", "shield", "breacher", "jammer", "repair", "artillery", "hauler"] },
+        { count: 20, interval: 2.1, pool: ["runner", "runner", "shield", "shield", "breacher", "breacher", "jammer", "jammer", "repair", "repair", "artillery", "artillery", "hauler"] },
+        { count: 34, interval: 0.95, pool: ["runner", "runner", "runner", "shield", "shield", "shield", "breacher", "breacher", "breacher", "jammer", "jammer", "repair", "repair", "artillery", "artillery", "artillery", "hauler", "hauler"], featured: { 0: "hauler", 4: "artillery", 8: "repair", 12: "jammer", 16: "breacher" }, large: true, batchSize: 2 },
+      ],
+    },
+    {
+      title: "HARDENED LINE",
+      startingEnergy: 800,
+      unlock: "rail",
+      waves: [
+        { count: 15, interval: 2.8, pool: ["runner", "shield", "breacher", "jammer", "repair", "artillery", "hauler", "aegis"], featured: { 2: "aegis" } },
+        { count: 22, interval: 2, pool: ["runner", "shield", "shield", "breacher", "jammer", "repair", "artillery", "hauler", "aegis", "aegis"] },
+        { count: 38, interval: 0.85, pool: ["runner", "shield", "breacher", "breacher", "jammer", "repair", "artillery", "artillery", "hauler", "aegis", "aegis"], large: true, batchSize: 2 },
+      ],
+    },
+    {
+      title: "COMMAND UPLINK",
+      startingEnergy: 900,
+      unlock: "service",
+      waves: [
+        { count: 17, interval: 2.6, pool: ["runner", "shield", "breacher", "jammer", "repair", "artillery", "hauler", "aegis", "commander"], featured: { 3: "commander" } },
+        { count: 24, interval: 1.8, pool: ["runner", "shield", "breacher", "jammer", "repair", "artillery", "hauler", "aegis", "commander", "commander"] },
+        { count: 42, interval: 0.75, pool: ["runner", "shield", "shield", "breacher", "jammer", "repair", "artillery", "hauler", "hauler", "aegis", "commander", "commander"], large: true, batchSize: 2 },
+      ],
+    },
+    {
+      title: "OMEGA DEFENCE",
+      startingEnergy: 1_000,
+      unlock: "missile",
+      waves: [
+        { count: 20, interval: 2.4, pool: ["runner", "shield", "breacher", "jammer", "repair", "artillery", "hauler", "aegis", "commander", "carrier"], featured: { 2: "carrier" } },
+        { count: 28, interval: 1.6, pool: ["runner", "shield", "breacher", "jammer", "repair", "artillery", "hauler", "aegis", "commander", "carrier", "carrier"] },
+        { count: 48, interval: 0.65, pool: ["runner", "shield", "shield", "breacher", "breacher", "jammer", "repair", "artillery", "artillery", "hauler", "hauler", "aegis", "commander", "carrier", "carrier"], featured: { 0: "carrier", 6: "commander", 12: "aegis", 18: "hauler" }, large: true, batchSize: 3 },
       ],
     },
   ];
@@ -520,32 +513,40 @@
       };
     }
 
-    unlockRoundFor(type) {
-      const index = UNIT_ORDER.indexOf(type);
+    unlockLevelFor(type) {
+      const index = LEVELS.findIndex((level) => level.unlock === type);
       return index >= 0 ? index + 1 : Number.POSITIVE_INFINITY;
     }
 
-    currentRound() {
-      return Math.max(1, this.waveIndex + 1);
+    currentLevel() {
+      return clamp(this.levelIndex + 1, 1, LEVELS.length);
     }
 
-    lanePhaseForRound(round = this.currentRound()) {
+    currentLevelConfig() {
+      return LEVELS[clamp(this.levelIndex, 0, LEVELS.length - 1)] || LEVELS[0];
+    }
+
+    currentWaveConfig() {
+      return this.currentLevelConfig().waves[this.waveIndex] || null;
+    }
+
+    lanePhaseForLevel(level = this.currentLevel()) {
       return [...LANE_PHASES]
         .reverse()
-        .find((phase) => round >= phase.fromRound) || LANE_PHASES[0];
+        .find((phase) => level >= phase.fromLevel) || LANE_PHASES[0];
     }
 
-    activeRows(round = this.currentRound()) {
-      return this.lanePhaseForRound(round).rows;
+    activeRows(level = this.currentLevel()) {
+      return this.lanePhaseForLevel(level).rows;
     }
 
-    isLaneActive(row, round = this.currentRound()) {
-      return this.activeRows(round).includes(row);
+    isLaneActive(row, level = this.currentLevel()) {
+      return this.activeRows(level).includes(row);
     }
 
-    laneUnlockRound(row) {
+    laneUnlockLevel(row) {
       const phase = LANE_PHASES.find((candidate) => candidate.rows.includes(row));
-      return phase?.fromRound ?? Number.POSITIVE_INFINITY;
+      return phase?.fromLevel ?? Number.POSITIVE_INFINITY;
     }
 
     nearestActiveRow(row) {
@@ -556,34 +557,31 @@
       );
     }
 
-    activeLaneDescription(round = this.currentRound()) {
-      const phase = this.lanePhaseForRound(round);
+    activeLaneDescription(level = this.currentLevel()) {
+      const phase = this.lanePhaseForLevel(level);
       if (phase.rows.length === 1) return "One centre lane active.";
       if (phase.rows.length === 3) return "The middle three lanes are active.";
       return "All five lanes are active.";
     }
 
     isUnitUnlocked(type) {
-      return this.unlockRoundFor(type) <= this.currentRound();
+      return this.unlockLevelFor(type) <= this.currentLevel();
     }
 
-    resetRound() {
-      this.state = "ready";
-      this.pauseReason = "";
-      this.energy = STARTING_ENERGY;
-      this.score = 0;
+    resetBattlefield(startingEnergy) {
+      this.energy = clamp(startingEnergy, 0, MAX_ENERGY);
       this.waveIndex = -1;
       this.waveSpawned = 0;
+      this.waveDefeated = 0;
       this.spawnTimer = 0;
       this.waitingForWave = false;
       this.waveBreakTimer = 0;
       this.waveBannerTimer = 0;
       this.laneRevealTimer = 0;
       this.newlyActivatedRows = [];
-      this.lastUnlockedUnit = null;
       this.lastFeaturedEnemy = null;
       this.skyEnergyTimer = 2.5;
-      this.selectedUnit = UNIT_ORDER[0];
+      this.selectedUnit = this.currentLevelConfig().unlock || UNIT_ORDER[0];
       this.removeMode = false;
       this.cursor = { row: 2, column: 2 };
       this.units = [];
@@ -605,28 +603,83 @@
       this.interfaceSignature = "";
     }
 
-    startRound() {
-      if (this.state === "paused") {
-        this.state = "running";
-        this.pauseReason = "";
-        this.lastTime = 0;
-        this.setOverlay(false);
-        window.KelvinGameAudio?.play?.("resume");
-        this.announce("Operation resumed.");
-        this.syncInterface(true);
-        this.queueFrame();
-        this.focusStage();
-        return;
-      }
+    prepareLevel(index, completedLevelIndex = null) {
+      const previousRows = this.activeRows();
+      this.levelIndex = clamp(index, 0, LEVELS.length - 1);
+      const level = this.currentLevelConfig();
+      const nextRows = this.activeRows();
+      this.pendingActivatedRows = nextRows.filter(
+        (row) => !previousRows.includes(row),
+      );
+      this.resetBattlefield(level.startingEnergy);
+      this.lastUnlockedUnit = level.unlock;
+      this.state = "briefing";
+      this.pauseReason = "";
+      this.lastTime = 0;
+      if (this.frameId) cancelAnimationFrame(this.frameId);
+      this.frameId = 0;
 
-      this.resetRound();
+      const title = completedLevelIndex === null
+        ? "CAMPAIGN BRIEFING"
+        : `LEVEL ${String(completedLevelIndex + 1).padStart(2, "0")} SECURE`;
+      const specification = UNIT_TYPES[level.unlock];
+      const meta = `NEW TOWER / ${specification.label.toUpperCase()} / ${specification.cost} SP`;
+      const detail = `${specification.description} ${level.waves.length} waves incoming.`;
+      this.setOverlay(true, title, meta, detail, "briefing");
+      this.announce(
+        `${title}. ${specification.label} unlocked for level ${this.currentLevel()} of ${LEVELS.length}. ${specification.description} Press Deploy when ready.`,
+      );
+      this.syncInterface(true);
+      this.draw();
+    }
+
+    resetCampaign() {
+      this.score = 0;
+      this.levelIndex = 0;
+      this.pendingActivatedRows = [];
+      this.prepareLevel(0);
+    }
+
+    startPreparedLevel() {
+      if (this.state !== "briefing") return;
       this.state = "running";
-      window.KelvinGameAudio?.play?.("game-start");
-      this.beginWave(0, 6);
+      this.newlyActivatedRows = [...this.pendingActivatedRows];
+      this.pendingActivatedRows = [];
+      this.laneRevealTimer =
+        this.reducedMotion || !this.newlyActivatedRows.length ? 0 : 1.25;
       this.setOverlay(false);
+      window.KelvinGameAudio?.play?.("game-start");
+      this.beginWave(0, 5.5);
       this.syncInterface(true);
       this.focusStage();
       this.queueFrame();
+    }
+
+    resumeRound() {
+      if (this.state !== "paused") return;
+      this.state = "running";
+      this.pauseReason = "";
+      this.lastTime = 0;
+      this.setOverlay(false);
+      window.KelvinGameAudio?.play?.("resume");
+      this.announce("Operation resumed.");
+      this.syncInterface(true);
+      this.queueFrame();
+      this.focusStage();
+    }
+
+    startRound() {
+      if (this.state === "paused") {
+        this.resumeRound();
+        return;
+      }
+      if (this.state === "briefing") {
+        this.startPreparedLevel();
+        return;
+      }
+      if (this.state === "won" || this.state === "lost") {
+        this.resetCampaign();
+      }
     }
 
     pauseRound(reason = "manual") {
@@ -636,7 +689,14 @@
       this.lastTime = 0;
       if (this.frameId) cancelAnimationFrame(this.frameId);
       this.frameId = 0;
-      this.setOverlay(true, "OPERATION PAUSED");
+      const waveTotal = this.currentLevelConfig().waves.length;
+      this.setOverlay(
+        true,
+        "OPERATION PAUSED",
+        `LEVEL ${String(this.currentLevel()).padStart(2, "0")} / WAVE ${String(this.waveIndex + 1).padStart(2, "0")} OF ${String(waveTotal).padStart(2, "0")}`,
+        "Combat, cooldowns, supply production, and wave timers are frozen.",
+        "paused",
+      );
       this.syncInterface(true);
       if (reason === "manual") {
         window.KelvinGameAudio?.play?.("pause");
@@ -659,13 +719,25 @@
 
       if (outcome === "won") {
         window.KelvinGameAudio?.play?.("victory");
-        this.setOverlay(true, "SECTOR SECURE");
+        this.setOverlay(
+          true,
+          "CAMPAIGN COMPLETE",
+          `ALL ${LEVELS.length} LEVELS SECURE`,
+          `Final score ${this.score}. Press Replay to begin a new campaign.`,
+          "won",
+        );
         this.announce(
           `Sector secured. Final score ${this.score}. Press Replay to deploy again.`,
         );
       } else {
         window.KelvinGameAudio?.play?.("game-over");
-        this.setOverlay(true, "SECTOR BREACHED");
+        this.setOverlay(
+          true,
+          "SECTOR BREACHED",
+          `LEVEL ${String(this.currentLevel()).padStart(2, "0")} / WAVE ${String(this.waveIndex + 1).padStart(2, "0")}`,
+          `Score ${this.score}. Press Replay to restart the campaign.`,
+          "lost",
+        );
         this.announce(
           `The defence grid was breached. Score ${this.score}. Press Replay to try again.`,
         );
@@ -674,45 +746,42 @@
       this.draw();
     }
 
+    completeLevel() {
+      const completedLevelIndex = this.levelIndex;
+      this.score += this.energy * 2 + this.units.length * 50 + this.currentLevel() * 500;
+      if (completedLevelIndex >= LEVELS.length - 1) {
+        this.finishRound("won");
+        return;
+      }
+      this.prepareLevel(completedLevelIndex + 1, completedLevelIndex);
+    }
+
     beginWave(index, delay = 1.8) {
-      const previousRows = this.activeRows();
+      const level = this.currentLevelConfig();
+      const wave = level.waves[index];
+      if (!wave) return;
       this.waveIndex = index;
       this.waveSpawned = 0;
+      this.waveDefeated = 0;
       this.spawnTimer = delay;
       this.waitingForWave = false;
       this.waveBreakTimer = 0;
-      this.waveBannerTimer = 3;
-      const nextRows = this.activeRows();
-      this.newlyActivatedRows = nextRows.filter(
-        (row) => !previousRows.includes(row),
-      );
-      this.laneRevealTimer = this.reducedMotion || !this.newlyActivatedRows.length
-        ? 0
-        : 1.25;
+      this.waveBannerTimer = wave.large ? 4.5 : 3;
       if (!this.isLaneActive(this.cursor.row)) {
         this.cursor.row = this.nearestActiveRow(this.cursor.row);
       }
-      this.lastUnlockedUnit = UNIT_ORDER[index] || null;
-      this.lastFeaturedEnemy = Object.values(ROUNDS[index]?.featured || {})[0] || null;
+      this.lastFeaturedEnemy = Object.values(wave.featured || {})[0] || null;
       if (!this.isUnitUnlocked(this.selectedUnit)) {
         this.selectedUnit = UNIT_ORDER[0];
         this.removeMode = false;
       }
-      const unlockedLabel = this.lastUnlockedUnit
-        ? `${UNIT_TYPES[this.lastUnlockedUnit].label} unlocked. `
-        : "";
       if (index > 0) window.KelvinGameAudio?.play?.("round");
-      const laneNotice =
-        index === 2
-          ? "Lanes 2 through 4 are now online."
-          : index === 5
-            ? "All five lanes are now online."
-            : this.activeLaneDescription();
       const threatNotice = this.lastFeaturedEnemy
         ? ` New threat: ${ENEMY_TYPES[this.lastFeaturedEnemy].label}.`
         : "";
+      const waveNotice = wave.large ? "Mass assault incoming." : "Wave incoming.";
       this.announce(
-        `Round ${index + 1} of ${ROUNDS.length}. ${unlockedLabel}${laneNotice}${threatNotice}`,
+        `Level ${this.currentLevel()} of ${LEVELS.length}, wave ${index + 1} of ${level.waves.length}. ${waveNotice} ${this.activeLaneDescription()}${threatNotice}`,
       );
       this.syncInterface(true);
     }
