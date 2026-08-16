@@ -116,6 +116,49 @@
       description: "Fires into its own lane and both adjacent active lanes. Strongest on the centre line.",
       color: "#4f93b7",
     },
+    workshop: {
+      label: "Field Workshop",
+      cost: 175,
+      cooldown: 11,
+      health: 360,
+      repairTime: 4.5,
+      repairAmount: 75,
+      repairRange: 1.6,
+      repairRows: 1,
+      description: "Restores 75 integrity to the most damaged nearby emplacement every 4.5 seconds. It carries no weapon.",
+      hint: "POSITION / BEHIND BARRIERS",
+      color: "#d2a85a",
+    },
+    arc: {
+      label: "Arc Emitter",
+      cost: 300,
+      cooldown: 9,
+      health: 290,
+      fireTime: 2.6,
+      damage: 68,
+      attackRange: 6.5,
+      chainCount: 4,
+      chainRange: 1.8,
+      chainRows: 1,
+      chainFalloff: 0.72,
+      description: "Chains a discharge through four clustered targets. Each jump loses power.",
+      hint: "COUNTER / SWARMS + SUPPORT",
+      color: "#9278d8",
+    },
+    rail: {
+      label: "Rail Battery",
+      cost: 450,
+      cooldown: 11,
+      health: 320,
+      fireTime: 3.25,
+      damage: 190,
+      projectileSpeed: 8,
+      pierce: 4,
+      pierceFalloff: 0.78,
+      description: "Fires a high-energy slug through four targets in one lane. Its firing cycle is slow.",
+      hint: "COUNTER / HEAVY COLUMNS",
+      color: "#df7057",
+    },
   };
 
   const UNIT_ORDER = [
@@ -128,8 +171,19 @@
     "nova",
     "snap",
     "triad",
+    "workshop",
+    "arc",
+    "rail",
   ];
-  const JAMMABLE_UNITS = new Set(["pulse", "frost", "burst", "snap", "triad"]);
+  const JAMMABLE_UNITS = new Set([
+    "pulse",
+    "frost",
+    "burst",
+    "snap",
+    "triad",
+    "arc",
+    "rail",
+  ]);
 
   const ENEMY_TYPES = {
     drifter: {
@@ -205,6 +259,41 @@
       score: 320,
       scale: 1,
       color: "#b45e68",
+    },
+    vault: {
+      label: "Jump Trooper",
+      health: 210,
+      speed: 0.24,
+      spentSpeed: 0.165,
+      damage: 46,
+      vaultDistance: 1.05,
+      score: 245,
+      scale: 0.77,
+      color: "#d89349",
+    },
+    carrier: {
+      label: "Drop Carrier",
+      health: 650,
+      speed: 0.092,
+      damage: 72,
+      deployX: 6.8,
+      payload: ["runner", "drifter"],
+      score: 420,
+      scale: 1.05,
+      color: "#667e9a",
+    },
+    commander: {
+      label: "Command Relay",
+      health: 285,
+      speed: 0.145,
+      damage: 48,
+      commandRange: 2.25,
+      commandRows: 1,
+      speedBoost: 1.25,
+      damageBoost: 1.18,
+      score: 360,
+      scale: 0.9,
+      color: "#d05e8f",
     },
     hauler: {
       label: "Siege Carrier",
@@ -309,33 +398,40 @@
       ],
     },
     {
-      title: "HARDENED LINE",
+      title: "BREACH PROTOCOL",
       startingEnergy: 800,
+      unlock: "workshop",
+      waves: [
+        { count: 14, interval: 2.55, pool: ["drifter", "runner", "runner", "shield", "breacher", "vault"], featured: { 2: "vault" } },
+        { count: 18, interval: 2.25, pool: ["runner", "runner", "shield", "shield", "breacher", "breacher", "vault", "vault", "jammer"] },
+        { count: 23, interval: 2, pool: ["runner", "runner", "shield", "breacher", "breacher", "vault", "vault", "jammer", "repair", "artillery"] },
+        { count: 30, interval: 1.75, pool: ["runner", "runner", "shield", "shield", "breacher", "breacher", "vault", "vault", "vault", "jammer", "repair", "artillery", "hauler"] },
+        { count: 44, interval: 1.55, pool: ["drifter", "runner", "runner", "shield", "shield", "breacher", "breacher", "jammer", "repair", "artillery", "artillery", "hauler", "vault", "vault", "vault"], featured: { 0: "breacher", 5: "vault", 12: "hauler", 20: "jammer", 31: "artillery", 40: "vault" }, large: true, batchSize: 2 },
+      ],
+    },
+    {
+      title: "AIRBORNE CONTACT",
+      startingEnergy: 900,
+      unlock: "arc",
+      waves: [
+        { count: 16, interval: 2.45, pool: ["drifter", "runner", "runner", "shield", "breacher", "vault", "vault", "carrier"], featured: { 3: "carrier" } },
+        { count: 21, interval: 2.15, pool: ["runner", "runner", "shield", "shield", "breacher", "vault", "vault", "jammer", "carrier"] },
+        { count: 27, interval: 1.9, pool: ["runner", "shield", "shield", "breacher", "breacher", "vault", "vault", "jammer", "repair", "artillery", "carrier"] },
+        { count: 35, interval: 1.65, pool: ["runner", "runner", "shield", "shield", "breacher", "breacher", "vault", "vault", "jammer", "repair", "artillery", "artillery", "hauler", "carrier", "carrier"] },
+        { count: 52, interval: 1.42, pool: ["runner", "runner", "shield", "shield", "breacher", "breacher", "jammer", "jammer", "repair", "repair", "artillery", "artillery", "hauler", "hauler", "vault", "vault", "carrier", "carrier"], featured: { 0: "carrier", 9: "vault", 18: "repair", 27: "carrier", 38: "hauler", 47: "artillery" }, large: true, batchSize: 2 },
+      ],
+    },
+    {
+      title: "COMMAND OVERRIDE",
+      startingEnergy: 1_000,
       unlock: "rail",
       waves: [
-        { count: 15, interval: 2.8, pool: ["runner", "shield", "breacher", "jammer", "repair", "artillery", "hauler", "aegis"], featured: { 2: "aegis" } },
-        { count: 22, interval: 2, pool: ["runner", "shield", "shield", "breacher", "jammer", "repair", "artillery", "hauler", "aegis", "aegis"] },
-        { count: 38, interval: 0.85, pool: ["runner", "shield", "breacher", "breacher", "jammer", "repair", "artillery", "artillery", "hauler", "aegis", "aegis"], large: true, batchSize: 2 },
-      ],
-    },
-    {
-      title: "COMMAND UPLINK",
-      startingEnergy: 900,
-      unlock: "service",
-      waves: [
-        { count: 17, interval: 2.6, pool: ["runner", "shield", "breacher", "jammer", "repair", "artillery", "hauler", "aegis", "commander"], featured: { 3: "commander" } },
-        { count: 24, interval: 1.8, pool: ["runner", "shield", "breacher", "jammer", "repair", "artillery", "hauler", "aegis", "commander", "commander"] },
-        { count: 42, interval: 0.75, pool: ["runner", "shield", "shield", "breacher", "jammer", "repair", "artillery", "hauler", "hauler", "aegis", "commander", "commander"], large: true, batchSize: 2 },
-      ],
-    },
-    {
-      title: "OMEGA DEFENCE",
-      startingEnergy: 1_000,
-      unlock: "missile",
-      waves: [
-        { count: 20, interval: 2.4, pool: ["runner", "shield", "breacher", "jammer", "repair", "artillery", "hauler", "aegis", "commander", "carrier"], featured: { 2: "carrier" } },
-        { count: 28, interval: 1.6, pool: ["runner", "shield", "breacher", "jammer", "repair", "artillery", "hauler", "aegis", "commander", "carrier", "carrier"] },
-        { count: 48, interval: 0.65, pool: ["runner", "shield", "shield", "breacher", "breacher", "jammer", "repair", "artillery", "artillery", "hauler", "hauler", "aegis", "commander", "carrier", "carrier"], featured: { 0: "carrier", 6: "commander", 12: "aegis", 18: "hauler" }, large: true, batchSize: 3 },
+        { count: 18, interval: 2.35, pool: ["runner", "runner", "shield", "breacher", "vault", "jammer", "artillery", "carrier", "commander"], featured: { 3: "commander" } },
+        { count: 24, interval: 2.05, pool: ["runner", "shield", "shield", "breacher", "vault", "vault", "jammer", "repair", "artillery", "carrier", "commander"] },
+        { count: 31, interval: 1.8, pool: ["runner", "shield", "shield", "breacher", "breacher", "vault", "vault", "jammer", "repair", "artillery", "hauler", "carrier", "commander"] },
+        { count: 39, interval: 1.55, pool: ["runner", "runner", "shield", "shield", "breacher", "breacher", "vault", "vault", "jammer", "repair", "artillery", "artillery", "hauler", "carrier", "carrier", "commander"] },
+        { count: 48, interval: 1.38, pool: ["runner", "shield", "shield", "breacher", "breacher", "vault", "vault", "jammer", "repair", "repair", "artillery", "artillery", "hauler", "hauler", "carrier", "carrier", "commander"], large: true, batchSize: 2 },
+        { count: 64, interval: 1.22, pool: ["runner", "runner", "runner", "shield", "shield", "shield", "breacher", "breacher", "jammer", "jammer", "repair", "repair", "artillery", "artillery", "hauler", "hauler", "vault", "vault", "carrier", "carrier", "commander", "commander"], featured: { 0: "commander", 8: "carrier", 16: "hauler", 24: "commander", 32: "artillery", 40: "jammer", 48: "carrier", 56: "commander", 62: "hauler" }, large: true, batchSize: 3 },
       ],
     },
   ];
@@ -379,6 +475,8 @@
       this.removeButton = root.querySelector("[data-garden-remove]");
       this.overlay = root.querySelector("[data-garden-overlay]");
       this.messageOutput = root.querySelector("[data-garden-message]");
+      this.overlayMetaOutput = root.querySelector("[data-garden-overlay-meta]");
+      this.overlayDetailOutput = root.querySelector("[data-garden-overlay-detail]");
       this.stateOutput = root.querySelector("[data-garden-state]");
       this.energyOutput = root.querySelector("[data-garden-energy]");
       this.waveOutput = root.querySelector("[data-garden-wave]");
@@ -413,13 +511,10 @@
       this.prepareAccessibility();
       this.readThemeColors();
       this.bindEvents();
-      this.resetRound();
+      this.resetCampaign();
       this.resizeCanvas();
       this.syncInterface(true);
       this.draw();
-      this.announce(
-        "Grid Command ready. The centre lane is online. Select a unit, then choose a lane and column.",
-      );
 
       if (document.fonts?.ready) {
         document.fonts.ready
@@ -516,6 +611,23 @@
     unlockLevelFor(type) {
       const index = LEVELS.findIndex((level) => level.unlock === type);
       return index >= 0 ? index + 1 : Number.POSITIVE_INFINITY;
+    }
+
+    // Compatibility aliases while the UI retains its historical data names.
+    unlockRoundFor(type) {
+      return this.unlockLevelFor(type);
+    }
+
+    currentRound() {
+      return this.currentLevel();
+    }
+
+    lanePhaseForRound(level = this.currentLevel()) {
+      return this.lanePhaseForLevel(level);
+    }
+
+    laneUnlockRound(row) {
+      return this.laneUnlockLevel(row);
     }
 
     currentLevel() {
@@ -624,7 +736,9 @@
         : `LEVEL ${String(completedLevelIndex + 1).padStart(2, "0")} SECURE`;
       const specification = UNIT_TYPES[level.unlock];
       const meta = `NEW TOWER / ${specification.label.toUpperCase()} / ${specification.cost} SP`;
-      const detail = `${specification.description} ${level.waves.length} waves incoming.`;
+      const tacticalHint = specification.hint ? ` ${specification.hint}.` : "";
+      const resetNotice = completedLevelIndex === null ? "" : " Battlefield cleared.";
+      const detail = `${specification.description}${tacticalHint}${resetNotice} ${level.waves.length} waves incoming. Tap the field or press Deploy when ready.`;
       this.setOverlay(true, title, meta, detail, "briefing");
       this.announce(
         `${title}. ${specification.label} unlocked for level ${this.currentLevel()} of ${LEVELS.length}. ${specification.description} Press Deploy when ready.`,
@@ -642,6 +756,11 @@
 
     startPreparedLevel() {
       if (this.state !== "briefing") return;
+      // Briefing controls sit above the board. Always enter combat with the new
+      // tower selected so an accidental pre-deploy REMOVE click cannot leave
+      // the battlefield feeling unresponsive.
+      this.selectedUnit = this.currentLevelConfig().unlock || UNIT_ORDER[0];
+      this.removeMode = false;
       this.state = "running";
       this.newlyActivatedRows = [...this.pendingActivatedRows];
       this.pendingActivatedRows = [];
@@ -797,6 +916,10 @@
 
     onRemoveClick(event) {
       event?.preventDefault();
+      if (this.state !== "running" && this.state !== "paused") {
+        this.announce("Deploy the level before selecting the remove tool.");
+        return;
+      }
       this.removeMode = true;
       this.selectedUnit = null;
       this.announce("Remove tool selected. Choose a deployed unit.");
@@ -811,7 +934,7 @@
 
       if (!this.isUnitUnlocked(type)) {
         this.announce(
-          `${specification.label} unlocks at the start of round ${this.unlockRoundFor(type)}.`,
+          `${specification.label} unlocks at the start of level ${this.unlockLevelFor(type)}.`,
         );
         return false;
       }
@@ -879,9 +1002,18 @@
       this.announcement.textContent = message;
     }
 
-    setOverlay(visible, message = "") {
+    setOverlay(
+      visible,
+      message = "",
+      meta = "",
+      detail = "",
+      mode = "default",
+    ) {
       if (this.overlay) this.overlay.hidden = !visible;
+      if (this.overlay) this.overlay.dataset.overlayMode = mode;
       if (message && this.messageOutput) this.messageOutput.textContent = message;
+      if (this.overlayMetaOutput) this.overlayMetaOutput.textContent = meta;
+      if (this.overlayDetailOutput) this.overlayDetailOutput.textContent = detail;
     }
 
     resizeCanvas() {
@@ -979,6 +1111,10 @@
       event.preventDefault();
       this.focusStage();
 
+      if (this.state === "briefing") {
+        this.startPreparedLevel();
+        return;
+      }
       if (this.state === "ready" || this.state === "won" || this.state === "lost") {
         const previousState = this.state;
         this.startRound();
@@ -998,7 +1134,7 @@
 
       if (!this.isLaneActive(cell.row)) {
         this.announce(
-          `Lane ${cell.row + 1} is offline until round ${this.laneUnlockRound(cell.row)}.`,
+          `Lane ${cell.row + 1} is offline until level ${this.laneUnlockLevel(cell.row)}.`,
         );
         this.draw();
         return;
@@ -1013,6 +1149,12 @@
       if (/^[1-9]$/.test(event.key)) {
         event.preventDefault();
         this.selectUnit(UNIT_ORDER[Number(event.key) - 1]);
+        return;
+      }
+      const extendedUnitKeys = { "0": 9, "-": 10, "=": 11 };
+      if (event.key in extendedUnitKeys) {
+        event.preventDefault();
+        this.selectUnit(UNIT_ORDER[extendedUnitKeys[event.key]]);
         return;
       }
 
@@ -1083,7 +1225,7 @@
     describeCursor() {
       if (!this.isLaneActive(this.cursor.row)) {
         this.announce(
-          `Lane ${this.cursor.row + 1} is offline until round ${this.laneUnlockRound(this.cursor.row)}.`,
+          `Lane ${this.cursor.row + 1} is offline until level ${this.laneUnlockLevel(this.cursor.row)}.`,
         );
         return;
       }
@@ -1099,7 +1241,7 @@
       if (this.state !== "running") return;
       if (!this.isLaneActive(row)) {
         this.announce(
-          `Lane ${row + 1} is offline until round ${this.laneUnlockRound(row)}.`,
+          `Lane ${row + 1} is offline until level ${this.laneUnlockLevel(row)}.`,
         );
         return;
       }
@@ -1142,13 +1284,13 @@
       }
       if (!this.isLaneActive(row)) {
         this.announce(
-          `Lane ${row + 1} is offline until round ${this.laneUnlockRound(row)}.`,
+          `Lane ${row + 1} is offline until level ${this.laneUnlockLevel(row)}.`,
         );
         return false;
       }
       if (!this.isUnitUnlocked(type)) {
         this.announce(
-          `${specification.label} unlocks at the start of round ${this.unlockRoundFor(type)}.`,
+          `${specification.label} unlocks at the start of level ${this.unlockLevelFor(type)}.`,
         );
         return false;
       }
@@ -1181,6 +1323,8 @@
         timer:
           type === "lumen"
             ? specification.productionTime * 0.68
+            : type === "workshop"
+              ? specification.repairTime * 0.55
             : specification.fireTime || 0,
         armed: type !== "mine",
         armTimer: specification.armTime || 0,
@@ -1207,6 +1351,11 @@
       );
     }
 
+    addSupply(amount) {
+      this.energy = Math.min(MAX_ENERGY, Math.max(0, this.energy + amount));
+      return this.energy;
+    }
+
     collectEnergyAtPoint(point) {
       const node = this.energyNodes.find((candidate) => {
         const pixel = this.energyNodePixel(candidate);
@@ -1216,7 +1365,7 @@
       if (!node) return false;
 
       node.collected = true;
-      this.energy = Math.min(999, this.energy + node.value);
+      this.addSupply(node.value);
       this.score += node.value * 2;
       window.KelvinGameAudio?.play?.("collect");
       this.announce(`${node.value} supply collected. Total ${this.energy}.`);
@@ -1241,7 +1390,7 @@
       });
     }
 
-    spawnEnemy(type) {
+    spawnEnemy(type, options = {}) {
       const resolvedType = ENEMY_TYPES[type] ? type : "drifter";
       const specification = ENEMY_TYPES[resolvedType];
       const laneLoads = this.activeRows().map((row) => ({
@@ -1252,17 +1401,25 @@
       const candidates = laneLoads.filter(
         (lane) => lane.count <= minimumLoad + (Math.random() > 0.72 ? 1 : 0),
       );
-      const row = candidates[Math.floor(Math.random() * candidates.length)].row;
+      const requestedRow = Number.isInteger(options.row) ? options.row : null;
+      const row = requestedRow !== null && this.isLaneActive(requestedRow)
+        ? requestedRow
+        : candidates[Math.floor(Math.random() * candidates.length)].row;
 
-      this.enemies.push({
+      const enemy = {
         id: ++this.entityId,
         type: resolvedType,
         row,
-        x: COLUMN_COUNT + 0.62 + Math.random() * 0.25,
+        x: Number.isFinite(options.x)
+          ? options.x
+          : COLUMN_COUNT + 0.62 + Math.random() * 0.25,
         health: specification.health,
         maxHealth: specification.health,
         slowTimer: 0,
         ramReady: resolvedType === "breacher",
+        vaultReady: resolvedType === "vault",
+        payloadDeployed: resolvedType !== "carrier",
+        commanded: false,
         abilityTimer:
           resolvedType === "jammer"
             ? 2.8
@@ -1271,22 +1428,32 @@
               : 0,
         attackTimer: resolvedType === "artillery" ? 2.4 : 0,
         abilityFlashTimer: 0,
+        summoned: Boolean(options.summoned),
         rewarded: false,
-      });
+      };
+      this.enemies.push(enemy);
+      return enemy;
     }
 
     updateWave(delta) {
-      if (this.waveIndex < 0 || this.waveIndex >= ROUNDS.length) return;
-      const wave = ROUNDS[this.waveIndex];
+      const level = this.currentLevelConfig();
+      if (this.waveIndex < 0 || this.waveIndex >= level.waves.length) return;
+      const wave = level.waves[this.waveIndex];
 
       if (this.waveSpawned < wave.count) {
         this.spawnTimer -= delta;
         if (this.spawnTimer <= 0) {
-          const type =
-            wave.featured?.[this.waveSpawned] ||
-            wave.pool[Math.floor(Math.random() * wave.pool.length)];
-          this.spawnEnemy(type);
-          this.waveSpawned += 1;
+          const batchSize = Math.min(
+            wave.batchSize || 1,
+            wave.count - this.waveSpawned,
+          );
+          for (let index = 0; index < batchSize; index += 1) {
+            const type =
+              wave.featured?.[this.waveSpawned] ||
+              wave.pool[Math.floor(Math.random() * wave.pool.length)];
+            this.spawnEnemy(type);
+            this.waveSpawned += 1;
+          }
           const jitter = 0.88 + Math.random() * 0.3;
           this.spawnTimer = wave.interval * jitter;
         }
@@ -1294,19 +1461,18 @@
       }
 
       if (this.enemies.length > 0) return;
-      if (this.waveIndex === ROUNDS.length - 1) {
-        this.score += this.energy * 3 + this.units.length * 75;
-        this.finishRound("won");
+      if (this.waveIndex === level.waves.length - 1) {
+        this.completeLevel();
         return;
       }
 
       if (!this.waitingForWave) {
         this.waitingForWave = true;
-        this.waveBreakTimer = 8;
-        this.energy = Math.min(999, this.energy + 50);
+        this.waveBreakTimer = 7;
+        this.addSupply(50);
         window.KelvinGameAudio?.play?.("round-clear");
         this.announce(
-          `Round ${this.waveIndex + 1} cleared. Fifty reserve supply added.`,
+          `Wave ${this.waveIndex + 1} of ${level.waves.length} cleared. Fifty reserve supply added. Next wave in seven seconds.`,
         );
         this.syncInterface(true);
       } else {
@@ -1348,6 +1514,9 @@
           speed: specification.projectileSpeed,
           slowFactor: specification.slowFactor || 1,
           slowTime: specification.slowTime || 0,
+          remainingHits: specification.pierce || 1,
+          damageFalloff: specification.pierceFalloff || 1,
+          hitIds: [],
           spent: false,
         });
       });
@@ -1406,6 +1575,45 @@
           return;
         }
 
+        if (unit.type === "workshop") {
+          unit.timer = Math.max(0, unit.timer - delta);
+          if (unit.timer > 0) return;
+          const target = this.units
+            .filter(
+              (candidate) =>
+                candidate.id !== unit.id &&
+                candidate.type !== "workshop" &&
+                candidate.health > 0 &&
+                candidate.health < candidate.maxHealth &&
+                Math.abs(candidate.row - unit.row) <= specification.repairRows &&
+                Math.abs(candidate.column - unit.column) <= specification.repairRange,
+            )
+            .sort((first, second) => {
+              const healthDifference =
+                first.health / first.maxHealth - second.health / second.maxHealth;
+              return healthDifference || first.id - second.id;
+            })[0];
+          if (!target) return;
+          target.health = Math.min(
+            target.maxHealth,
+            target.health + specification.repairAmount,
+          );
+          unit.timer = specification.repairTime;
+          this.effects.push({
+            type: "repair",
+            x: unit.column + 0.5,
+            y: unit.row + 0.5,
+            targetX: target.column + 0.5,
+            targetY: target.row + 0.5,
+            radiusX: 0.48,
+            radiusY: 0.48,
+            age: 0,
+            duration: 0.48,
+            color: specification.color,
+          });
+          return;
+        }
+
         if (unit.type === "mine") {
           if (!unit.armed) {
             unit.armTimer -= delta;
@@ -1458,6 +1666,66 @@
           return;
         }
 
+        if (unit.type === "arc") {
+          const centerX = unit.column + 0.5;
+          const firstTarget = this.enemies
+            .filter(
+              (enemy) =>
+                enemy.health > 0 &&
+                enemy.row === unit.row &&
+                enemy.x >= centerX &&
+                enemy.x - centerX <= specification.attackRange,
+            )
+            .sort((first, second) => first.x - second.x)[0];
+          if (!firstTarget) {
+            unit.timer = Math.min(unit.timer, specification.fireTime * 0.25);
+            return;
+          }
+          unit.timer -= delta;
+          if (unit.timer > 0) return;
+          const points = [{ x: centerX, y: unit.row + 0.5 }];
+          const hitIds = new Set();
+          let target = firstTarget;
+          let damage = specification.damage;
+          while (target && hitIds.size < specification.chainCount) {
+            target.health -= damage;
+            hitIds.add(target.id);
+            points.push({ x: target.x, y: target.row + 0.5 });
+            damage *= specification.chainFalloff;
+            target = this.enemies
+              .filter(
+                (candidate) =>
+                  candidate.health > 0 &&
+                  !hitIds.has(candidate.id) &&
+                  this.isLaneActive(candidate.row) &&
+                  Math.abs(candidate.row - target.row) <= specification.chainRows &&
+                  Math.abs(candidate.x - target.x) <= specification.chainRange,
+              )
+              .sort((first, second) =>
+                Math.hypot(first.x - target.x, first.row - target.row) -
+                  Math.hypot(second.x - target.x, second.row - target.row),
+              )[0];
+          }
+          this.effects.push({
+            type: "arc",
+            points,
+            x: centerX,
+            y: unit.row + 0.5,
+            radiusX: 0.2,
+            radiusY: 0.2,
+            age: 0,
+            duration: 0.3,
+            color: specification.color,
+          });
+          window.KelvinGameAudio?.play?.("shoot", {
+            channel: "grid-arc",
+            cooldown: 120,
+            volume: 0.08,
+          });
+          unit.timer += specification.fireTime;
+          return;
+        }
+
         if (!specification.fireTime) return;
         const projectileRows = this.projectileRowsFor(unit, specification);
 
@@ -1502,19 +1770,23 @@
             (enemy) =>
               enemy.health > 0 &&
               enemy.row === projectile.row &&
+              !projectile.hitIds.includes(enemy.id) &&
               enemy.x >= previousX - 0.2 &&
               enemy.x <= projectile.x + 0.22,
           )
           .sort((first, second) => first.x - second.x);
-        const enemy = hits[0];
-        if (!enemy) return;
-
-        enemy.health -= projectile.damage;
-        if (projectile.slowTime > 0) {
-          enemy.slowTimer = Math.max(enemy.slowTimer, projectile.slowTime);
-          enemy.slowFactor = projectile.slowFactor;
+        for (const enemy of hits) {
+          if (projectile.remainingHits <= 0) break;
+          enemy.health -= projectile.damage;
+          projectile.hitIds.push(enemy.id);
+          projectile.remainingHits -= 1;
+          projectile.damage *= projectile.damageFalloff;
+          if (projectile.slowTime > 0) {
+            enemy.slowTimer = Math.max(enemy.slowTimer, projectile.slowTime);
+            enemy.slowFactor = projectile.slowFactor;
+          }
         }
-        projectile.spent = true;
+        if (projectile.remainingHits <= 0) projectile.spent = true;
       });
 
       this.projectiles = this.projectiles.filter(
@@ -1620,13 +1892,91 @@
         .sort((first, second) => second.column - first.column || first.id - second.id)[0];
     }
 
+    deployCarrierPayload(enemy, specification) {
+      if (enemy.payloadDeployed || enemy.health <= 0) return;
+      enemy.payloadDeployed = true;
+      const activeRows = this.activeRows();
+      const adjacentRows = activeRows.filter(
+        (row) => row !== enemy.row && Math.abs(row - enemy.row) <= 1,
+      );
+      const payloadRow = (adjacentRows.length ? adjacentRows : [enemy.row])
+        .map((row) => ({
+          row,
+          load: this.enemies.filter(
+            (candidate) => candidate.health > 0 && candidate.row === row,
+          ).length,
+        }))
+        .sort((first, second) => first.load - second.load || first.row - second.row)[0].row;
+      const dropX = Math.min(COLUMN_COUNT + 0.2, enemy.x + 0.35);
+      this.spawnEnemy(specification.payload[0], {
+        row: enemy.row,
+        x: dropX,
+        summoned: true,
+      });
+      this.spawnEnemy(specification.payload[1], {
+        row: payloadRow,
+        x: dropX + 0.12,
+        summoned: true,
+      });
+      this.effects.push({
+        type: "drop",
+        x: enemy.x,
+        y: enemy.row + 0.5,
+        radiusX: 0.75,
+        radiusY: 0.62,
+        age: 0,
+        duration: 0.55,
+        color: specification.color,
+      });
+    }
+
+    applyCommanderAuras() {
+      this.enemies.forEach((enemy) => {
+        enemy.commanded = false;
+      });
+      const specification = ENEMY_TYPES.commander;
+      this.enemies
+        .filter((enemy) => enemy.type === "commander" && enemy.health > 0)
+        .forEach((commander) => {
+          this.enemies.forEach((enemy) => {
+            if (
+              enemy.id !== commander.id &&
+              enemy.type !== "commander" &&
+              enemy.health > 0 &&
+              Math.abs(enemy.x - commander.x) <= specification.commandRange &&
+              Math.abs(enemy.row - commander.row) <= specification.commandRows
+            ) {
+              enemy.commanded = true;
+            }
+          });
+        });
+    }
+
     updateEnemies(delta) {
+      this.applyCommanderAuras();
       for (const enemy of this.enemies) {
         if (enemy.health <= 0 || this.state !== "running") continue;
         const specification = ENEMY_TYPES[enemy.type];
         if (enemy.slowTimer > 0) enemy.slowTimer -= delta;
         const slowFactor = enemy.slowTimer > 0 ? enemy.slowFactor || 0.52 : 1;
+        const commandSpeed = enemy.commanded
+          ? ENEMY_TYPES.commander.speedBoost
+          : 1;
+        const commandDamage = enemy.commanded
+          ? ENEMY_TYPES.commander.damageBoost
+          : 1;
+        const movementSpeed =
+          enemy.type === "vault" && !enemy.vaultReady
+            ? specification.spentSpeed
+            : specification.speed;
         this.updateEnemyAbility(enemy, specification, delta);
+        if (
+          enemy.type === "carrier" &&
+          !enemy.payloadDeployed &&
+          enemy.x <= specification.deployX
+        ) {
+          this.deployCarrierPayload(enemy, specification);
+        }
 
         const blockingUnit = this.units
           .filter(
@@ -1640,6 +1990,23 @@
         if (blockingUnit) {
           if (blockingUnit.type === "mine" && blockingUnit.armed) {
             this.detonateMine(blockingUnit);
+          } else if (
+            enemy.type === "vault" &&
+            enemy.vaultReady &&
+            blockingUnit.column > 0
+          ) {
+            enemy.vaultReady = false;
+            enemy.x = blockingUnit.column - 0.22;
+            this.effects.push({
+              type: "vault",
+              x: blockingUnit.column + 0.5,
+              y: blockingUnit.row + 0.5,
+              radiusX: 0.7,
+              radiusY: 0.62,
+              age: 0,
+              duration: 0.4,
+              color: specification.color,
+            });
           } else if (enemy.type === "breacher" && enemy.ramReady) {
             blockingUnit.health -= specification.impactDamage;
             enemy.ramReady = false;
@@ -1660,14 +2027,14 @@
               volume: 0.1,
             });
           } else {
-            blockingUnit.health -= specification.damage * delta;
+            blockingUnit.health -= specification.damage * commandDamage * delta;
           }
         } else if (enemy.type === "artillery") {
           const target = this.artilleryTarget(enemy, specification);
           if (target) {
             enemy.attackTimer = Math.max(0, enemy.attackTimer - delta);
             if (enemy.attackTimer <= 0) {
-              target.health -= specification.shotDamage;
+              target.health -= specification.shotDamage * commandDamage;
               enemy.attackTimer = specification.fireTime;
               enemy.abilityFlashTimer = 0.45;
               this.effects.push({
@@ -1689,10 +2056,10 @@
               });
             }
           } else {
-            enemy.x -= specification.speed * slowFactor * delta;
+            enemy.x -= movementSpeed * commandSpeed * slowFactor * delta;
           }
         } else {
-          enemy.x -= specification.speed * slowFactor * delta;
+          enemy.x -= movementSpeed * commandSpeed * slowFactor * delta;
         }
 
         if (enemy.x >= -0.05) continue;
@@ -1768,7 +2135,10 @@
         if (enemy.health > 0 || enemy.rewarded) return;
         enemy.rewarded = true;
         const specification = ENEMY_TYPES[enemy.type];
-        this.score += specification.score;
+        this.score += enemy.summoned
+          ? Math.round(specification.score * 0.5)
+          : specification.score;
+        if (!enemy.summoned) this.waveDefeated += 1;
         if (allowEnergyDrop && Math.random() < 0.14) {
           this.spawnEnergyNode(
             clamp(enemy.x, 0.25, COLUMN_COUNT - 0.25),
@@ -1851,7 +2221,10 @@
       const signature = [
         this.state,
         this.energy,
+        this.levelIndex,
         this.waveIndex,
+        this.waveSpawned,
+        this.waveDefeated,
         this.score,
         this.selectedUnit,
         this.removeMode,
@@ -1865,9 +2238,10 @@
       const stateLabels = {
         ready: "STATUS / READY",
         running: this.waitingForWave
-          ? `STATUS / REDEPLOY ${String(breakSeconds).padStart(2, "0")}`
+          ? `STATUS / NEXT WAVE ${String(breakSeconds).padStart(2, "0")}`
           : "STATUS / ACTIVE",
         paused: "STATUS / PAUSED",
+        briefing: "STATUS / BRIEFING",
         won: "STATUS / SECURE",
         lost: "STATUS / BREACHED",
       };
@@ -1875,6 +2249,7 @@
         ready: "START",
         running: "PAUSE",
         paused: "RESUME",
+        briefing: "DEPLOY",
         won: "REPLAY",
         lost: "REPLAY",
       };
@@ -1883,9 +2258,18 @@
       if (this.energyOutput) this.energyOutput.textContent = String(this.energy);
       if (this.waveOutput) {
         const wave = this.waveIndex < 0 ? 0 : this.waveIndex + 1;
-        this.waveOutput.textContent = `${String(wave).padStart(2, "0")}/${String(
-          ROUNDS.length,
-        ).padStart(2, "0")}`;
+        const waveTotal = this.currentLevelConfig().waves.length;
+        this.waveOutput.textContent = `L${String(this.currentLevel()).padStart(
+          2,
+          "0",
+        )}/${String(LEVELS.length).padStart(2, "0")} · W${String(wave).padStart(
+          2,
+          "0",
+        )}/${String(waveTotal).padStart(2, "0")}`;
+        this.waveOutput.setAttribute(
+          "aria-label",
+          `Level ${this.currentLevel()} of ${LEVELS.length}, wave ${wave} of ${waveTotal}`,
+        );
       }
       if (this.scoreOutput) {
         this.scoreOutput.textContent = String(this.score).padStart(6, "0");
@@ -1899,6 +2283,8 @@
             ? "Pause Grid Command"
             : label === "RESUME"
               ? "Resume Grid Command"
+              : label === "DEPLOY"
+                ? `Deploy level ${this.currentLevel()} of ${LEVELS.length}`
               : label === "REPLAY"
                 ? "Replay Grid Command"
                 : "Start Grid Command",
@@ -1910,9 +2296,9 @@
         const specification = UNIT_TYPES[type];
         if (!specification) return;
         const cooldown = this.cooldowns[type];
-        const unlockRound = this.unlockRoundFor(type);
+        const unlockLevel = this.unlockLevelFor(type);
         const locked = !this.isUnitUnlocked(type);
-        const newlyUnlocked = !locked && unlockRound === this.currentRound();
+        const newlyUnlocked = !locked && unlockLevel === this.currentLevel();
         const unavailable =
           locked || cooldown > 0.05 || this.energy < specification.cost;
         button.setAttribute(
@@ -1922,20 +2308,20 @@
         button.setAttribute("aria-disabled", String(unavailable));
         button.toggleAttribute("data-garden-locked", locked);
         button.toggleAttribute("data-garden-new", newlyUnlocked);
-        button.setAttribute("data-unlock-round", String(unlockRound).padStart(2, "0"));
+        button.setAttribute("data-unlock-level", String(unlockLevel).padStart(2, "0"));
         button.style.setProperty(
           "--garden-cooldown",
           locked ? "0" : String(clamp(cooldown / specification.cooldown, 0, 1)),
         );
         const detail = locked
-          ? `locked until round ${unlockRound}`
+          ? `locked until level ${unlockLevel}`
           : cooldown > 0.05
             ? `${Math.ceil(cooldown)} seconds recharge remaining`
             : `${specification.cost} supply`;
         const costOutput = button.querySelector("small");
         if (costOutput) {
           costOutput.textContent = locked
-            ? `LOCK / R${String(unlockRound).padStart(2, "0")}`
+            ? `LOCK / L${String(unlockLevel).padStart(2, "0")}`
             : `${specification.cost} SP`;
         }
         button.setAttribute("aria-label", `Select ${specification.label}, ${detail}`);
@@ -1990,15 +2376,18 @@
       context.font = `700 ${clamp(this.board.cell * 0.15, 8, 12)}px ${this.colors.mono}`;
       context.textBaseline = "middle";
       context.textAlign = "left";
-      const roundText = `${String(Math.max(0, this.waveIndex + 1)).padStart(
+      const levelText = `${String(this.currentLevel()).padStart(2, "0")}/${String(
+        LEVELS.length,
+      ).padStart(2, "0")}`;
+      const waveText = `${String(Math.max(0, this.waveIndex + 1)).padStart(
         2,
         "0",
-      )}/${String(ROUNDS.length).padStart(2, "0")}`;
+      )}/${String(this.currentLevelConfig().waves.length).padStart(2, "0")}`;
       const laneText = `${this.activeRows().length}/${ROW_COUNT}`;
       context.fillText(
         width < 620
-          ? `SP ${String(this.energy).padStart(3, "0")} / R ${roundText} / L ${laneText}`
-          : `SUPPLY ${String(this.energy).padStart(3, "0")}  /  ROUND ${roundText}  /  LANES ${laneText}`,
+          ? `SP ${String(this.energy).padStart(4, "0")} / L ${levelText} / W ${waveText}`
+          : `SUPPLY ${String(this.energy).padStart(4, "0")} / LEVEL ${levelText} / WAVE ${waveText} / LANES ${laneText}`,
         Math.max(8, this.board.x),
         y,
       );
@@ -2011,6 +2400,27 @@
             ).padStart(6, "0")}`,
         Math.min(width - 8, this.board.x + this.board.width),
         y,
+      );
+    }
+
+    drawWaveProgress() {
+      const wave = this.currentWaveConfig();
+      if (!wave || this.waveIndex < 0) return;
+      const context = this.context;
+      const progress = clamp(this.waveDefeated / wave.count, 0, 1);
+      const height = Math.max(3, this.board.cell * 0.045);
+      const y = this.board.y - height - 3;
+      context.fillStyle = this.colors.surfaceRaised;
+      context.fillRect(this.board.x, y, this.board.width, height);
+      context.fillStyle = wave.large ? this.colors.danger : this.colors.accent;
+      context.fillRect(this.board.x, y, this.board.width * progress, height);
+      context.strokeStyle = this.colors.lineStrong;
+      context.lineWidth = 1;
+      context.strokeRect(
+        this.board.x + 0.5,
+        y + 0.5,
+        this.board.width - 1,
+        Math.max(1, height - 1),
       );
     }
 
@@ -2081,8 +2491,8 @@
           context.globalAlpha = 0.42;
           context.fillText(
             this.viewport.width < 620
-              ? `R${String(this.laneUnlockRound(row)).padStart(2, "0")}`
-              : `OFF / R${String(this.laneUnlockRound(row)).padStart(2, "0")}`,
+              ? `L${String(this.laneUnlockLevel(row)).padStart(2, "0")}`
+              : `OFF / L${String(this.laneUnlockLevel(row)).padStart(2, "0")}`,
             x - cell * 0.12,
             y + (row + 0.5) * cell,
           );
@@ -2297,7 +2707,54 @@
         context.moveTo(-radius * 0.12, -radius * 0.1);
         context.lineTo(-radius * 0.12, radius * 0.1);
         context.stroke();
-      } else {
+      } else if (unit.type === "workshop") {
+        context.fillRect(-radius * 0.78, -radius * 0.52, radius * 1.56, radius * 1.02);
+        context.strokeRect(-radius * 0.78, -radius * 0.52, radius * 1.56, radius * 1.02);
+        [-0.55, 0.55].forEach((offset) => {
+          context.strokeRect(
+            radius * offset - radius * 0.13,
+            -radius * 0.92,
+            radius * 0.26,
+            radius * 0.72,
+          );
+        });
+        context.beginPath();
+        context.arc(0, 0, radius * 0.34, 0, Math.PI * 2);
+        context.stroke();
+        context.moveTo(-radius * 0.2, 0);
+        context.lineTo(radius * 0.2, 0);
+        context.moveTo(0, -radius * 0.2);
+        context.lineTo(0, radius * 0.2);
+        context.stroke();
+      } else if (unit.type === "arc") {
+        [-0.42, 0.42].forEach((offset) => {
+          context.beginPath();
+          context.arc(radius * offset, -radius * 0.24, radius * 0.25, 0, Math.PI * 2);
+          context.fill();
+          context.stroke();
+          context.moveTo(radius * offset, -radius * 0.5);
+          context.lineTo(radius * offset, -radius * 0.92);
+          context.stroke();
+        });
+        context.save();
+        context.rotate(Math.PI / 4);
+        context.strokeRect(-radius * 0.28, -radius * 0.28, radius * 0.56, radius * 0.56);
+        context.restore();
+      } else if (unit.type === "rail") {
+        context.fillRect(-radius * 0.58, -radius * 0.58, radius * 0.94, radius * 1.16);
+        context.strokeRect(-radius * 0.58, -radius * 0.58, radius * 0.94, radius * 1.16);
+        [-0.32, 0.32].forEach((offset) => {
+          context.strokeRect(
+            radius * 0.22,
+            radius * offset - radius * 0.12,
+            radius * 1.18,
+            radius * 0.24,
+          );
+        });
+        context.beginPath();
+        context.arc(-radius * 0.3, 0, radius * 0.2, 0, Math.PI * 2);
+        context.stroke();
+      } else if (unit.type === "mine") {
         // Proximity mine: armoured disc, four ground anchors and a status lamp.
         context.save();
         context.translate(0, radius * 0.12);
@@ -2454,6 +2911,48 @@
           context.fill();
         }
       }
+      if (enemy.type === "vault") {
+        context.beginPath();
+        context.moveTo(-size * 0.65, size * 0.65);
+        context.quadraticCurveTo(-size * 1.15, size * 1.15, -size * 1.35, size * 0.35);
+        context.moveTo(size * 0.65, size * 0.65);
+        context.quadraticCurveTo(size * 1.15, size * 1.15, size * 1.35, size * 0.35);
+        context.stroke();
+        if (enemy.vaultReady) {
+          context.beginPath();
+          context.arc(0, 0, size * 1.5, Math.PI * 1.08, Math.PI * 1.92);
+          context.stroke();
+        }
+      }
+      if (enemy.type === "carrier") {
+        context.strokeRect(-size * 1.5, -size * 0.48, size * 3, size * 0.78);
+        context.beginPath();
+        context.moveTo(-size * 1.5, -size * 0.1);
+        context.lineTo(-size * 2, size * 0.25);
+        context.moveTo(size * 1.5, -size * 0.1);
+        context.lineTo(size * 2, size * 0.25);
+        context.stroke();
+        if (!enemy.payloadDeployed) {
+          context.strokeRect(-size * 0.45, size * 0.35, size * 0.9, size * 0.48);
+        }
+      }
+      if (enemy.type === "commander") {
+        context.beginPath();
+        context.moveTo(0, -size * 0.9);
+        context.lineTo(0, -size * 1.65);
+        context.stroke();
+        context.save();
+        context.translate(0, -size * 1.72);
+        context.rotate(Math.PI / 4);
+        context.strokeRect(-size * 0.28, -size * 0.28, size * 0.56, size * 0.56);
+        context.restore();
+      }
+      if (enemy.commanded) {
+        context.strokeStyle = ENEMY_TYPES.commander.color;
+        context.setLineDash([size * 0.24, size * 0.16]);
+        context.strokeRect(-size * 1.15, -size * 1.35, size * 2.3, size * 2.6);
+        context.setLineDash([]);
+      }
       if (enemy.slowTimer > 0) {
         context.strokeStyle = UNIT_TYPES.frost.color;
         context.setLineDash([size * 0.3, size * 0.2]);
@@ -2478,6 +2977,10 @@
         const radius = clamp(cell * 0.09, 3, 9);
         const specification = UNIT_TYPES[projectile.type] || UNIT_TYPES.pulse;
         context.fillStyle = specification.color;
+        if (projectile.type === "rail") {
+          context.fillRect(x - radius * 1.8, y - radius * 0.28, radius * 3.6, radius * 0.56);
+          return;
+        }
         context.beginPath();
         if (projectile.type === "frost") {
           context.moveTo(x, y - radius);
@@ -2514,7 +3017,28 @@
         context.fillStyle = effect.color;
         context.lineWidth = Math.max(1.5, cell * 0.035);
 
-        if (effect.type === "jam" || effect.type === "repair") {
+        if (effect.type === "arc") {
+          context.globalAlpha = 1 - progress;
+          context.beginPath();
+          effect.points.forEach((point, index) => {
+            const pointX = (point.x - effect.x) * cell;
+            const pointY = (point.y - effect.y) * cell;
+            if (index === 0) {
+              context.moveTo(pointX, pointY);
+              return;
+            }
+            const previous = effect.points[index - 1];
+            const previousX = (previous.x - effect.x) * cell;
+            const previousY = (previous.y - effect.y) * cell;
+            const direction = index % 2 === 0 ? -1 : 1;
+            context.lineTo(
+              (previousX + pointX) / 2,
+              (previousY + pointY) / 2 + direction * cell * 0.1,
+            );
+            context.lineTo(pointX, pointY);
+          });
+          context.stroke();
+        } else if (effect.type === "jam" || effect.type === "repair") {
           const targetX = (effect.targetX - effect.x) * cell;
           const targetY = (effect.targetY - effect.y) * cell;
           context.globalAlpha = 1 - progress;
@@ -2684,6 +3208,8 @@
     drawWaveBanner() {
       if (this.waveBannerTimer <= 0 || this.waveIndex < 0) return;
       const context = this.context;
+      const level = this.currentLevelConfig();
+      const wave = this.currentWaveConfig();
       const width = clamp(this.board.cell * 3.8, 150, 310);
       const height = clamp(this.board.cell * 1.32, 70, 108);
       const x = this.board.x + this.board.width / 2 - width / 2;
@@ -2698,13 +3224,15 @@
       context.textAlign = "center";
       context.textBaseline = "middle";
       context.fillText(
-        `ROUND ${String(this.waveIndex + 1).padStart(2, "0")} / ${String(
-          ROUNDS.length,
+        `${wave?.large ? "MASS ASSAULT" : "WAVE"} ${String(
+          this.waveIndex + 1,
+        ).padStart(2, "0")}/${String(level.waves.length).padStart(2, "0")} · LEVEL ${String(
+          this.currentLevel(),
         ).padStart(2, "0")}`,
         x + width / 2,
         y + height * 0.19,
       );
-      if (this.lastUnlockedUnit) {
+      if (this.lastUnlockedUnit && this.waveIndex === 0) {
         context.fillStyle = UNIT_TYPES[this.lastUnlockedUnit].color;
         context.font = `700 ${clamp(height * 0.12, 8, 12)}px ${this.colors.mono}`;
         context.fillText(
@@ -2725,7 +3253,7 @@
       context.fillStyle = this.colors.muted;
       context.font = `700 ${clamp(height * 0.1, 7, 10)}px ${this.colors.mono}`;
       context.fillText(
-        `LANES ONLINE / ${this.lanePhaseForRound().label}`,
+        `LANES ONLINE / ${this.lanePhaseForLevel().label}`,
         x + width / 2,
         y + height * 0.87,
       );
@@ -2736,6 +3264,7 @@
       this.setupContext();
       this.drawBackground();
       this.drawStatus();
+      this.drawWaveProgress();
       this.drawBoard();
       this.drawSweepers();
       this.units.forEach((unit) => this.drawUnit(unit));

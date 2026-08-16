@@ -2721,6 +2721,29 @@ html.has-game-fullscreen body {
   font-size: 8px;
 }
 
+.garden-stage .game-overlay {
+  padding: 84px 14px 18px;
+  background: color-mix(in srgb, var(--preview-bg) 68%, transparent);
+}
+
+.garden-stage .game-overlay > * {
+  width: min(390px, calc(100% - 24px));
+  box-sizing: border-box;
+}
+
+.garden-stage .game-overlay[data-overlay-mode="briefing"] strong {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+.garden-stage .game-overlay .garden-overlay-detail {
+  max-width: min(390px, calc(100% - 24px));
+  padding: 10px 12px;
+  color: var(--text-soft);
+  line-height: 1.45;
+  white-space: normal;
+}
+
 .game-window__footer {
   display: grid;
   grid-template-columns: minmax(110px, 1fr) auto auto;
