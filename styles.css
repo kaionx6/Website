@@ -4485,30 +4485,21 @@ html[data-theme="light"] .button--light:hover {
   }
 }
 
-/* Simulation library embed (simulations.html)
+/* Six-tab header: between the stacked phone header and the desktop sidebar,
+   the centred nav would touch the brand and theme toggle below ~830px, so
+   its tabs tighten there. */
+
+@media (min-width: 761px) and (max-width: 860px) {
+  .main-nav a {
+    min-width: 64px;
+    padding-inline: 10px;
+  }
+}
+
+/* Simulation library embed (simulations.html, the Labs tab)
    The standalone library in labs/ is framed like the game windows. On short
    or narrow screens the frame has its own height; on desktop it fills the
    space left under the heading. */
-
-a.project-link {
-  transition: color 70ms linear;
-}
-
-a.project-link:hover,
-a.project-link:focus-visible {
-  color: var(--blue);
-}
-
-.sim-back-link {
-  text-decoration: underline;
-  text-decoration-color: var(--line-strong);
-  text-underline-offset: 3px;
-}
-
-.sim-back-link:hover,
-.sim-back-link:focus-visible {
-  text-decoration-color: currentColor;
-}
 
 .sim-embed {
   display: grid;
