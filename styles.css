@@ -4484,3 +4484,143 @@ html[data-theme="light"] .button--light:hover {
     width: min(96%, 680px, calc(133.333dvh - 400px));
   }
 }
+
+/* Simulation library embed (simulations.html)
+   The standalone library in labs/ is framed like the game windows. On short
+   or narrow screens the frame has its own height; on desktop it fills the
+   space left under the heading. */
+
+a.project-link {
+  transition: color 70ms linear;
+}
+
+a.project-link:hover,
+a.project-link:focus-visible {
+  color: var(--blue);
+}
+
+.sim-back-link {
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 3px;
+}
+
+.sim-back-link:hover,
+.sim-back-link:focus-visible {
+  text-decoration-color: currentColor;
+}
+
+.sim-embed {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+}
+
+.sim-embed__bar {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  min-height: 38px;
+  border-bottom: 1px solid var(--line-strong);
+  background: var(--surface-2);
+  color: var(--faint);
+  font: 650 8px/1 var(--mono);
+  letter-spacing: 0.1em;
+}
+
+.sim-embed__bar > * {
+  display: flex;
+  align-items: center;
+  padding-inline: 14px;
+  border-right: 1px solid var(--line);
+}
+
+.sim-embed__bar > :last-child {
+  border-right: 0;
+}
+
+.sim-embed__title {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-soft);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sim-embed__open {
+  gap: 8px;
+  min-height: 44px;
+  color: var(--blue);
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.sim-embed__open span {
+  font-size: 13px;
+}
+
+.sim-embed__open:hover,
+.sim-embed__open:focus-visible {
+  background: var(--blue);
+  color: #06101c;
+}
+
+html[data-theme="light"] .sim-embed__open:hover,
+html[data-theme="light"] .sim-embed__open:focus-visible {
+  color: #fff;
+}
+
+.sim-embed__frame {
+  display: block;
+  width: 100%;
+  height: min(78svh, 900px);
+  min-height: 480px;
+  border: 0;
+  background: #f5f8fc;
+}
+
+.sim-embed__noscript {
+  margin: 0;
+  padding: 18px;
+  color: var(--text-soft);
+  font: 650 10px/1.6 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 520px) {
+  .sim-embed__bar {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .sim-embed__bar > * {
+    padding-inline: 10px;
+  }
+
+  .sim-embed__bar .window-dots {
+    display: none;
+  }
+}
+
+@media (min-width: 951px) and (min-height: 600px) {
+  .simulations {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .simulations .section-heading h1 {
+    font-size: clamp(1.8rem, 2.7vw, 2.25rem);
+  }
+
+  .sim-embed {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .sim-embed__frame {
+    height: 100%;
+    min-height: 0;
+  }
+}

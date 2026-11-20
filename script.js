@@ -135,12 +135,21 @@
 
   const navLinks = [...document.querySelectorAll(".main-nav a")];
   const currentPage = document.body.dataset.page || "home";
+  /* Sub-pages such as simulations.html highlight their parent tab without
+     joining the wheel page cycle (their page id is not in the nav). */
+  const navSection = document.body.dataset.navSection || currentPage;
 
   navLinks.forEach((link) => {
-    const isCurrent = link.dataset.pageLink === currentPage;
+    const isCurrent = link.dataset.pageLink === navSection;
     link.classList.toggle("is-active", isCurrent);
-    if (isCurrent) link.setAttribute("aria-current", "page");
-    else link.removeAttribute("aria-current");
+    if (isCurrent) {
+      link.setAttribute(
+        "aria-current",
+        link.dataset.pageLink === currentPage ? "page" : "true",
+      );
+    } else {
+      link.removeAttribute("aria-current");
+    }
   });
 
   /* A deliberate vertical wheel gesture moves through the site's pages. The

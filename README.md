@@ -12,6 +12,11 @@ browser viewport, and cycle in order after a deliberate vertical wheel gesture.
 - `projects.html` — four project panels and the spider robot viewer
 - `games.html` — tabbed Flappy Bird, Snake, Space Invaders, Tetris, and Grid
   Command library
+- `simulations.html` — framed embed of the EEEN20140 simulation library,
+  linked from Project 02 (kept out of the wheel page cycle so scrolling stays
+  inside the simulations)
+- `labs/engineering-mastery.html` — the self-contained simulation library
+  (54 simulations across five learning outcomes); replace this file to update it
 - `about.html` — profile copy, compact portrait placeholder, and capabilities
 - `contact.html` — contact page
 - `styles.css` — layout, themes, responsive styles, and preview illustrations
