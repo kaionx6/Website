@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug C++ hello lesson",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/01_hello_cpp",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "preLaunchTask": "Build all lessons"
+    }
+  ]
+}

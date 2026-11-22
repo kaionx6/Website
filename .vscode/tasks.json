@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build all lessons",
+      "type": "shell",
+      "command": "make",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "Run C++ hello lesson",
+      "type": "shell",
+      "command": "${workspaceFolder}/build/01_hello_cpp",
+      "dependsOn": "Build all lessons",
+      "problemMatcher": []
+    },
+    {
+      "label": "Run C++ collections lesson",
+      "type": "shell",
+      "command": "${workspaceFolder}/build/03_collection_cpp",
+      "dependsOn": "Build all lessons",
+      "problemMatcher": []
+    }
+  ]
+}

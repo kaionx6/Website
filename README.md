@@ -1,3 +1,6 @@
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
 # kelvingao.com
 
 A build-free, multi-page personal portfolio made as a flat blueprint drawing
@@ -89,3 +92,133 @@ through GitHub Pages or any simple local web server rather than double-clicking
 The site is ready to host as static files. For GitHub Pages, publish the root of
 the `main` branch and then finish the DNS setup with your domain provider. The
 included `CNAME` file tells GitHub Pages to use `kelvingao.com`.
+=======
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+# C to C++: a small VS Code tutorial
+
+This project is a short, hands-on bridge from C to modern C++. Each lesson shows
+the same idea twice: first in C, then in C++. Read the matching files side by
+side, run both programs, and make the suggested changes yourself.
+
+## What you need
+
+- [Visual Studio Code](https://code.visualstudio.com/)
+- A C/C++ compiler: GCC, Clang, or Microsoft Visual C++
+- The VS Code **C/C++** extension (VS Code will recommend it when this folder opens)
+- `make` for the included one-command build on Linux or macOS
+
+On Windows, the easiest beginner setup is VS Code with
+[WSL](https://code.visualstudio.com/docs/remote/wsl), then install the compiler
+inside Ubuntu:
+
+```bash
+sudo apt update
+sudo apt install build-essential gdb
+```
+
+## Start in VS Code
+
+1. Open this repository as a folder in VS Code.
+2. Install the recommended **C/C++** extension.
+3. Open **Terminal > New Terminal**.
+4. Run `make` to compile every example.
+5. Run a program, for example `./build/01_hello_cpp`.
+
+You can also press **Ctrl+Shift+B** (macOS: **Cmd+Shift+B**) and choose:
+
+- **Build all lessons** to compile everything.
+- **Run C++ hello lesson** for the first C++ example.
+- **Run C++ collections lesson** for the final example.
+
+To debug, open a `.cpp` file, add a breakpoint by clicking beside a line number,
+select **Run and Debug**, and choose **Debug C++ hello lesson**. The supplied
+debug profile uses GDB and works in Linux and WSL.
+
+## Lesson 1: output and functions
+
+Compare [`lessons/01_hello.c`](lessons/01_hello.c) with
+[`lessons/01_hello.cpp`](lessons/01_hello.cpp).
+
+| C | C++ |
+|---|---|
+| `#include <stdio.h>` | `#include <iostream>` |
+| `printf("Hello, %s!\n", name)` | `std::cout << "Hello, " << name << "!\n"` |
+| `const char *name` | `const std::string& name` |
+
+C++ is largely compatible with C syntax, but prefer its type-safe standard
+library. `std::string` owns and manages text; the `&` passes it without making a
+copy, and `const` promises not to change it.
+
+**Try it:** change the name, add an `age` parameter, and print it from both
+versions.
+
+## Lesson 2: input and safer failure handling
+
+Compare [`lessons/02_input.c`](lessons/02_input.c) with
+[`lessons/02_input.cpp`](lessons/02_input.cpp).
+
+The C version gives `scanf` an address such as `&left` and checks how many
+values it converted. The C++ version streams values into variables with
+`std::cin >> left` and checks the stream itself. Both checks matter: never use
+input without confirming that parsing succeeded.
+
+C++ also lets `add` use a reference output parameter (`double& result`).
+Unlike a pointer, a reference cannot normally be null and uses the variable's
+ordinary name inside the function.
+
+**Try it:** add division. Reject division by zero and return a helpful error.
+
+## Lesson 3: replace manual arrays with containers
+
+Compare [`lessons/03_collection.c`](lessons/03_collection.c) with
+[`lessons/03_collection.cpp`](lessons/03_collection.cpp).
+
+The C program carries an array and its length separately. The C++ program uses
+`std::vector<int>`, which owns its storage and knows its size. A range-based
+`for` loop visits each value without indexing. `auto` asks the compiler to infer
+the iterator's long type; it does **not** make C++ dynamically typed.
+
+**Try it:** use `values.push_back(13)`, rebuild, and confirm that the total and
+average update without changing a separate array length.
+
+## A practical C-to-C++ conversion checklist
+
+Convert working programs gradually rather than rewriting everything at once:
+
+1. Rename one `.c` file to `.cpp` and compile it with warnings enabled.
+2. Keep behavior unchanged while fixing compiler errors.
+3. Replace C headers with C++ forms (`<stdio.h>` becomes `<cstdio>`), then prefer
+   the appropriate C++ library (`<iostream>`, `<string>`, `<vector>`).
+4. Replace owning `char*` buffers with `std::string`.
+5. Replace manually allocated arrays with `std::vector` or fixed arrays with
+   `std::array`.
+6. Prefer references for required objects and use `nullptr`, not `NULL`, for
+   pointers that may be absent.
+7. Use constructors and destructors to acquire and release resources (RAII)
+   instead of scattered `malloc`/`free` calls.
+8. Rebuild and test after every small change.
+
+Do not rush into classes just because the language supports them. First learn
+the standard types, value semantics, references, `const`, and automatic resource
+management. Those provide the biggest safety improvement when moving from C.
+
+## Commands
+
+```bash
+make            # compile all lessons into build/
+make test       # compile, run, and check every example
+make clean      # remove generated programs
+```
+
+The build enables strong warnings and uses C17 and C++20. Treat warnings as
+problems to understand, even when the compiler can still create a program.
+<<<<<<< ours
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
